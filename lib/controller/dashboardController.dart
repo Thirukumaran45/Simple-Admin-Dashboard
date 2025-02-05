@@ -10,33 +10,22 @@ class SectionModel {
 
 class DashboardController extends GetxController {
   final RxInt currentSectionIndex = 0.obs;
+
   final RxBool sidebarOpen = false.obs;
 
   final RxList<SectionModel> section = <SectionModel>[
-    SectionModel(title: "statistics", icon: Icons.show_chart),
-    SectionModel(title: "Products", icon: Icons.shopping_bag),
-    SectionModel(title: "Orders", icon: Icons.list_alt),
-    SectionModel(title: "Customer", icon: Icons.people),
-    SectionModel(title: "Inventory", icon: Icons.inventory),
-    SectionModel(title: "sales", icon: Icons.attach_money),
+    SectionModel(title: "Overview", icon: Icons.home),
+    SectionModel(title: "Attendance", icon: Icons.show_chart),
+    SectionModel(title: "Students", icon: Icons.person),
+    SectionModel(title: "Teachers", icon: Icons.school),
+    SectionModel(title: "Working Staff", icon: Icons.people_alt_rounded),
+    SectionModel(title: "Higher Officials", icon: Icons.business_center),
+    SectionModel(title: "School Updates", icon: Icons.update),
+    SectionModel(title: "Reset Year", icon: Icons.refresh),
+    SectionModel(title: "Exam Updates", icon: Icons.edit),
+    SectionModel(title: "Fees Updates", icon: Icons.currency_rupee),
+    SectionModel(title: "Bus", icon: Icons.directions_bus),
   ].obs;
-
-  Future<List<Map<String, dynamic>>> fetchData() async {
-    await Future.delayed(Duration(seconds: 1));
-    return List.generate(
-      5,
-      (index) => {
-        'Product Name': 'product $index',
-        'Sales': '\$${(index + 1) * 1000}',
-        'Stocks': '${(index + 1) * 20}units',
-        'Catagory': 'Catagory $index',
-        'Date Added': '2024/12/1${index + 1}',
-        'Total Revenue': '\$${(index + 1) * 5000}',
-        'Average Order Value': '\$${(index + 1) * 50}',
-        'Customer Count': (index + 1) * 100,
-      },
-    );
-  }
 
   void changeSection(int index) {
     currentSectionIndex.value = index;
@@ -44,5 +33,6 @@ class DashboardController extends GetxController {
 
   void toggleSlider() {
     sidebarOpen.value = !sidebarOpen.value;
+    update();
   }
 }
