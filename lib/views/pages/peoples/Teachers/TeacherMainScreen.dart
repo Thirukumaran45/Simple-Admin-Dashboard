@@ -19,7 +19,7 @@ class TeacherMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(title: "View Details", assetLink: "assets/images/splash.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/viewTeacherDetails');}, color: primaryRedShadeColrs),
+                customProfileCard(title: "View Details", assetLink: "assets/images/teacher.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/viewTeacherDetails');}, color: primaryRedShadeColrs),
                const SizedBox(width: 50), // Space between the cards
                 customProfileCard(title: "Add Teacher", assetLink: "assets/images/splash.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/addTeacher'); },color: primaryRedShadeColrs),
               ],

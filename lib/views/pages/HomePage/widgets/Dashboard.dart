@@ -19,6 +19,8 @@ import 'package:admin_pannel/views/pages/peoples/Teachers/TeacherMainScreen.dart
 import 'package:admin_pannel/views/pages/peoples/Teachers/Widgets/AddTeacherss.dart';
 import 'package:admin_pannel/views/pages/peoples/Teachers/Widgets/TeacherDetailTab.dart';
 import 'package:admin_pannel/views/pages/peoples/Teachers/Widgets/TeacherEditDownload.dart';
+import 'package:admin_pannel/views/pages/peoples/staff/Widgets/AddStaffDetails.dart';
+import 'package:admin_pannel/views/pages/peoples/staff/Widgets/StaffDetailsStaff.dart';
 import 'package:admin_pannel/views/pages/peoples/staff/Widgets/StaffEditDownload.dart';
 import 'package:admin_pannel/views/pages/peoples/staff/staff.dart';
 import 'package:beamer/beamer.dart';
@@ -251,7 +253,7 @@ class _LandingPageState extends State<LandingPage> {
                     //working staff management
                       '/manage-working-staff': (context, state, data){
                   if(state.pathPatternSegments.contains('addWorkingStaff')){
-                    return const BeamPage(child: AddStudentTab(),
+                    return const BeamPage(child: AddStaffTab(),
                     title: "Add Working Staff",
                     type: BeamPageType.slideLeftTransition,key: ValueKey('Add Staff'));
                   }
@@ -264,7 +266,7 @@ class _LandingPageState extends State<LandingPage> {
         key: ValueKey('Edit Working Staff Details'),
       );
     }
-                     return const BeamPage(child:  StudentDetailsTab(),
+                     return const BeamPage(child:  StaffDetailsTab(),
                      title: "View Working Staff Details",
                     type: BeamPageType.slideLeftTransition,key: ValueKey('View Staff Details'));
                  

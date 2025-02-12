@@ -19,7 +19,7 @@ class StaffMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(title: "View Details", assetLink: "assets/images/splash.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-working-staff/viewStaffDetails');},color: primaryGreenShadeColors),
+                customProfileCard(title: "View Details", assetLink: "assets/images/group.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-working-staff/viewStaffDetails');},color: primaryGreenShadeColors),
                const SizedBox(width: 50), // Space between the cards
                 customProfileCard(title: "Add Working Staff", assetLink: "assets/images/splash.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-working-staff/addWorkingStaff'); },color: primaryGreenShadeColors),
               ],

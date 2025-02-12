@@ -17,7 +17,7 @@ void main() {
 
 Future<void> initializeGetController()async{
 Get.lazyPut(()=>DashboardController()); 
-    Get.lazyPut(()=>StudentController());
+    Get.lazyPut(()=>StudentController()); 
     Get.lazyPut(()=>Teachercontroller());
     Get.lazyPut(()=>Higherofficialcontroller());
     Get.lazyPut(()=>StaffController());

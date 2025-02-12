@@ -178,6 +178,7 @@ Higherofficialcontroller controller = Get.find();
                       DataCell(Text(teacher['phone']!)), DataCell(SizedBox(width: 150,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
                             backgroundColor:
                                primaryGreenColors, // Button background color
                             elevation: 10, // Elevation for shadow effect

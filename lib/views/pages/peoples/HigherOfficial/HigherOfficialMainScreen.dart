@@ -17,7 +17,7 @@ class HigherOfficialMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(title: "View Details", assetLink: "assets/images/splash.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-higher-official/viewHigherOfficailDetails');},color: primaryGreenShadeColors),
+                customProfileCard(title: "View Details", assetLink: "assets/images/official.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-higher-official/viewHigherOfficailDetails');},color: primaryGreenShadeColors),
                const SizedBox(width: 50), // Space between the cards
                 customProfileCard(title: "Add Higher Officials", assetLink: "assets/images/splash.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-higher-official/addOfficial'); },color: primaryGreenShadeColors),
               ],

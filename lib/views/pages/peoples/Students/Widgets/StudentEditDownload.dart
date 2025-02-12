@@ -1,6 +1,7 @@
 
 import 'package:admin_pannel/views/widget/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
+import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
 class StudentEditDownload extends StatefulWidget {
@@ -47,61 +48,69 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          customIconNavigation(context, '/manage-student/viewStudentDetails'),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-             const Text(" S T U D E N T ", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 35,color: Colors.blue),),
-              const SizedBox(height: 50),
-              // Profile Photo
-              Center(
-                child: Stack(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Row(
+          children: [
+            Row(crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                
+                customIconNavigation(context,'/manage-student/viewStudentDetails'),
+              
+                Column(
                   children: [
-                    Container(
-                      width:350,
-                      height: 450,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        image: const DecorationImage(
-                          image: AssetImage("assets/images/profile.png"),
-                          fit: BoxFit.cover,
+                    const SizedBox(height: 30,),
+                    Center(
+                      child: Stack(
+                        children: [
+                          Container(
+                            width:320,
+                            height: 500,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              image: const DecorationImage(
+                                image: AssetImage("assets/images/profile.png"),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(8), 
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                          ), Positioned(
+                bottom: 0,
+                right: 0,
+                child: customIconTextButton(Colors.red, onPressed: (){}, icon: Icons.edit, text: "Change")
                         ),
-                        borderRadius: BorderRadius.circular(8), 
-                        border: Border.all(color: Colors.white, width: 2),
+                        ],
                       ),
-                    ), Positioned(
-          bottom: 0,
-          right: 0,
-          child: customIconTextButton(Colors.blue, onPressed: (){}, icon: Icons.edit, text: "change")
-        ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: 300,
+                      padding: EdgeInsets.all(20),
+                      child: Text(overflow:TextOverflow.visible ,"Govindhan Gopalan S", style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [Text(" 10 - A ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black)),],
+                    ),
+                      const  SizedBox(
+                      height:150,
+                    ), 
                   ],
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(" Thiru Kumaran N R", style: TextStyle(fontSize: 35,fontWeight: FontWeight.normal,color: Colors.black),),
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text(" 10 - A ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30,color: Colors.black)),],
-              )
-            ],
-          ),
-       
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Center(
+              ], 
+            ),
+          const SizedBox(
+                      width: 20,
+                    ),
+            Center(
               child: Material(
                 color: Colors.transparent,
                 child: Container(
                   padding: const EdgeInsets.all(16.0),
+                 
                   width: 700,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -117,8 +126,6 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 50),
-                      // Background container with school logo
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -181,7 +188,7 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                               ),
                               child: Text(isEdited ? 'Save' : 'Edit',
-                                style: const TextStyle(color: Colors.white, fontSize: 20),
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                               
                               ),
                             ),
@@ -194,12 +201,13 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                                     const SnackBar(content: Text("Download functionality")));
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                backgroundColor:primaryGreenColors ,
                                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                               ),
                               child: const Text(
                                 'Download',
-                                style: TextStyle(color: Colors.white, fontSize: 20),
+                                style: TextStyle( fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -210,8 +218,8 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -227,21 +235,21 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
             flex: 3,
             child: Text(
               labelText,
-              style: const TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold),
+              style:  TextStyle(color: primaryGreenColors, fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 30),
           Expanded(
             flex: 7,
-             child: TextField(cursorColor :Colors.green,
+             child: TextField(cursorColor :primaryGreenColors,
               controller: controller,
               decoration: InputDecoration(border:  OutlineInputBorder( 
                 
                   borderRadius: BorderRadius.circular(8.0),
-                borderSide: const BorderSide(color: Colors.green),
+                borderSide:  BorderSide(color: primaryGreenColors),
               ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),
+              focusedBorder:  OutlineInputBorder(
+                borderSide: BorderSide(color: primaryGreenColors),
               ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                
