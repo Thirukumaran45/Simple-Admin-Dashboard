@@ -4,54 +4,40 @@ import 'package:admin_pannel/controller/StafffController.dart';
 import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/controller/dashboardController.dart';
-import 'package:admin_pannel/views/widgets/HomePage/dashboard.dart';
+import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   initializeGetController();
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 Future<void> initializeGetController()async{
-Get.lazyPut(()=>DashboardController()); // Ensure controllers are registered
+Get.lazyPut(()=>DashboardController()); 
     Get.lazyPut(()=>StudentController());
     Get.lazyPut(()=>Teachercontroller());
     Get.lazyPut(()=>Higherofficialcontroller());
     Get.lazyPut(()=>StaffController());
     Get.lazyPut(()=>AttendanceController());
-
 }
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   MyApp({super.key});
 
+
+final routeDelegate = BeamerDelegate(transitionDelegate: const  NoAnimationTransitionDelegate(),locationBuilder: 
+RoutesLocationBuilder(routes: {
+  "/*":(context , state, data)=> const LandingPage(),
+}).call);
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-
-
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: "Admin Dashboard",
-      theme: ThemeData(
-        useMaterial3: true,
-        primarySwatch: Colors.green,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green, foregroundColor: Colors.white),
-        ),
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black),
-          bodyMedium: TextStyle(color: Colors.black),
-        ),
-      ),
-     
-      // home:  const ClassPage(classNumber: 1,),
-      home: Dashboard(),
+      routeInformationParser: BeamerParser(),
+      routerDelegate: routeDelegate,
     );
   }
 }
+
