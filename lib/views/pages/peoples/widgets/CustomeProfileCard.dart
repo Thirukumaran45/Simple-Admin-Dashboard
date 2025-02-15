@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 
-Widget customProfileCard({required String title , required Color color, required String assetLink,required VoidCallback onpresee}) {
+Widget customProfileCard({required String title , required String assetLink,required VoidCallback onpresee}) {
   return InkWell(
     onTap: onpresee ,
     child: Container(
-      height: 300,
-      width: 250,
+      height: 380,
+      width: 300,
       // padding:const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:color,
+        color:Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: const  [
           BoxShadow(
@@ -22,24 +22,36 @@ Widget customProfileCard({required String title , required Color color, required
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-                   CircleAvatar(
-                  radius: 80,
-                  backgroundImage: AssetImage(assetLink),
+                   Container(
+                   height: 300,
+                   width: 300,  
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        image:  DecorationImage(
+                          image: AssetImage(assetLink),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                    ),
+           
+                
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),
                 ),
-              const   SizedBox(
-                  height: 20,
-                )
-                ,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),
-              ),
-          const    Icon(Icons.arrow_forward,size: 27,color: Colors.black,)
-            ],
+            const    Icon(Icons.arrow_forward,size: 27,color: Colors.black,)
+              ],
+            ),
           ),
+
+          
         ],
       ),
     ),

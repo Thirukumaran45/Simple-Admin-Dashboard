@@ -1,5 +1,4 @@
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeProfileCard.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +18,9 @@ class StaffMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(title: "View Details", assetLink: "assets/images/group.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-working-staff/viewStaffDetails');},color: primaryGreenShadeColors),
+                customProfileCard(title: "View Details", assetLink: "assets/images/staff.jpg", onpresee: () { Beamer.of(context).beamToNamed('/manage-working-staff/viewStaffDetails');}),
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(title: "Add Working Staff", assetLink: "assets/images/splash.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-working-staff/addWorkingStaff'); },color: primaryGreenShadeColors),
+                customProfileCard(title: "Add Working Staff", assetLink: "assets/images/addUser.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-working-staff/addWorkingStaff'); }),
               ],
             ),
           ],

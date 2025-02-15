@@ -26,8 +26,9 @@ Widget customIconTextButton(Color color,
           child: Text(
             text,
             style: const TextStyle(
-              fontSize: 20, // Bigger text size
-              fontWeight: FontWeight.normal, // Bold text
+              fontSize: 18, // Bigger text size
+              fontWeight: FontWeight.bold, 
+              // Bold text
               color: Colors.white, // Text color
             ),
           ),

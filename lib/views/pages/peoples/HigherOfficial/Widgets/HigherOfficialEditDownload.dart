@@ -83,9 +83,9 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                 ),
                 Container(
                      width: 300,
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                
-                  child: Text(" Thiru Kumaran N R", overflow:TextOverflow.visible ,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                  child: const Text(" Thiru Kumaran N R", overflow:TextOverflow.visible ,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
                const SizedBox(
                 height: 150,
                )
@@ -178,7 +178,7 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                               ),
                               child: Text(isEdited ? 'Save' : 'Edit'
-                              ,  style:  TextStyle(color: Colors.white, fontSize: 16, fontWeight:FontWeight.bold ),
+                              ,  style:  const TextStyle(color: Colors.white, fontSize: 16, fontWeight:FontWeight.bold ),
                               
                               ),
                             ),

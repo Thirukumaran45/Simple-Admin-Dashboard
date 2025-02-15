@@ -6,7 +6,9 @@ import 'package:admin_pannel/views/pages/Fees/FeesUpdateScreen.dart';
 import 'package:admin_pannel/views/pages/HomePage/HomePage.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/SideNav.dart';
 import 'package:admin_pannel/views/pages/ResetYear/ResetSchoolYearScreen.dart';
-import 'package:admin_pannel/views/pages/School/SchoolUpdateMainScreen.dart';
+import 'package:admin_pannel/views/pages/ResetYear/SectionwiseReset.dart';
+import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/SchoolUpdateMainScreen.dart';
+import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/PhotoViewPage.dart';
 import 'package:admin_pannel/views/pages/peoples/HigherOfficial/HigherOfficialMainScreen.dart';
 import 'package:admin_pannel/views/pages/peoples/HigherOfficial/Widgets/AddHigherOfficialTab.dart';
 import 'package:admin_pannel/views/pages/peoples/HigherOfficial/Widgets/HigherOfficialDetailsTab.dart';
@@ -17,6 +19,7 @@ import 'package:admin_pannel/views/pages/peoples/Students/Widgets/StudentDetailT
 import 'package:admin_pannel/views/pages/peoples/Students/Widgets/StudentEditDownload.dart';
 import 'package:admin_pannel/views/pages/peoples/Teachers/TeacherMainScreen.dart';
 import 'package:admin_pannel/views/pages/peoples/Teachers/Widgets/AddTeacherss.dart';
+import 'package:admin_pannel/views/pages/peoples/Teachers/Widgets/ClassIncargerDetails.dart';
 import 'package:admin_pannel/views/pages/peoples/Teachers/Widgets/TeacherDetailTab.dart';
 import 'package:admin_pannel/views/pages/peoples/Teachers/Widgets/TeacherEditDownload.dart';
 import 'package:admin_pannel/views/pages/peoples/staff/Widgets/AddStaffDetails.dart';
@@ -132,6 +135,7 @@ class _LandingPageState extends State<LandingPage> {
                     // Attendance
                    '/attendance': (context, state, data) => const BeamPage(
                     title: 'School Attendance',
+                    type: BeamPageType.scaleTransition,
             child: AttendanceMainScreen(),
           ),
 
@@ -207,6 +211,13 @@ class _LandingPageState extends State<LandingPage> {
                     title: "Add Teacher",
                     type: BeamPageType.slideLeftTransition,key: ValueKey('Add Teacher'));
                   }
+                  else if(state.pathPatternSegments.contains('classInchargerDetails'))
+                  {
+                    return const BeamPage(child: ClassInchargerDetails(),
+                    title: "Class and Section wise Incharger Name",
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('class Incharger'));
+                  
+                  }
                   else if(state.pathPatternSegments.contains('viewTeacherDetails')){
                      if (state.pathPatternSegments.contains('editTeacherDetails')) {
                      return const BeamPage(
@@ -278,8 +289,14 @@ class _LandingPageState extends State<LandingPage> {
                     //school detaisl updation
                       '/school-details-updation': (context, state, data)=>
                  const  BeamPage(child:  SchoolUpdateMainScreen(),
-                 title: "School Updation",
+                 title: "School Details Updation",
                     type: BeamPageType.scaleTransition,key: ValueKey('School Updates')),
+                     '/school-details-updation/viewPhoto': (context, state, data){  
+                    final assetLink = state.queryParameters['assetLink'] ?? '';
+                return    BeamPage(child:  Photoviewpage(assetLink: assetLink,),
+                 title: "Gallary Photo",
+                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Gallary photo'));},
+                
                     
                     //live bus updation
                       '/live-bus-operation': (context, state, data)=>
@@ -288,10 +305,18 @@ class _LandingPageState extends State<LandingPage> {
                     type: BeamPageType.scaleTransition,key: ValueKey('Live Bus')),
 
                     //schoolyear reset
-                      '/schoolYear-data-updation': (context, state, data)=>
-                 const  BeamPage(child:  ResetSchoolYearScreen(),
+                      '/schoolYear-data-updation': (context, state, data){
+                         if(state.pathPatternSegments.contains('sectionWiseResetHistry')){
+                    return  BeamPage(child: SectionWiseResetData(),
+                    title: "Select Section Reset Histry",
+                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Section wise Reset'));
+                  }
+                return const  BeamPage(child:  ResetSchoolYearScreen(),
                  title: "Reset School Data",
-                    type: BeamPageType.scaleTransition,key: ValueKey('Reset Year')),
+                    type: BeamPageType.scaleTransition,key: ValueKey('Reset Year'));},
+
+                           
+
                     
                     
               }).call)

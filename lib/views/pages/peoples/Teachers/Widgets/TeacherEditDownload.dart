@@ -80,8 +80,8 @@ class _StudentEditDownloadState extends State<TeacherEditDownload> {
               ),
               Container(
                 width: 300,
-                padding: EdgeInsets.all(20),
-                child: Text(" Thiru Kumaran N R", overflow: TextOverflow.visible,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                padding: const EdgeInsets.all(20),
+                child: const Text(" Thiru Kumaran N R", overflow: TextOverflow.visible,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
              
                  const  SizedBox(
                       height:150,

@@ -89,8 +89,8 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                     ),
                     Container(
                       width: 300,
-                      padding: EdgeInsets.all(20),
-                      child: Text(overflow:TextOverflow.visible ,"Govindhan Gopalan S", style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                      padding: const EdgeInsets.all(20),
+                      child: const Text(overflow:TextOverflow.visible ,"Govindhan Gopalan S", style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [Text(" 10 - A ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black)),],
