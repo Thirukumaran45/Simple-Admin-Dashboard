@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 class Higherofficialcontroller extends GetxController {
 
   final List<Map<String, String>> officialData = List.generate(
-    60,
+    8,
     (index) => {
       'sNo': '${index + 1}',
       'name': 'Higher Official ${index + 1}',

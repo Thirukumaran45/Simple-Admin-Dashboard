@@ -42,7 +42,9 @@ Widget customProfileCard({required String title , required String assetLink,requ
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                
                 Text(
+                overflow: TextOverflow.clip,
                   title,
                   style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),
                 ),

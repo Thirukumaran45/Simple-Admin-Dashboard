@@ -43,191 +43,169 @@ Higherofficialcontroller controller = Get.find();
     });
   }
 
+Widget customFilterBox  ( { required String label, required Function(String)?  onfunction })
+{
+  return  SizedBox(
+              width: 150,
+              child: TextField(
+                decoration:  InputDecoration(
+                  labelText: label,
+                  labelStyle:const TextStyle(color: Colors.black) ,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreenColors),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreenColors),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreenColors),
+                  ),
+                ),
+                onChanged:onfunction
+              ),
+            );
+} 
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 30,
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center, 
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-      customIconNavigation(context, '/manage-higher-official'),
-            
-            const
-            Text(" Filter by : ",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-            SizedBox(
-              width: 150,
-              child: TextField(
-                decoration:  InputDecoration(
-                  labelText: 'Search by Name',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    name = value;
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              width: 150,
-              child: TextField(
-                decoration:  InputDecoration(
-                  labelText: 'Search by Phone',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    phoneNumber = value;
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              width: 150,
-              child: TextField(
-                decoration:  InputDecoration(
-                  labelText: 'Search by Email',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    emailAddress = value;
-                  });
-                },
-              ),
-            ),
-            customIconTextButton(Colors.blue,
-                icon: Icons.search, onPressed: applyFilters, text: "Search"),
-            customIconTextButton(primaryGreenColors,
-                icon: Icons.download_sharp,
-                onPressed: applyFilters,
-                text: "Download"),
-          ],
-        ),
-        const SizedBox(height: 30),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(5),
-              width: double.infinity,
-              child: DataTable(
-                columns: const [
-                  DataColumn(
-                      label: Text(
-                    'S.No',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  )),
-                  DataColumn(
-                      label: Text('Name',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16))),
-                
-                  DataColumn(
-                      label: Text('Email Address',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16))),
-                  DataColumn(
-                      label: Text('Phone Number',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16))),   DataColumn(
-                      label: Text('Update',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16))),
-                  DataColumn(
-                      label: Text('Delete',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16))),
-                ],
-                rows: filteredData.map((teacher) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(
-                        teacher['sNo']!,
-                      )),
-                      DataCell(Text(teacher['name']!)),
-                      DataCell(Text(teacher['email']!)),
-                      DataCell(Text(teacher['phone']!)), DataCell(SizedBox(width: 150,
-                        child: ElevatedButton(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 30,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center, 
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+        customIconNavigation(context, '/manage-higher-official'),
+              
+              const
+              Text(" Filter by : ",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+             customFilterBox(label: 'Search by name', onfunction:(value) {
+                    setState(() {
+                      name = value;
+                    });
+                     applyFilters();
+                  }, ),
+              customFilterBox(label: "Search by Phone.No", onfunction:  (value) {
+                    setState(() {
+                      phoneNumber = value;
+                    });
+                     applyFilters();
+                  },),
+             customFilterBox(label: "Search by Email", onfunction: (value) {
+                    setState(() {
+                      emailAddress = value;
+                    });
+                     applyFilters();
+                  },),
+              customIconTextButton(Colors.blue,
+                  icon: Icons.search, onPressed: applyFilters, text: "Search"),
+              customIconTextButton(primaryGreenColors,
+                  icon: Icons.download_sharp,
+                  onPressed: applyFilters,
+                  text: "Download"),
+            ],
+          ),
+          const SizedBox(height: 30),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                width: double.infinity,
+                child: DataTable(
+                  columns: const [
+                    DataColumn(
+                        label: Text(
+                      'S.No',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    )),
+                    DataColumn(
+                        label: Text('Name',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16))),
+                  
+                    DataColumn(
+                        label: Text('Email Address',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16))),
+                    DataColumn(
+                        label: Text('Phone Number',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16))),   DataColumn(
+                        label: Text('Update',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16))),
+                    DataColumn(
+                        label: Text('Delete',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16))),
+                  ],
+                  rows: filteredData.map((teacher) {
+                    return DataRow(
+                      cells: [
+                        DataCell(Text(
+                          teacher['sNo']!,
+                        )),
+                        DataCell(Text(teacher['name']!, style: const TextStyle(color: Colors.black))),
+                        DataCell(Text(teacher['email']!, style: const TextStyle(color: Colors.black))),
+                        DataCell(Text(teacher['phone']!, style: const TextStyle(color: Colors.black))), DataCell(SizedBox(width: 150,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                              backgroundColor:
+                                 primaryGreenColors, // Button background color
+                              elevation: 10, // Elevation for shadow effect
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12), // Button padding
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(20), // Rounded corners
+                              ),
+                            ),
+                            onPressed: () {
+                              Beamer.of(context).beamToNamed('/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails');
+      
+                            },
+                            child: const Text('View More',style: TextStyle(fontSize: 14),),
+                          ),
+                        )),
+                        DataCell(SizedBox(width:150 ,
+                          child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.white,
-                            backgroundColor:
-                               primaryGreenColors, // Button background color
-                            elevation: 10, // Elevation for shadow effect
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12), // Button padding
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(20), // Rounded corners
+                              backgroundColor:
+                                  Colors.red, // Button background color
+                              elevation: 10, // Elevation for shadow effect
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12), // Button padding
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(20), // Rounded corners
+                              ),
+                            ),
+                            onPressed: () {
+                              // Implement view more functionality
+                            },
+                            child: const Row(
+                              children: [ Icon(Icons.delete_sharp , color: Colors.white,),
+                                 Text(' Delete',style: TextStyle(fontSize: 14),),
+                              ],
                             ),
                           ),
-                          onPressed: () {
-                            Beamer.of(context).beamToNamed('/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails');
-    
-                          },
-                          child: const Text('View More',style: TextStyle(fontSize: 14),),
-                        ),
-                      )),
-                      DataCell(SizedBox(width:150 ,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor:
-                                Colors.red, // Button background color
-                            elevation: 10, // Elevation for shadow effect
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12), // Button padding
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(20), // Rounded corners
-                            ),
-                          ),
-                          onPressed: () {
-                            // Implement view more functionality
-                          },
-                          child: const Row(
-                            children: [ Icon(Icons.delete_sharp , color: Colors.white,),
-                               Text(' Delete',style: TextStyle(fontSize: 14),),
-                            ],
-                          ),
-                        ),
-                      )),
-                    ],
-                  );
-                }).toList(),
+                        )),
+                      ],
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

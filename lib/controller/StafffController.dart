@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 class StaffController extends GetxController{
   final List<Map<String, String>> staffData = List.generate(
-    60,
+    8,
     (index) => {
       'sNo': '${index + 1}',
       'name': 'Staff ${index + 1}',

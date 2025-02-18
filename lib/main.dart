@@ -1,4 +1,5 @@
 import 'package:admin_pannel/controller/AttendanceController.dart';
+import 'package:admin_pannel/controller/FessController.dart';
 import 'package:admin_pannel/controller/HigherOfficialController.dart';
 import 'package:admin_pannel/controller/StafffController.dart';
 import 'package:admin_pannel/controller/StudentController.dart';
@@ -21,11 +22,12 @@ Get.lazyPut(()=>DashboardController());
     Get.lazyPut(()=>Teachercontroller());
     Get.lazyPut(()=>Higherofficialcontroller());
     Get.lazyPut(()=>StaffController());
+    Get.lazyPut(()=>FeesController());
     Get.lazyPut(()=>AttendanceController());
 }
 class MyApp extends StatelessWidget {
    MyApp({super.key});
-
+ 
 
 final routeDelegate = BeamerDelegate(transitionDelegate: const  NoAnimationTransitionDelegate(),locationBuilder: 
 RoutesLocationBuilder(routes: {

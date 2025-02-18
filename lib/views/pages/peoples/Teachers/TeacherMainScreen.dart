@@ -20,7 +20,7 @@ class TeacherMainScreen extends StatelessWidget {
               children: [
                 customProfileCard(title: "Class Incharger", assetLink: "assets/images/teacher.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/classInchargerDetails');},),
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(title: "View Details", assetLink: "assets/images/teacherpic.jpg", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/viewTeacherDetails');},),
+                customProfileCard(title: "View  Teachers Details", assetLink: "assets/images/teacherpic.jpg", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/viewTeacherDetails');},),
                const SizedBox(width: 50), // Space between the cards
                 customProfileCard(title: "Add Teacher", assetLink: "assets/images/addUser.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/addTeacher'); },),
               ],

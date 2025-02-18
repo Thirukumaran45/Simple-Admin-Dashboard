@@ -54,6 +54,16 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
     });
   }
 
+ List<String> getAllDatesInMonth(String month) {
+    DateTime now = DateTime.now();
+    int daysInMonth = DateTime(now.year, now.month + 1, 0).day; // Get the number of days in the current month
+    List<String> dates = [];
+    for (int i = 1; i <= daysInMonth; i++) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, i));
+      dates.add(formattedDate);
+    }
+    return dates;
+  }
   void toggleAttendance(int index) {
     setState(() {
       filteredData[index]['attendanceStatus'] =
@@ -82,61 +92,23 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
             padding: const EdgeInsets.all(8.0),
             child: customIconNavigation(context, '/attendance/class?classNumber=${widget.classNUmber}')   ),
               const Text("Filter by Options :", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Container(
-                width: 150,
-                decoration: BoxDecoration(
-                  border: Border.all(color: primaryGreenColors, width: 1),
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: Colors.white,
-                ),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-      
-                child: DropdownButton<String>(
-                  borderRadius: BorderRadius.circular(20),
-                  dropdownColor: Colors.white,
-                  hint: const Text('Select Date', style: TextStyle(color: Colors.black)),
-                  value: selectedDate,
-                  items: controler.studentData.map((e) => e['date']).toSet().map((date) {
-                    return DropdownMenuItem(value: date, child: Text(date!));
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDate = value;
-                    });
-                    applyFilters();
-                  },
-                ),
-              ),
-              Container(
-                width: 150,
-                decoration: BoxDecoration(
-                  border: Border.all(color: primaryGreenColors, width: 1),
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: Colors.white,
-                ),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-      
-                child: DropdownButton<String>(
-                  borderRadius: BorderRadius.circular(20),
-                  dropdownColor: Colors.white,
-                  hint: const Text('Select Month', style: TextStyle(color: Colors.black)),
-                  value: selectedMonth,
-                  items: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMonth = value;
-                    });
-                    applyFilters();
-                  },
-                ),
-              ),
+             
+               _buildDropdown('Select Date', selectedDate, getAllDatesInMonth(selectedMonth!), (value) {
+                setState(() => selectedDate = value);
+                applyFilters();
+              }),
+             
+                 // Month Dropdown
+              _buildDropdown('Select Month', selectedMonth, ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], (value) {
+                setState(() => selectedMonth = value);
+                applyFilters();
+              }),
               SizedBox(
                 width: 150,
                 child: TextField(
                   decoration:  InputDecoration(labelText: 'Search Name', 
-                  labelStyle: const TextStyle(color: Colors.black,fontSize: 16),                    border: OutlineInputBorder(
+                  labelStyle: const TextStyle(color: Colors.black,fontSize: 16),   
+                     border: OutlineInputBorder(
                     borderSide: BorderSide(color: primaryGreenColors),
                   ),
                   enabledBorder: OutlineInputBorder(
@@ -249,6 +221,30 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
       ),
     );
   }
+
+  
+  Widget _buildDropdown(String hint, String? value, List<String?> items, ValueChanged<String?> onChanged) {
+    return Container(
+      width: 150,
+      decoration: BoxDecoration(
+        border: Border.all(color: primaryGreenColors, width: 1),
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: DropdownButton<String>(
+        borderRadius: BorderRadius.circular(20),
+        dropdownColor: Colors.white,
+        hint: Text(hint, style: const TextStyle(color: Colors.black)),
+        value: value,
+        items: items.where((e) => e != null).map((date) {
+                    return DropdownMenuItem(value: date, child: Text(date!));
+                  }).toList(),
+        onChanged: onChanged,
+      ),
+    );
+  }
+
 }
 
 
