@@ -65,7 +65,8 @@ class ResetSchoolYearScreen extends StatelessWidget {
                        subtitle("Remainder Chat Histry Reset"),
                        subtitle("School Chat Histry Reset"),
                        subtitle("Exam Publish Histry Reset"),
-                       subtitle("Assigment Histry Reset")
+                       subtitle("Assigment Histry Reset"),
+
                       ],
                     ),
                   

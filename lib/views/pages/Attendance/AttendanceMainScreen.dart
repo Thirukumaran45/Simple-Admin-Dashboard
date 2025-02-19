@@ -28,7 +28,7 @@ class _AttendanceMainScreenState extends State<AttendanceMainScreen> {
           double absentPercentage = 0.3;
           int classNumber = index+1;
           String val = classNumber.toString();
-          return GestureDetector(
+          return InkWell(
             onTap: () {
             Beamer.of(context).beamToNamed('/attendance/class?classNumber=$val');
 

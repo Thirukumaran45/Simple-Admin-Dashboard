@@ -27,7 +27,7 @@ class _LandingPageState extends State<LandingPage> {
            Row(
             children: [
             const   CircleAvatar(
-                radius: 40,
+                radius: 35,
                 backgroundImage: AssetImage("assets/images/splash.png"),
               ),
               const SizedBox(

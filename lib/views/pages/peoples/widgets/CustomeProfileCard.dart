@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-Widget customProfileCard({required String title , required String assetLink,required VoidCallback onpresee}) {
+Widget customProfileCard(bool needSpace, {required String title ,required String assetLink,required VoidCallback onpresee}) {
   return InkWell(
     onTap: onpresee ,
     child: Container(
@@ -29,11 +29,12 @@ Widget customProfileCard({required String title , required String assetLink,requ
                         color: Colors.white,
                         image:  DecorationImage(
                           image: AssetImage(assetLink),
-                          fit: BoxFit.cover,
+                          fit: needSpace?BoxFit.contain: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.white, width: 2),
                       ),
+                    
                     ),
            
                 

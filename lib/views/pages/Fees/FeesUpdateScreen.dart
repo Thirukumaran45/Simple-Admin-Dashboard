@@ -15,12 +15,12 @@ class FeesUpdateScreen extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
-              children: [ customProfileCard(title: "Bank account Data", assetLink: "assets/images/bank.jpg", onpresee: () { Beamer.of(context).beamToNamed('/fees-updation/bankDetails');}),
+              children: [ customProfileCard(true,title: "Bank account Data", assetLink: "assets/images/bank.jpg", onpresee: () { Beamer.of(context).beamToNamed('/fees-updation/bankDetails');}),
                const SizedBox(width: 50), // Space between the cards
              
-                customProfileCard(title: "Fees Transaction Histry", assetLink: "assets/images/feeHistry.jpg", onpresee: () { Beamer.of(context).beamToNamed('/fees-updation/feesTransactionHistry');}),
+                customProfileCard(false,title: "Fees Transaction Histry", assetLink:"assets/images/feeUpdate.jpg", onpresee: () { Beamer.of(context).beamToNamed('/fees-updation/feesTransactionHistry');}),
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(title: "Student Fees Updation", assetLink: "assets/images/feeUpdate.jpg", onpresee: () { Beamer.of(context).beamToNamed('/fees-updation/sectionWiseFeesUpdation'); }),
+                customProfileCard(false,title: "Student Fees Updation", assetLink: "assets/images/feeHistry.jpg", onpresee: () { Beamer.of(context).beamToNamed('/fees-updation/sectionWiseFeesUpdation'); }),
               ],
             ),
           ],

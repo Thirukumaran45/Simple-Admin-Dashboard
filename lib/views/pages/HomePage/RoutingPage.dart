@@ -1,3 +1,4 @@
+import 'package:admin_pannel/views/pages/Bonafied/Bonafied.dart';
 import 'package:admin_pannel/views/pages/Bus/BusUpdateMainScreen.dart';
 import 'package:admin_pannel/views/pages/ExamUpdate/widgets/StudentResult.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/FeesTransactionHistry.dart';
@@ -6,6 +7,8 @@ import 'package:admin_pannel/views/pages/Fees/widget/StudentFeesList.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/BankDetails.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/studentFeesUpdationPage.dart';
 import 'package:admin_pannel/views/pages/HomePage/HomePage.dart';
+import 'package:admin_pannel/views/pages/Time%20Table/SectionWiseTimetable.dart';
+import 'package:admin_pannel/views/pages/Time%20Table/TimeTable.dart';
 import 'package:beamer/beamer.dart';
 import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/SchoolUpdateMainScreen.dart';
 import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/PhotoViewPage.dart';
@@ -223,9 +226,9 @@ Widget routingNameUri({required beamerKey})
                      if (state.pathPatternSegments.contains('editTeacherDetails')) {
                      return const BeamPage(
                       title: " Edit Teacher Details",
-        child: TeacherEditDownload(),
-        type: BeamPageType.slideLeftTransition,
-        key: ValueKey('Edit Teacher Details'),
+                    child: TeacherEditDownload(),
+                        type: BeamPageType.slideLeftTransition,
+                       key: ValueKey('Edit Teacher Details'),
       );
     }
                      return const BeamPage(child:  TeacherDetailsTab(),
@@ -298,7 +301,30 @@ Widget routingNameUri({required beamerKey})
                  title: "Gallary Photo",
                     type: BeamPageType.slideLeftTransition,key: const ValueKey('Gallary photo'));},
                 
-                    
+                      //school-timeTable' bus updation
+                      '/school-timeTable': (context, state, data){
+
+              return   const  BeamPage(child:  Timetable(),
+                 title: "School Time Table",
+                    type: BeamPageType.scaleTransition,key: ValueKey('school time table'));},
+                 
+                    '/school-timeTable/sectionTimetable': (context, state, data){
+                      
+                        final String stuClass = state.queryParameters['class']??'';
+                      final String stuSection = state.queryParameters['section']??'';
+                  return     BeamPage(child:  SectionWiseTimetable(stuClass: stuClass,stuSec: stuSection,),
+                 title: "Class and Section wise Time Table",
+                    type: BeamPageType.scaleTransition,key: ValueKey('time table'));},
+                 
+                        
+
+                   //bonafied' bus updation
+                      '/bonafied': (context, state, data)=>
+                 const  BeamPage(child:  Bonafied(),
+                 title: "Generate Bonafied",
+                    type: BeamPageType.scaleTransition,key: ValueKey('bonafied')),
+                 
+
                     //live bus updation
                       '/live-bus-operation': (context, state, data)=>
                  const  BeamPage(child:  BusUpdateMainScreen(),

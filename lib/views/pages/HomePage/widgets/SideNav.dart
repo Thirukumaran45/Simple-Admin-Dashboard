@@ -56,23 +56,34 @@ late DashboardController dashboardController =Get.find();
     }else if(path.contains('/manage-working-staff'))
     {
       selected=7;
-    }else if(path.contains('/school-details-updation'))
+    }
+    else if(path.contains('/school-timeTable'))
     {
       selected=8;
-    }else if(path.contains('/live-bus-operation'))
+    }
+    else if(path.contains('/school-details-updation'))
     {
       selected=9;
-    }else if(path.contains('/schoolYear-data-updation'))
+    }
+    else if(path.contains('/bonafied'))
     {
       selected=10;
     }
+    else if(path.contains('/live-bus-operation'))
+    {
+      selected=11;
+    }else if(path.contains('/schoolYear-data-updation'))
+    {
+      selected=12;
+    }
+
     return SingleChildScrollView(
     child: Padding(
       padding: const EdgeInsets.all(0.0),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20,20,20,20),
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -106,7 +117,7 @@ late DashboardController dashboardController =Get.find();
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(navItems.length, (index) {
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 0),
                 key: ValueKey(navItems[index]),
                 decoration: BoxDecoration(
                   color: selected == index ? Colors.white :primaryGreenColors, 
@@ -115,7 +126,7 @@ late DashboardController dashboardController =Get.find();
                         bottomLeft: Radius.circular(25),
                       ),
                 ),
-                width: 225.0,
+                width: 248.0,
                 child: Material(
                   color: Colors.transparent,
                   shape: RoundedRectangleBorder(
@@ -134,14 +145,14 @@ late DashboardController dashboardController =Get.find();
                       child: Row(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 18),
+                            padding: const EdgeInsets.only(left: 22),
                             child: Icon(
                               size: 18,
                               navIcons[index],
                               color: selected == index ? Colors.black : Colors.white,
                             ),
                           ),
-                          const SizedBox(width: 20),
+                          const SizedBox(width: 25),
                           Text(
                             navItems[index],
                             style: TextStyle(

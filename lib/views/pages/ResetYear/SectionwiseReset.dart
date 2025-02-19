@@ -7,7 +7,8 @@ class SectionWiseResetData extends StatelessWidget {
     "School Chat History",
     "Remainder Chat History",
     "Exam Publish History",
-    "Assignment History"
+    "Assignment History",
+    "Class Time Table Reset"
   ];
 
    SectionWiseResetData({super.key});
