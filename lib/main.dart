@@ -3,6 +3,7 @@ import 'package:admin_pannel/controller/FessController.dart';
 import 'package:admin_pannel/controller/HigherOfficialController.dart';
 import 'package:admin_pannel/controller/StafffController.dart';
 import 'package:admin_pannel/controller/StudentController.dart';
+import 'package:admin_pannel/controller/StudentListBonafied.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/controller/dashboardController.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
@@ -24,6 +25,7 @@ Get.lazyPut(()=>DashboardController());
     Get.lazyPut(()=>StaffController());
     Get.lazyPut(()=>FeesController());
     Get.lazyPut(()=>AttendanceController());
+    Get.lazyPut(()=>StudentlistBonafiedController());
 }
 class MyApp extends StatelessWidget {
    MyApp({super.key});

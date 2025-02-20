@@ -5,6 +5,31 @@ class BusUpdateMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/location.jpg', // Replace with your image path
+              width: 350, // Adjust size as needed
+              height: 350,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 25),
+            const Text(
+              'Currently, no live bus service is provided !',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

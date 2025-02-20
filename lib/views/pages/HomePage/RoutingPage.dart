@@ -1,4 +1,6 @@
 import 'package:admin_pannel/views/pages/Bonafied/Bonafied.dart';
+import 'package:admin_pannel/views/pages/Bonafied/widget/ClassWiseBonafied.dart';
+import 'package:admin_pannel/views/pages/Bonafied/widget/StudentBonafied.dart';
 import 'package:admin_pannel/views/pages/Bus/BusUpdateMainScreen.dart';
 import 'package:admin_pannel/views/pages/ExamUpdate/widgets/StudentResult.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/FeesTransactionHistry.dart';
@@ -319,10 +321,26 @@ Widget routingNameUri({required beamerKey})
                         
 
                    //bonafied' bus updation
-                      '/bonafied': (context, state, data)=>
-                 const  BeamPage(child:  Bonafied(),
+                      '/bonafied': (context, state, data){
+                        if(state.pathPatternSegments.contains("studentBonafied"))
+                        {
+                        return const  BeamPage(child:  StudentBonafied(),
+                 title: "Student Bonafied Generator",
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('student bonafied'));
+                 
+                        }
+                        else if(state.pathPatternSegments.contains("classWiseBonafied"))
+                        {
+                         return const  BeamPage(child:  ClasswiseBonafied(),
+                 title: "Class and Section wise Bonafied Generator",
+                    type: BeamPageType.scaleTransition,key: ValueKey('class and section wise generator'));
+                 
+                        }
+
+                return const  BeamPage(child:  Bonafied(),
                  title: "Generate Bonafied",
-                    type: BeamPageType.scaleTransition,key: ValueKey('bonafied')),
+                    type: BeamPageType.scaleTransition,key: ValueKey('bonafied'));
+                    },
                  
 
                     //live bus updation

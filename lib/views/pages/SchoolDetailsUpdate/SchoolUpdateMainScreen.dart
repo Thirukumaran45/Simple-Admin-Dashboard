@@ -1,4 +1,5 @@
 
+import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/customfield.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:beamer/beamer.dart';
@@ -99,8 +100,51 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
             _buildPasskeyRow(passkeys.sublist(0, 2)),
             
             
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
             // School Gallery Title with Add Photo Button near it
+               Padding(padding: const EdgeInsets.all(20),
+              child: InkWell(
+                onTap: (){
+                   Beamer.of(context).beamToNamed('/school-details-updation/viewPhoto?assetLink=assets/images/splash.png');
+                          
+                },
+                 child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: primaryYellowShadeColors,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: const  [
+                      BoxShadow(
+                        blurRadius: 10,
+                        color: Colors.grey
+                      )
+                    ]
+                  ),
+
+                  child: const Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "Upload School Logo , Here",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 3,
+                          fontSize: 20
+                        ),
+                      ),
+                      Icon(Icons.arrow_forward,size: 30, color: Colors.black,)
+                    ],
+                  ),
+                 ),
+              )
+              ),
+
+             const SizedBox(
+              height: 20,
+             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -111,93 +155,15 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
                 customIconTextButton(Colors.blue, onPressed: (){}, icon: Icons.upload, text: "Add Photo")
               ],
             ),
-            Container(
-              margin:const  EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: primaryRedShadeColrs,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow:const  [
-                  BoxShadow(
-                    offset: Offset(4, 4),
-                    blurRadius: 5,
-                    color: Colors.black
-                  )
-                ]
-              ),
-            ),
+            
             // Grid Layout for School Photos (scrolls with the page)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-              padding: const EdgeInsets.all(8.0),
-
-                decoration: 
-                BoxDecoration(
-                color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-                  boxShadow:const  [
-
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 10,
-                    )
-                  ]
-                ),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: schoolPhotos.length,
-                  itemBuilder: (context, index) {
-                    return Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: InkWell(
-                            onTap: (){
-                              Beamer.of(context).beamToNamed('/school-details-updation/viewPhoto?assetLink=${schoolPhotos[index]}');
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                image: DecorationImage(
-                                  image: AssetImage(schoolPhotos[index]),
-                                  fit: BoxFit.cover,
-                                ),
-                               boxShadow:const  [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  offset: Offset(2, 2)
-                                )
-                               ]
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          right: 8,
-                          child: customIconTextButton(Colors.red, onPressed: () {
-                            setState(() => schoolPhotos.removeAt(index));
-                          }, icon: Icons.delete, text: "Delete", )
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
+           Customfield(schoolPhotos: schoolPhotos,),
             
             // Load More Button
             Padding(
               padding: const EdgeInsets.all(25),
               child: Center(
-                child: customIconTextButton(primaryGreenColors, onPressed: (){}, icon: Icons.arrow_downward_rounded, text: "Load More")
-              ),
+                child: TextButton(onPressed: (){}, child: const Text("Load more ...", style: TextStyle(color: Colors.blue, fontSize: 20),)) ),
             ),
           ],
         ),

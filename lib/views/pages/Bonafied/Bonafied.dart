@@ -1,3 +1,5 @@
+import 'package:admin_pannel/views/pages/peoples/widgets/CustomeProfileCard.dart';
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class Bonafied extends StatelessWidget {
@@ -5,6 +7,23 @@ class Bonafied extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center( // Center the Column
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
+              children: [
+                customProfileCard(false,title: "Student Bonafied", assetLink: "assets/images/certi_1.png", onpresee: () { Beamer.of(context).beamToNamed('/bonafied/studentBonafied');}),
+               const SizedBox(width: 50), // Space between the cards
+                customProfileCard(false,title: "ClassWise Bonafied", assetLink: "assets/images/certi_2.png", onpresee: () { Beamer.of(context).beamToNamed('/bonafied/classWiseBonafied'); }),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ); 
   }
 }
