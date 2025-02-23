@@ -1,6 +1,6 @@
+import 'package:admin_pannel/provider/customNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class Customfield extends StatefulWidget {
@@ -63,7 +63,8 @@ class _CustomfieldState extends State<Customfield> {
                           padding: const EdgeInsets.all(5),
                           child: InkWell(
                             onTap: (){
-                              Beamer.of(context).beamToNamed('/school-details-updation/viewPhoto?assetLink=${widget.schoolPhotos[index]}');
+                              customNvigation(context, '/school-details-updation/viewPhoto?assetLink=${widget.schoolPhotos[index]}');
+                              
                             },
                             child: Container(
                               decoration: BoxDecoration(

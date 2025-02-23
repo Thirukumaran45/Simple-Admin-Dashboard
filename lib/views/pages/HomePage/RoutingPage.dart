@@ -316,7 +316,7 @@ Widget routingNameUri({required beamerKey})
                       final String stuSection = state.queryParameters['section']??'';
                   return     BeamPage(child:  SectionWiseTimetable(stuClass: stuClass,stuSec: stuSection,),
                  title: "Class and Section wise Time Table",
-                    type: BeamPageType.scaleTransition,key: ValueKey('time table'));},
+                    type: BeamPageType.scaleTransition,key: const ValueKey('time table'));},
                  
                         
 

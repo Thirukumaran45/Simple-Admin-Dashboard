@@ -1,5 +1,5 @@
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeProfileCard.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class HigherOfficialMainScreen extends StatelessWidget {
@@ -16,9 +16,9 @@ class HigherOfficialMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(false,title: "View Officials Details", assetLink: "assets/images/officials.jpg", onpresee: () { Beamer.of(context).beamToNamed('/manage-higher-official/viewHigherOfficailDetails');}),
+                customProfileCard(false,title: "View Officials Details", assetLink: "assets/images/officials.jpg", onpresee: ()=> customNvigation(context, '/manage-higher-official/viewHigherOfficailDetails')), 
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "Add Higher Officials", assetLink: "assets/images/addUser.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-higher-official/addOfficial'); }),
+                customProfileCard(false,title: "Add Higher Officials", assetLink: "assets/images/addUser.png", onpresee: () => customNvigation(context, '/manage-higher-official/addOfficial') ),
               ],
             ),
           ],

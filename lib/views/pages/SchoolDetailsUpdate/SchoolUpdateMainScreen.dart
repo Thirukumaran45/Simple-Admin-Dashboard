@@ -1,8 +1,9 @@
 
+import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/customfield.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class SchoolUpdateMainScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
   void initState() {
     super.initState();
     // Adding individual listeners for each passkey field
-       schoolNameController = TextEditingController(text: "ABC Public School");
+       schoolNameController = TextEditingController(text: schoolName);
    schoolCityController = TextEditingController(text: "axi12hdjhie83bjbr9823ubbdjb");
    studentPassKeyController = TextEditingController(text: "Student");
    teacherPassKeyController = TextEditingController(text: "Teacher");
@@ -67,7 +68,7 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
     // School Name and City listeners (unchanged)
     schoolNameController.addListener(() {
       setState(() {
-        isNameChanged = schoolNameController.text != "ABC Public School";
+        isNameChanged = schoolNameController.text != schoolName;
       });
     });
     schoolCityController.addListener(() {
@@ -105,8 +106,8 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
                Padding(padding: const EdgeInsets.all(20),
               child: InkWell(
                 onTap: (){
-                   Beamer.of(context).beamToNamed('/school-details-updation/viewPhoto?assetLink=assets/images/splash.png');
-                          
+                  customNvigation(context, '/school-details-updation/viewPhoto?assetLink=assets/images/splash.png');
+                         
                 },
                  child: Container(
                   width: MediaQuery.of(context).size.width,

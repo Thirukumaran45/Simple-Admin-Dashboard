@@ -1,4 +1,5 @@
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfBonafied.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -75,12 +76,16 @@ class _StudentBonafiedState extends State<StudentBonafied> {
                         const Text("Out Passing Academic Student",style: TextStyle(color: Colors.black,fontSize: 16)),
                         const Spacer(),
             
-                       customIconTextButton(Colors.red, onPressed: (){
+                       customIconTextButton(Colors.red, onPressed: ()async{
                          if (_formKey.currentState!.validate()) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Bonafide Certificate Data Collected")),
+                                  const SnackBar(content: Text("Bonafide Certificate Downloaded Succesfully")),
                                 );
                               }
+                          await PdfApi.openPdf(academicYear:yearController.text,fileName: nameController.text, studentName: nameController.text,parentName: parentNameController.text, studentClass: classController.text, dob: dobController.text, academicType:selectedOption );
+
+                           
+
                        }, icon: Icons.generating_tokens, text: "Generate Certificate")
                       ],
                     ),
@@ -116,19 +121,20 @@ class _StudentBonafiedState extends State<StudentBonafied> {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: TextFormField(
+        style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black),
         controller: controller,
         decoration: InputDecoration(
         
           labelText: label,
            labelStyle:const TextStyle(color: Colors.red) ,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
                   ),
         ),
         validator: (value) {
@@ -144,23 +150,24 @@ Widget _buildDateField(TextEditingController controller, String label) {
   return Padding(
     padding: const EdgeInsets.all(10),
     child: TextFormField(
+        style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black),
       onTap: () =>dateTheme(controller),
       controller: controller,
       readOnly: true,
       decoration: InputDecoration(
         labelText: label,
          labelStyle:const TextStyle(color: Colors.red) ,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
                   ),
         suffixIcon: IconButton(
-          icon:  Icon(Icons.calendar_today, color: primaryGreenColors),
+          icon:  const Icon(Icons.calendar_today, color: Colors.black),
 
           onPressed: () =>dateTheme(controller)
         ),

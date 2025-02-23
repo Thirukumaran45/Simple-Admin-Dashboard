@@ -1,6 +1,6 @@
 
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class Photoviewpage extends StatelessWidget {
@@ -17,7 +17,7 @@ class Photoviewpage extends StatelessWidget {
         leading: Row(
           children: [
             IconButton(
-              onPressed: () => Beamer.of(context).beamToNamed('/school-details-updation'),
+              onPressed: () =>customNvigation(context, '/school-details-updation'),
               icon: const Icon(Icons.arrow_back),
             ),
             const Spacer(),

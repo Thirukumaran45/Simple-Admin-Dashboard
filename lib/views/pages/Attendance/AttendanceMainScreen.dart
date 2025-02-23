@@ -1,5 +1,5 @@
 
-import 'package:beamer/beamer.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -30,7 +30,7 @@ class _AttendanceMainScreenState extends State<AttendanceMainScreen> {
           String val = classNumber.toString();
           return InkWell(
             onTap: () {
-            Beamer.of(context).beamToNamed('/attendance/class?classNumber=$val');
+              customNvigation(context, '/attendance/class?classNumber=$val');
 
             
 

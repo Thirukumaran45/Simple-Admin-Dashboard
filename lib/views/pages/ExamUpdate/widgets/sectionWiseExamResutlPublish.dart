@@ -1,6 +1,5 @@
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class SectionWiseexamResutlPublish extends StatelessWidget {
@@ -90,7 +89,8 @@ class SectionWiseexamResutlPublish extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal:  18),
         child: InkWell(
           onTap: (){
-            Beamer.of(context).beamToNamed('/exam-Details-updation/sectionWiseResultPublishment/studentOverview?examName=$examName&class=$stuClass&section=${sections[index]}');
+            customNvigation(context, '/exam-Details-updation/sectionWiseResultPublishment/studentOverview?examName=$examName&class=$stuClass&section=${sections[index]}');
+           
           },
           child: Container(
             height: 100,

@@ -1,8 +1,7 @@
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:beamer/beamer.dart';
 class StudentFeesList extends StatefulWidget {
   const StudentFeesList({super.key, required this.stuClass, required this.section});
 
@@ -116,7 +115,7 @@ class _StudentFeesListState extends State<StudentFeesList> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               ),
                               onPressed: () {
-                                Beamer.of(context).beamToNamed('/fees-updation/sectionWiseFeesUpdation/studentFeesList/studentFeesUpdation?classNumber=${widget.stuClass}&sectionName=${widget.section}&name=${student['name']!}');
+                                customNvigation(context, '/fees-updation/sectionWiseFeesUpdation/studentFeesList/studentFeesUpdation?classNumber=${widget.stuClass}&sectionName=${widget.section}&name=${student['name']!}');
                               },
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,

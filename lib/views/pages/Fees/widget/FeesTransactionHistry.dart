@@ -1,6 +1,8 @@
 
 import 'package:admin_pannel/controller/FessController.dart';
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfFees/PdfSingleScript.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfFees/PdfTotalFeesScript.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +51,7 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
     int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
     List<String> dates = ["All"];
     for (int i = 1; i <= daysInMonth; i++) {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, i));
+      String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime(now.year, now.month, i));
       dates.add(formattedDate);
     }
     return dates;
@@ -95,7 +97,10 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
                 ),
               ),
               customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
-              customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed: applyFilters, text: "Download"),
+              customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:(){
+               PdfTotalFeesScript.openPdf(fileName: 'Transaction Histry $selectedDate',transactions: filteredData);
+               applyFilters();
+              } , text: "Download"),
             ],
           ),
           const SizedBox(height: 30),
@@ -137,12 +142,16 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
        const   Text("Download Fees Recipt", style:  TextStyle(fontSize: 15, color: Colors.black)),
-          TextButton(onPressed: (){}, child: Row(
+          TextButton(onPressed: (){
+
+           PdfSinglescript.openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A",);
+
+          }, child: Row(
             children: [Icon(Icons.download, color: primaryGreenColors,size: 25,), Text(" Download", style:  TextStyle(fontSize: 16, color:primaryGreenColors, fontWeight: FontWeight.bold) ,)],
           ))
          ],
       ),
-    ),
+    ), 
                           ],
                           ),
                         ),

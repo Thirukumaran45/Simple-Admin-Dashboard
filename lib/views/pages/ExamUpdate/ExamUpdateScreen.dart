@@ -1,5 +1,5 @@
 
-import 'package:beamer/beamer.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:flutter/material.dart';
 
 class ExamUpdateScreen extends StatelessWidget {
@@ -53,8 +53,8 @@ class ExamUpdateScreen extends StatelessWidget {
   Widget _buildExamCard(String title, Color color,BuildContext context) {
     return InkWell(
       onTap: (){
-        Beamer.of(context).beamToNamed('/exam-Details-updation/sectionWiseResultPublishment?examName=$title');
-      },
+        customNvigation(context, '/exam-Details-updation/sectionWiseResultPublishment?examName=$title');
+        },
       child: Container(
         margin: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(

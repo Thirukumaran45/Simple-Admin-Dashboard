@@ -1,6 +1,7 @@
 
 import 'package:admin_pannel/controller/AttendanceController.dart';
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfAttendance.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
     super.initState();
     DateTime now = DateTime.now();
     selectedMonth = DateFormat('MMMM').format(now);
-    selectedDate = DateFormat('yyyy-MM-dd').format(now);
+    selectedDate = DateFormat('dd-MM-yyyy').format(now);
     filteredData = List.from(controler.studentData);
     applyFilters();
   }
@@ -59,7 +60,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
     int daysInMonth = DateTime(now.year, now.month + 1, 0).day; // Get the number of days in the current month
     List<String> dates = [];
     for (int i = 1; i <= daysInMonth; i++) {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, i));
+      String formattedDate = DateFormat('dd-MM-yyy').format(DateTime(now.year, now.month, i));
       dates.add(formattedDate);
     }
     return dates;
@@ -126,7 +127,10 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
                 ),
               ),
               customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
-              customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed: applyFilters, text: "Download"),
+              customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:(){
+                PdfAttendance.openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,studentClass: widget.classNUmber,students:filteredData,teacherName: "Kishore"  );
+                applyFilters();
+              } , text: "Download"),
             ],
           ),
           const SizedBox(height: 30),

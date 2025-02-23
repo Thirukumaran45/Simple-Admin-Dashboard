@@ -1,6 +1,5 @@
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 class SectionWiseFeesUpdation extends StatelessWidget {
@@ -112,7 +111,7 @@ class SectionWiseFeesUpdation extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal:  18),
         child: InkWell(
           onTap: (){
-            Beamer.of(context).beamToNamed('/fees-updation/sectionWiseFeesUpdation/studentFeesList?classNumber=$stuClass&sectionName=${sections[index]}');
+            customNvigation(context, '/fees-updation/sectionWiseFeesUpdation/studentFeesList?classNumber=$stuClass&sectionName=${sections[index]}');
           },
           child: Container(
              decoration: 

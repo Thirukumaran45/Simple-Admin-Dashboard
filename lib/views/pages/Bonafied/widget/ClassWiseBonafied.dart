@@ -1,5 +1,6 @@
 import 'package:admin_pannel/controller/StudentListBonafied.dart';
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfBonafied.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -172,7 +173,7 @@ Container(
       style: TextStyle(color: Colors.black),
     ),
     value: selectedTypevalue, // Ensure this value is in the dropdown items
-    items: ["Current Academic Student", "Out Passing Student"]
+    items: ["Current Academic", "Out Passing Student"]
         .map((e) => DropdownMenuItem(
             value: e,
             child: Text(
@@ -186,7 +187,6 @@ Container(
       setState(() {
         selectedTypevalue = value;
       });
-      print("Selected: $value");
       applyFilters();
     },
   ),
@@ -270,8 +270,13 @@ Container(
                                     BorderRadius.circular(20), // Rounded corners
                               ),
                             ),
-                            onPressed: () {
-                          
+                            onPressed: () async{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("Bonafide Certificate Downloaded Succesfully")),
+                                );
+                           await PdfApi.openPdf(academicYear:'2024',fileName:student['name']!, studentName: student['name']!,parentName:'Raman.K', studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', academicType:selectedTypevalue! );
+
+
                             },
                             child: const Text('Download Bonafied', style: TextStyle(
                               fontSize: 14

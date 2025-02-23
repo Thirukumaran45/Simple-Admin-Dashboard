@@ -1,8 +1,7 @@
 import 'package:admin_pannel/controller/StudentController.dart';
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -236,8 +235,8 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                               ),
                             ),
                             onPressed: () {
-                           Beamer.of(context).beamToNamed('/manage-student/viewStudentDetails/editStudentDetails');
-      
+                              customNvigation(context, '/manage-student/viewStudentDetails/editStudentDetails');
+                          
                             },
                             child: const Text('View More', style: TextStyle(
                               fontSize: 14

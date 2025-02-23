@@ -1,6 +1,5 @@
 
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
-import 'package:beamer/beamer.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'dart:math';
@@ -68,8 +67,8 @@ class _ClassPageState extends State<ClassPage> {
 
     return InkWell(
       onTap: () {
-        Beamer.of(context).beamToNamed( '/attendance/class/section?classNumber=${widget.classNumber}&sectionName=${title[widget.classNumber]}');
-      
+        customNvigation(context, '/attendance/class/section?classNumber=${widget.classNumber}&sectionName=${title[widget.classNumber]}');
+    
 
       },
       child: Padding(

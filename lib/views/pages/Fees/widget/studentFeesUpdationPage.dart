@@ -1,7 +1,8 @@
 import 'package:admin_pannel/controller/FessController.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfFees/PdfSingleScript.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:admin_pannel/views/widget/CustomNavigation.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:get/get.dart';
 
 class StudentFeesUpdationpage extends StatefulWidget {
@@ -133,6 +134,7 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
                         ],
                       ),
                       const Spacer(),
+                      
                       ElevatedButton(
                         onPressed: saveFees,
                         style: ElevatedButton.styleFrom(
@@ -150,6 +152,7 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
                         ),
                         
                       ),
+                     
                    
                     ],
                   ),
@@ -205,12 +208,7 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
                 ],
               ),
             ),
-            // Right Side (Empty)
-            // Expanded(flex: 1, child: Container(
-            //   height: MediaQuery.of(context).size.height,
-            //   width: 5,
-            //   color: Colors.black,
-            // )),
+         
              Expanded( 
               flex: 1,
             child: filteredData.isEmpty
@@ -248,7 +246,11 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
        const   Text("Download Fees Recipt", style:  TextStyle(fontSize: 15, color: Colors.black)),
-          TextButton(onPressed: (){}, child: Row(
+          TextButton(onPressed: (){
+
+             PdfSinglescript.openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A",);
+
+          }, child: Row(
             children: [Icon(Icons.download, color: primaryGreenColors,size: 25,), Text(" Download", style:  TextStyle(fontSize: 16, color:primaryGreenColors, fontWeight: FontWeight.bold) ,)],
           ))
          ],

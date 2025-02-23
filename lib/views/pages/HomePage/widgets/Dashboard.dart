@@ -1,3 +1,4 @@
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/views/pages/HomePage/RoutingPage.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/SideNav.dart';
 import 'package:beamer/beamer.dart';
@@ -33,8 +34,7 @@ class _LandingPageState extends State<LandingPage> {
               const SizedBox(
                 width: 10,
               ),
-              Text(
-                " Nag Vidhyashram CBSE School , Poonamalle , Chennai - 600056 ",
+              Text( schoolName,
                 style: TextStyle(
                   color: Colors.grey[950],
                   fontSize: 18,

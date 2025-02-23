@@ -1,4 +1,4 @@
-import 'package:beamer/beamer.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:flutter/material.dart';
 
 class ResetSchoolYearScreen extends StatelessWidget {
@@ -15,7 +15,7 @@ class ResetSchoolYearScreen extends StatelessWidget {
           children: List.generate(12, (index) {
             return InkWell(
               onTap: (){
-                Beamer.of(context).beamToNamed('/schoolYear-data-updation/sectionWiseResetHistry');
+                customNvigation(context, '/schoolYear-data-updation/sectionWiseResetHistry');
               },
               child: Container(
                 margin: const EdgeInsets.only(bottom: 16),

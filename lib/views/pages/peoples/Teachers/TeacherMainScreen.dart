@@ -1,5 +1,5 @@
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeProfileCard.dart';
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 
 
@@ -18,11 +18,11 @@ class TeacherMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard( true,title: "Class Incharger Details", assetLink: "assets/images/teacher.jpg", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/classInchargerDetails');},),
+                customProfileCard( true,title: "Class Incharger Details", assetLink: "assets/images/teacher.jpg", onpresee: () => customNvigation(context, '/manage-teacher/classInchargerDetails')), 
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "View  Teachers Details", assetLink: "assets/images/teacherpic.jpg", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/viewTeacherDetails');},),
+                customProfileCard(false,title: "View  Teachers Details", assetLink: "assets/images/teacherpic.jpg", onpresee: () => customNvigation(context, '/manage-teacher/viewTeacherDetails')),
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "Add Teacher", assetLink: "assets/images/addUser.png", onpresee: () { Beamer.of(context).beamToNamed('/manage-teacher/addTeacher'); },),
+                customProfileCard(false,title: "Add Teacher", assetLink: "assets/images/addUser.png", onpresee: ()=> customNvigation(context, '/manage-teacher/addTeacher')), 
               ],
             ),
           ],
