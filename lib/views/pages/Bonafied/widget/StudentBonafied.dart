@@ -1,3 +1,4 @@
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfBonafied.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
@@ -78,14 +79,11 @@ class _StudentBonafiedState extends State<StudentBonafied> {
             
                        customIconTextButton(Colors.red, onPressed: ()async{
                          if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Bonafide Certificate Downloaded Succesfully")),
-                                );
+                        await customSnackbar(context: context, text: "Donloaded Succesfully");
                               }
                           await PdfApi.openPdf(academicYear:yearController.text,fileName: nameController.text, studentName: nameController.text,parentName: parentNameController.text, studentClass: classController.text, dob: dobController.text, academicType:selectedOption );
 
-                           
-
+                            
                        }, icon: Icons.generating_tokens, text: "Generate Certificate")
                       ],
                     ),
@@ -185,9 +183,9 @@ Widget _buildDateField(TextEditingController controller, String label) {
 void dateTheme(TextEditingController controller,)async {
             DateTime? pickedDate = await showDatePicker(
               context: context,
-              initialDate: DateTime.now(),
+              initialDate: todayDateTime,
               firstDate: DateTime(1900),
-              lastDate: DateTime.now(),
+              lastDate: todayDateTime,
               builder: (context, child) {
                 return Theme(
                   data: Theme.of(context).copyWith(

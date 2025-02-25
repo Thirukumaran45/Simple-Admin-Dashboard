@@ -3,11 +3,10 @@ import 'package:admin_pannel/constant.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-class PdfTotalFeesScript {
-  
-  static Future<Uint8List> generateFeesTransactionSheet({
+class PdfTotalTeacherDetails {
+  static Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
-    required List<Map<String, dynamic>> transactions,
+    required List<Map<String, dynamic>> teacher,
   }) async {
     final font1 = await fontBold();
     final font2 = await fontMedium();
@@ -17,36 +16,50 @@ class PdfTotalFeesScript {
       pw.MultiPage(
         build: (context) => <pw.Widget>[
           pw.Center(
-            child:pw.Header(
-              child:  pw.Center(child: pw.Text(
-              "Fees Transaction Histry",
-              style: pw.TextStyle(font: font1, fontSize: 24),
-            ),)
-            )
+            child: pw.Header(
+              child: pw.Center(
+                child: pw.Text(
+                  "Teacher Details",
+                  style: pw.TextStyle(font: font1, fontSize: 24),
+                ),
+              ),
+            ),
           ),
           pw.SizedBox(height: 15),
           pw.TableHelper.fromTextArray(
             border: pw.TableBorder.all(),
-            headers: ["Name", "Class & Section", "Total Amount", "Paid Amount", "Balance Amount", "Payment Date"],
-            data: transactions.map((transaction) {
+            headers: [
+              "S.No",
+              "Name",
+              "Degree",
+              "email",
+              "Date of Birth",
+              "Employment Date",
+              "Mobile Number"
+            ],
+            data: teacher.asMap().entries.map((entry) {
+              final index = entry.key + 1;
+              final teacher = entry.value;
               return [
-                transaction['studentName'],
-                "${transaction['class']} ${transaction['section']}",
-                transaction['totalAmount'].toString(),
-                transaction['paidAmount'].toString(),
-                transaction['balanceAmount'].toString(),
-                transaction['paymentDate'],
+                index.toString(),
+                teacher['name'],
+                teacher['degree'],
+                teacher['email'],
+                "12-12-2002",
+                '05-02-2025',
+                teacher['phone'],
               ];
             }).toList(),
             headerStyle: pw.TextStyle(font: font1, fontSize: 11),
             cellStyle: pw.TextStyle(font: font2, fontSize: 10),
             columnWidths: {
-              0: const pw.FlexColumnWidth(2),
+              0: const pw.FlexColumnWidth(1),
               1: const pw.FlexColumnWidth(2),
               2: const pw.FlexColumnWidth(2),
               3: const pw.FlexColumnWidth(2),
               4: const pw.FlexColumnWidth(2),
               5: const pw.FlexColumnWidth(2),
+              6: const pw.FlexColumnWidth(2),
             },
           ),
         ],
@@ -57,11 +70,11 @@ class PdfTotalFeesScript {
 
   static Future<void> openPdf({
     required String fileName,
-    required List<Map<String, dynamic>> transactions,
+    required List<Map<String, dynamic>> teacher,
   }) async {
-    final pdfData = await generateFeesTransactionSheet(
+    final pdfData = await generateStudentDetailsSheet(
       fileName: fileName,
-      transactions: transactions,
+      teacher: teacher,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");
   }

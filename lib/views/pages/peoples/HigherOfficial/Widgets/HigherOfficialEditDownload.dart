@@ -1,5 +1,7 @@
 
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfOfficial/pdfOfficialDetails.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -186,10 +188,10 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                           // Download Button
                           SizedBox(height: 50,
                             child: ElevatedButton(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Download functionality")));
-                              },
+                              onPressed: ()async {
+                                 await  customSnackbar(context: context, text: "Downloaded Succesfully");
+                                   await PdfOfficialsDetails.openPdf(fileName: firstNameController.text, nameController: firstNameController, employmentDate: emplymentDateController, degreeController: degreeController, phoneNumberController: phoneNumberController, dateOfBirthController: dobController, emailController: emailController, homeAddressController: homeAddressController, yearofExperience: experienceController);
+                                },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: primaryGreenColors,
@@ -232,6 +234,7 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
           Expanded(
             flex: 7,
             child: TextField(cursorColor :primaryGreenColors,
+            style: const TextStyle( color: Colors.black),
               controller: controller,
               decoration: InputDecoration(border:  OutlineInputBorder( 
                 

@@ -1,5 +1,7 @@
 
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfStudent/PdfStudentDetails.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,8 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
   late TextEditingController studentNameController;
   late TextEditingController fatherNameController;
   late TextEditingController motherNameController;
-  late TextEditingController phoneNumberController;
+  late TextEditingController fatherPhoneNumberController;
+  late TextEditingController motherPhoneNumberController;
   late TextEditingController emailController;
   late TextEditingController homeAddressController;
   late TextEditingController dobController;
@@ -35,9 +38,10 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
     studentNameController = TextEditingController(text: "John Doe");
     fatherNameController = TextEditingController(text: "Mark Doe");
     motherNameController = TextEditingController(text: "Saroja samanikka");
-    phoneNumberController = TextEditingController(text: "9876543210");
+    fatherPhoneNumberController = TextEditingController(text: "9876543210");
+    motherPhoneNumberController = TextEditingController(text: "7876543210");
     emailController = TextEditingController(text: "johndoe@example.com");
-    homeAddressController = TextEditingController(text: "123 Main St, Apartment 456, City, Country");
+    homeAddressController = TextEditingController(text: "No.60 , ambal city , queen victoriya road, poonamallee, chennai -600056");
     dobController = TextEditingController(text: "01/01/2000");
     studentClassController = TextEditingController(text: "10th Grade");
     sectionController = TextEditingController(text: "A");
@@ -147,9 +151,11 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                             const SizedBox(height: 5),
                             _buildCustomRow("Father's Name", fatherNameController),
                             const SizedBox(height: 5),
-                            _buildCustomRow("Mother's Name", motherNameController),
+                            _buildCustomRow("Father Phone.No", fatherPhoneNumberController),
                             const SizedBox(height: 5),
-                            _buildCustomRow("Phone Number", phoneNumberController),
+                            _buildCustomRow("Mother's Name", motherNameController),
+                            const SizedBox(height: 5), 
+                            _buildCustomRow("Mother Phone.No", motherPhoneNumberController),
                             const SizedBox(height: 5),
                             _buildCustomRow("Date of Birth", dobController),
                             const SizedBox(height: 5),
@@ -196,10 +202,11 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                           // Download Button
                           SizedBox(height: 50,
                             child: ElevatedButton(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Download functionality")));
-                              },
+                              onPressed: ()async {
+                              await   customSnackbar(context: context, text: "Donloaded Succesfully");
+                               await  PdfStudentDetails.openPdf(fileName: studentNameController.text, nameController: studentNameController, classController: studentClassController, sectionController: sectionController, fatherNameController: fatherNameController, fatherPhoneController: fatherPhoneNumberController, motherNameController: motherNameController, motherPhoneController: motherPhoneNumberController, dateOfBirthController: dobController, emailController: emailController, homeAddressController: homeAddressController,
+                                 totalFeesController: totalFeesController, pendingFeesController: pendingFeesController,);
+                                   },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor:primaryGreenColors ,
@@ -242,6 +249,8 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
           Expanded(
             flex: 7,
              child: TextField(cursorColor :primaryGreenColors,
+              style: const TextStyle( color: Colors.black),
+           
               controller: controller,
               decoration: InputDecoration(border:  OutlineInputBorder( 
                 

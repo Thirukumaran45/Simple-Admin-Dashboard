@@ -7,7 +7,8 @@ class StaffController extends GetxController{
       'sNo': '${index + 1}',
       'name': 'Staff ${index + 1}',
       'email': 'Staff${index + 1}@school.com',
-      'phone': '987654321${index % 10}'
+      'phone': '987654321${index % 10}',
+      'address': 'No.60, amabal city , poonamallee, chennai-600056'
     },
   );
 }

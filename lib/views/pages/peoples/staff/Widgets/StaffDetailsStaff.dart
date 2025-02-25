@@ -1,6 +1,8 @@
 
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/StafffController.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfStaff/pdfTotalstaffDetails.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +105,10 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                   icon: Icons.search, onPressed: applyFilters, text: "Search"),
               customIconTextButton(primaryGreenColors,
                   icon: Icons.download_sharp,
-                  onPressed: applyFilters,
+                  onPressed:() async{
+                    await customSnackbar(context: context, text: "Downloaded Succesfully");
+                    await PdfTotalStaffDetails.openPdf(fileName: "Working Staff Details ${todayDateTime}",staff: filteredData);
+                    applyFilters();},
                   text: "Download"),
             ],
           ),

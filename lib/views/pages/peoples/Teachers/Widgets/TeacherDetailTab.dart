@@ -1,6 +1,8 @@
 
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/pdfTeacher/pdfTotalTeacherDetails.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -105,7 +107,14 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                   icon: Icons.search, onPressed: applyFilters, text: "Search"),
               customIconTextButton(primaryGreenColors,
                   icon: Icons.download_sharp,
-                  onPressed: applyFilters,
+                  onPressed: ()async{
+                    applyFilters();
+                   await  customSnackbar(context: context, text: "Donloaded Succesfully");
+
+                   await  PdfTotalTeacherDetails.openPdf(fileName: "Teacher Details - ${todayDateTime}",teacher: filteredData);
+                    
+                    
+                    },
                   text: "Download"),
             ],
           ),

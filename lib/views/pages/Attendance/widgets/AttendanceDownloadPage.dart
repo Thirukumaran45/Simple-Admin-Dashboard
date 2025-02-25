@@ -1,4 +1,5 @@
 
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/AttendanceController.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfAttendance.dart';
@@ -35,7 +36,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   @override
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
+    DateTime now = todayDateTime;
     selectedMonth = DateFormat('MMMM').format(now);
     selectedDate = DateFormat('dd-MM-yyyy').format(now);
     filteredData = List.from(controler.studentData);
@@ -56,7 +57,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   }
 
  List<String> getAllDatesInMonth(String month) {
-    DateTime now = DateTime.now();
+    DateTime now = todayDateTime;
     int daysInMonth = DateTime(now.year, now.month + 1, 0).day; // Get the number of days in the current month
     List<String> dates = [];
     for (int i = 1; i <= daysInMonth; i++) {
@@ -127,8 +128,9 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
                 ),
               ),
               customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
-              customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:(){
-                PdfAttendance.openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,studentClass: widget.classNUmber,students:filteredData,teacherName: "Kishore"  );
+              customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:()async{
+                  await customSnackbar(context: context, text: "Donloaded Succesfully");
+                await PdfAttendance.openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,studentClass: widget.classNUmber,students:filteredData,teacherName: "Kishore"  );
                 applyFilters();
               } , text: "Download"),
             ],

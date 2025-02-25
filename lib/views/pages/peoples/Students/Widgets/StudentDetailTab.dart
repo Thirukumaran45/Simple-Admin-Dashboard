@@ -1,5 +1,7 @@
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/provider/pdfApi/PdfStudent/PdfTotalStudent.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,7 @@ class _StudentDetailsTabState extends State<StudentDetailsTab> {
   String name = '';
 
   final StudentController controler = Get.find();
-
+ 
   List<Map<String, String>> filteredData = [];
  
   @override
@@ -170,7 +172,13 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                   icon: Icons.search, onPressed: applyFilters, text: "Search"),
               customIconTextButton(primaryGreenColors,
                   icon: Icons.download_sharp,
-                  onPressed: applyFilters,
+                  onPressed: ()async{
+                    applyFilters();
+                  await   customSnackbar(context: context, text: "Donloaded Succesfully");
+                    
+                   await  PdfTotalStudentDetails.openPdf(fileName:"Total Student Details - (${DateTime.now()})", students: filteredData);
+                    
+                  },
                   text: "Download"),
             ],
           ),

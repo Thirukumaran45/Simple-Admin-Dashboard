@@ -1,3 +1,4 @@
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/StudentListBonafied.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfBonafied.dart';
@@ -271,11 +272,9 @@ Container(
                               ),
                             ),
                             onPressed: () async{
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Bonafide Certificate Downloaded Succesfully")),
-                                );
+                            await customSnackbar(context: context, text: "Donloaded Succesfully");
                            await PdfApi.openPdf(academicYear:'2024',fileName:student['name']!, studentName: student['name']!,parentName:'Raman.K', studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', academicType:selectedTypevalue! );
-
+                           
 
                             },
                             child: const Text('Download Bonafied', style: TextStyle(
