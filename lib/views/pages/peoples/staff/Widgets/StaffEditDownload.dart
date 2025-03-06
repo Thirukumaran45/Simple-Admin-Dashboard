@@ -2,6 +2,7 @@
 import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfStaff/pdfStaffDetails.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -146,14 +147,13 @@ class _StudentEditDownloadState extends State<StaffEditDownload> {
                       SizedBox(
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async{
                             if (isEdited) {
+                     await showCustomDialog(context, "Staff details Updated Succecfully");
+
                               setState(() {
                                 isEdited = false;
-                              });
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Changes saved successfully")));
-                            }
+                              });   }
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,

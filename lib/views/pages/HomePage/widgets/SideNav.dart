@@ -14,7 +14,7 @@ class SideNav extends StatefulWidget {
 }
 
 class _sideNavState extends State<SideNav> {
-  int selected = -1;
+  int selected = 0;
 late DashboardController dashboardController =Get.find();
 
  List<String> navItems =[];

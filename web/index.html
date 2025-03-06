@@ -33,6 +33,23 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script>
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+const firebaseConfig = {
+  apiKey: "AIzaSyAVzXALmSlUAxNGUN5A2VlJdZ4ELnggq6I",
+  authDomain: "school-5b7f0.firebaseapp.com",
+  projectId: "school-5b7f0",
+  storageBucket: "school-5b7f0.appspot.com",
+  messagingSenderId: "715457715420",
+  appId: "1:715457715420:web:b1964a0d8843034d0ea819",
+  measurementId: "G-F3DTE1J7M0"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

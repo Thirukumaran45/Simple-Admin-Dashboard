@@ -1,5 +1,6 @@
 import 'package:admin_pannel/controller/FessController.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfFees/PdfSingleScript.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
@@ -136,27 +137,42 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
                       const Spacer(),
                       
                       ElevatedButton(
-                        onPressed: saveFees,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isSaveButtonVisible ? Colors.red : Colors.grey,
-                          foregroundColor: Colors.white,
-                          elevation: 10,
-                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.file_upload, color: Colors.white, size: 20),
-                            Text("Save", style: TextStyle(color: Colors.white, fontSize: 16)),
-                          ],
-                        ),
+                        onPressed: ()
+                      async  {
+                        
+                       isSaveButtonVisible? await showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
+                          saveFees();
+                        },
+                       style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor:
+                                  isSaveButtonVisible?Colors.blue:Colors.grey, // Button background color
+                              elevation: 10, // Elevation for shadow effect
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12), // Button padding
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(20), // Rounded corners
+                              ),
+                            ),
+                        child: const Padding(
+                    padding:  EdgeInsets.symmetric(vertical:  8.0),
+                    child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.upload_sharp , color: Colors.white,size: 20,),
+                         SizedBox(width: 5,),
+                         Text("Save", style: TextStyle(color: Colors.white, fontSize: 17,)),
+                      ],
+                    ),
+                  ),
                         
                       ),
                      
                    
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 60),
                   for (int i = 0; i < 6; i++)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),

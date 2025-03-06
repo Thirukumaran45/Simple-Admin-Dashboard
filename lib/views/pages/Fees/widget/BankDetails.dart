@@ -1,4 +1,5 @@
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
@@ -78,23 +79,32 @@ class _BankAccountDetailsState extends State<BankAccountDetails> {
               SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: isChanged ?saveChanges:(){},
-                  style: ElevatedButton.styleFrom(
-                    
-                    foregroundColor: Colors.white,
-                    backgroundColor:isChanged? Colors.blue :Colors.grey,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(Icons.upload_sharp , color: Colors.white,size: 20,),
-                      ),
-                       Text("Save", style: TextStyle(color: Colors.white, fontSize: 17,)),
-                    ],
+                  onPressed: ()async{
+                    isChanged? await showCustomDialog(context, "Bank Transaction details Updated Succecfully"):null;
+                    saveChanges();
+                  },
+                 style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: isChanged?Colors.blue:Colors.grey,
+                                   // Button background color
+                              elevation: 10, // Elevation for shadow effect
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12), // Button padding
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(20), // Rounded corners
+                              ),
+                            ),
+                  child: const Padding(
+                    padding:  EdgeInsets.symmetric(vertical:  8.0),
+                    child:  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.upload_sharp , color: Colors.white,size: 20,),
+                         SizedBox(width: 5,),
+                         Text("Save", style: TextStyle(color: Colors.white, fontSize: 17,)),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -42,24 +42,19 @@ import 'package:admin_pannel/views/pages/ExamUpdate/widgets/StudentExamResultPub
 import 'package:admin_pannel/views/pages/ExamUpdate/widgets/sectionWiseExamResutlPublish.dart';
 import 'package:admin_pannel/views/pages/Fees/FeesUpdateScreen.dart';
 
-Widget routingNameUri({required beamerKey})
+Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
 {
-  
-  return   Container(
+ return   Container(
               clipBehavior: Clip.antiAlias,
               margin: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
             
                 borderRadius: BorderRadius.circular(10.0)
               ),
-              child: Beamer(key: beamerKey,routerDelegate: BeamerDelegate(locationBuilder:RoutesLocationBuilder(routes: {
+              child:    Beamer(key: beamerKey,routerDelegate: BeamerDelegate(
+                  // updateParent: false, // Prevents resetting on refresh
+                locationBuilder:RoutesLocationBuilder(routes: {
                
-            
-                '/*': (context, state, data)=>
-                 const  BeamPage(child:  SizedBox(),
-                 title: "NAG- Admin Pannel",
-                    type: BeamPageType.scaleTransition,key: ValueKey('initial')),
-            
                 '/home': (context, state, data)=>
                  const  BeamPage(child:  Homepage(),
                  title: 'Dashborad',
@@ -69,7 +64,7 @@ Widget routingNameUri({required beamerKey})
                    '/attendance': (context, state, data) => const BeamPage(
                     title: 'School Attendance',
                     type: BeamPageType.scaleTransition,
-            child: AttendanceMainScreen(),
+            child: AttendanceMainScreen(), 
           ),
 
       '/attendance/class': (context, state, data) {

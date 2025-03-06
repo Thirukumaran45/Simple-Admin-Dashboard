@@ -111,7 +111,7 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                     applyFilters();
                    await  customSnackbar(context: context, text: "Donloaded Succesfully");
 
-                   await  PdfTotalTeacherDetails.openPdf(fileName: "Teacher Details - ${todayDateTime}",teacher: filteredData);
+                   await  PdfTotalTeacherDetails.openPdf(fileName: "Teacher Details - $todayDateTime",teacher: filteredData);
                     
                     
                     },

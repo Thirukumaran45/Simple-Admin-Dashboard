@@ -1,4 +1,5 @@
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:flutter/material.dart';
 
 class ResetSchoolYearScreen extends StatelessWidget {
@@ -50,7 +51,9 @@ class ResetSchoolYearScreen extends StatelessWidget {
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white
                           ),
-                          onPressed: (){}, child: const Row(
+                          onPressed: (){
+                            showCustomDialog(context, "Data as been Reseted");
+                          }, child: const Row(
                           children: [
                             Icon(Icons.restart_alt,color: Colors.white,size: 20,),
                             Text("Reset Data", style: TextStyle( fontWeight: FontWeight.w500),)

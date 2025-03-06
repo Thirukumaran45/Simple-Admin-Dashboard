@@ -36,7 +36,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   @override
   void initState() {
     super.initState();
-    DateTime now = todayDateTime;
+    DateTime now = DateTime.now();
     selectedMonth = DateFormat('MMMM').format(now);
     selectedDate = DateFormat('dd-MM-yyyy').format(now);
     filteredData = List.from(controler.studentData);
@@ -57,7 +57,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   }
 
  List<String> getAllDatesInMonth(String month) {
-    DateTime now = todayDateTime;
+    DateTime now = DateTime.now();
     int daysInMonth = DateTime(now.year, now.month + 1, 0).day; // Get the number of days in the current month
     List<String> dates = [];
     for (int i = 1; i <= daysInMonth; i++) {

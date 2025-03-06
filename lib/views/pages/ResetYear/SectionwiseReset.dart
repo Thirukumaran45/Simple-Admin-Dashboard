@@ -1,4 +1,5 @@
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:flutter/material.dart';
 
 class SectionWiseResetData extends StatelessWidget {
@@ -70,7 +71,10 @@ class SectionWiseResetData extends StatelessWidget {
                                 backgroundColor: Colors.red
                                 ,foregroundColor: Colors.white
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                            showCustomDialog(context, "Data as been Reseted");
+
+                              },
                               child: const Text('Reset Histry'),
                             ),
                           );

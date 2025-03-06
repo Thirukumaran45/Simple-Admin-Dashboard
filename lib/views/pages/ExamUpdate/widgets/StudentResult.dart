@@ -1,4 +1,5 @@
  import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
@@ -205,7 +206,8 @@ class _StudentResultState extends State<StudentResult> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async{
+                            _isEdited?await showCustomDialog(context, "Student Exam Result Published "):null;
                             setState(() {
                               _isEdited = false;
                             });

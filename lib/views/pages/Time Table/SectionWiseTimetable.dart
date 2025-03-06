@@ -1,4 +1,5 @@
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -106,7 +107,9 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
               height: 40,
               width: 140,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  isChanged?showCustomDialog(context, "Time Table as been Updated"):null;
+                },
                 style: ElevatedButton.styleFrom(
                                 backgroundColor: isChanged?Colors.blue:Colors.grey,
                                 foregroundColor: Colors.white,
