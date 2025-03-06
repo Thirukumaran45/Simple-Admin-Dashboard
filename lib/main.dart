@@ -8,6 +8,7 @@ import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/controller/StudentListBonafied.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/controller/dashboardController.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,47 +50,29 @@ Get.lazyPut(()=>DashboardController());
     Get.lazyPut(()=>StudentlistBonafiedController());
     Get.lazyPut(()=>FirebaseCollectionVariable());
 }
+
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final  rootDelegate = BeamerDelegate(
-    transitionDelegate: const NoAnimationTransitionDelegate(),
-    // updateParent: false, // Prevents resetting on refresh
-        initialPath: '/',
-    locationBuilder: RoutesLocationBuilder(routes: {
-      '/': (context, state, data) =>  BeamPage(
-            child: AuthWrapper(),
-            title: 'School Web Page Login',
-            type: BeamPageType.noTransition,
-            key:const ValueKey("web page"),
-          ),
-      '/home': (context, state, data) => const BeamPage(
-            child: AuthGuard(),
-            title: 'Dashboard',
-            type: BeamPageType.scaleTransition,
-            key:  ValueKey('Home'),
-          ),
-      '/adminLogin': (context, state, data) => const BeamPage(
-            child: LoginPage(),
-            title: 'Admin Login',
-            type: BeamPageType.slideRightTransition,
-            key: ValueKey("admin login"),
-          ),
-    }).call,
-  );
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      routerDelegate: BeamerDelegate(
+        initialPath: '/',
+        locationBuilder: RoutesLocationBuilder(
+          routes: {
+            '/': (context, state, data) => const AuthWrapper(), // Check auth state
+            '/adminLogin': (context, state, data) => const LoginPage(),
+            '/home': (context, state, data) => const AuthGuard(child: LandingPage()),
+          },
+        ).call,
+      ),
       routeInformationParser: BeamerParser(),
-      routerDelegate: rootDelegate,
     );
   }
 }
-
-
 class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -101,9 +84,9 @@ class AuthWrapper extends StatelessWidget {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (snapshot.hasData) {
-            Beamer.of(context).beamToNamed('/home'); // Navigate to Home
+            customNvigation(context, '/home');
           } else {
-            Beamer.of(context).beamToNamed('/adminLogin'); // Navigate to Login
+            customNvigation(context, '/adminLogin');
           }
         });
 
@@ -114,16 +97,19 @@ class AuthWrapper extends StatelessWidget {
 }
 
 
+
+
+// ✅ Auth Guard: Redirects unauthorized users to login
 class AuthGuard extends StatelessWidget {
- 
-  const AuthGuard({super.key});
+  final Widget child;
+  const AuthGuard({required this.child});
 
   @override
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser == null) {
       Beamer.of(context).beamToNamed('/adminLogin');
-      return const SizedBox(); // Prevents unauthorized access
+      return SizedBox(); // Prevents unauthorized access
     }
-    return const LandingPage();
+    return child;
   }
 }

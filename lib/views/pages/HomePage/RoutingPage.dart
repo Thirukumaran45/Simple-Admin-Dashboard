@@ -59,7 +59,7 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                  const  BeamPage(child:  Homepage(),
                  title: 'Dashborad',
                     type: BeamPageType.scaleTransition,key: ValueKey('Home')),
-
+               
                     // Attendance
                    '/attendance': (context, state, data) => const BeamPage(
                     title: 'School Attendance',
