@@ -8,20 +8,17 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ListView(
+      body: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width / 8),
-        children: const [
-           SizedBox(height: 80,),
-          Body()
-        ],
+       child:const Body() ,
       ),
     );
   }
 }
+
 
 
 class Body extends StatefulWidget {
@@ -32,6 +29,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  
   bool isObsecure = true;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -56,49 +54,53 @@ class _BodyState extends State<Body> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(
-          width: 360,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Sign In to \n Admin Role',
-                style: TextStyle(
-                  fontSize: 45,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text.rich(
-                TextSpan(
-                  text: "The admin role ensures seamless management of users, data, and operations, creating a smarter and more efficient ",
-                  style: const TextStyle(
-                    letterSpacing: 1,
-                    color: Colors.black54,
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 65.0),
+          child: SizedBox(
+            
+            width: 360,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Sign In to \n Admin Role',
+                  style: TextStyle(
+                    fontSize: 45,
                     fontWeight: FontWeight.bold,
                   ),
-                  children: [
-                    TextSpan(
-                      text: "Education System",
-                      style: TextStyle(
-                        letterSpacing: 1,
-                        color: primaryGreenColors,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Image.asset(
-                'images/illustration-2.png',
-                width: 300,
-              ),
-            ],
+                const SizedBox(
+                  height: 30,
+                ),
+                Text.rich(
+                  TextSpan(
+                    text: "The admin role ensures seamless management of users, data, and operations, creating a smarter and more efficient ",
+                    style: const TextStyle(
+                      letterSpacing: 1,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "Education System",
+                        style: TextStyle(
+                          letterSpacing: 1,
+                          color: primaryGreenColors,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Image.asset(
+                  'images/illustration-2.png',
+                  width: 300,
+                ),
+              ],
+            ),
           ),
         ),
         Image.asset(

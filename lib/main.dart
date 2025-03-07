@@ -51,7 +51,6 @@ Get.lazyPut(()=>DashboardController());
     Get.lazyPut(()=>StudentlistBonafiedController());
     Get.lazyPut(()=>FirebaseCollectionVariable());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -60,17 +59,28 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerDelegate: BeamerDelegate(
-        initialPath: '/initialPage',  // Ensure home is the entry point
-       notFoundPage:   const  BeamPage(child:  LandingPage(),
-                 title: 'Dashborad',
-                    type: BeamPageType.scaleTransition,key: ValueKey('landingpage')),
-               
+        initialPath: '/initialPage', // Start from InitialPage
+        notFoundPage: const BeamPage(
+          child: LandingPage(),
+          title: 'Dashboard',
+          type: BeamPageType.noTransition,
+          key: ValueKey('landingpage'),
+        ),
         locationBuilder: RoutesLocationBuilder(
           routes: {
-            '/initialPage': (context, state, data) => const InitialPage(), // New initial page
-           
-            '/': (context, state, data) => const AuthWrapper(), // Check auth state
-            '/adminLogin': (context, state, data) => const LoginPage(),
+            '/initialPage': (context, state, data) => const BeamPage(
+          child: MainPage(),
+          title: 'NAG CBSE ERP',
+          type: BeamPageType.scaleTransition,
+          key: ValueKey('school web page'),
+        ),
+            '/auth': (context, state, data) => const AuthWrapper(), // Handles login check
+            '/adminLogin': (context, state, data) => const BeamPage(
+          child: LoginPage(),
+          title: 'Admin Login',
+          type: BeamPageType.slideRightTransition,
+          key: ValueKey('admin-login'),
+        ),
             '/home': (context, state, data) => const AuthGuard(child: LandingPage()),
           },
         ).call,
@@ -79,6 +89,9 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -105,10 +118,6 @@ class AuthWrapper extends StatelessWidget {
   }
 }
 
-
-
-
-// ✅ Auth Guard: Redirects unauthorized users to login
 class AuthGuard extends StatelessWidget {
   final Widget child;
   const AuthGuard({super.key, required this.child});
@@ -117,7 +126,7 @@ class AuthGuard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser == null) {
       Beamer.of(context).beamToNamed('/adminLogin');
-      return const SizedBox(); // Prevents unauthorized access
+      return const SizedBox(); 
     }
     
     return child;
