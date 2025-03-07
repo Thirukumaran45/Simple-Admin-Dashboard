@@ -1,5 +1,6 @@
 import 'dart:developer' show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import 'package:admin_pannel/SchoolWebSite/websiteMainScreen.dart';
 import 'package:admin_pannel/controller/AttendanceController.dart';
 import 'package:admin_pannel/controller/FessController.dart';
 import 'package:admin_pannel/controller/HigherOfficialController.dart';
@@ -36,7 +37,7 @@ void main() async {
     log("Error initializing Firebase: $e");
   }
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future<void> initializeGetController()async{
@@ -52,14 +53,22 @@ Get.lazyPut(()=>DashboardController());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerDelegate: BeamerDelegate(
-        initialPath: '/',
+        initialPath: '/initialPage',  // Ensure home is the entry point
+       notFoundPage:   const  BeamPage(child:  LandingPage(),
+                 title: 'Dashborad',
+                    type: BeamPageType.scaleTransition,key: ValueKey('landingpage')),
+               
         locationBuilder: RoutesLocationBuilder(
           routes: {
+            '/initialPage': (context, state, data) => const InitialPage(), // New initial page
+           
             '/': (context, state, data) => const AuthWrapper(), // Check auth state
             '/adminLogin': (context, state, data) => const LoginPage(),
             '/home': (context, state, data) => const AuthGuard(child: LandingPage()),
@@ -102,14 +111,16 @@ class AuthWrapper extends StatelessWidget {
 // ✅ Auth Guard: Redirects unauthorized users to login
 class AuthGuard extends StatelessWidget {
   final Widget child;
-  const AuthGuard({required this.child});
+  const AuthGuard({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser == null) {
       Beamer.of(context).beamToNamed('/adminLogin');
-      return SizedBox(); // Prevents unauthorized access
+      return const SizedBox(); // Prevents unauthorized access
     }
+    
     return child;
   }
 }
+

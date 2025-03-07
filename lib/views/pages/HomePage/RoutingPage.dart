@@ -52,7 +52,6 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                 borderRadius: BorderRadius.circular(10.0)
               ),
               child:    Beamer(key: beamerKey,routerDelegate: BeamerDelegate(
-                  // updateParent: false, // Prevents resetting on refresh
                 locationBuilder:RoutesLocationBuilder(routes: {
                
                 '/home': (context, state, data)=>

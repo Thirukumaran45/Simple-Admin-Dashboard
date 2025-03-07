@@ -12,7 +12,7 @@ class InitialPage extends StatefulWidget {
 class _InitialPageState extends State<InitialPage> {
   void _handleNavigation(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final destination = user != null ? '/home' : '/adminLogin';
+    final destination =  '/adminLogin';
     Beamer.of(context).beamToNamed(destination,);
   }
 
