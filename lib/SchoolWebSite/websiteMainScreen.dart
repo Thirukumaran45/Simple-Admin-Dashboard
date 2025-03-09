@@ -1,5 +1,5 @@
 
-import 'package:beamer/beamer.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:flutter/material.dart';
 
 class InitialPage extends StatelessWidget {
@@ -12,7 +12,7 @@ class InitialPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Beamer.of(context).beamToNamed('/auth'); // Navigate to auth check
+            customNvigation(context, "/adminLogin");
           },
           child: const Text('Go to Admin Panel'),
         ),

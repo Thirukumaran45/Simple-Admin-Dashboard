@@ -10,6 +10,7 @@ import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/controller/StudentListBonafied.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/controller/dashboardController.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -59,24 +60,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-AuthWrapper authController = const AuthWrapper();
+AuthWrapper authController =  AuthWrapper();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerDelegate: BeamerDelegate(
-        initialPath: '/initialPage', // Start from InitialPage
+        initialPath: '/', // Start from InitialPage
        notFoundPage:authController.langingAuthPage(),
         locationBuilder: RoutesLocationBuilder(
           routes: {
-            '/initialPage': (context, state, data) => const BeamPage(
+            '/': (context, state, data) => const BeamPage(
           child: InitialPage(),
           title: 'NAG CBSE ERP',
           type: BeamPageType.scaleTransition,
           key: ValueKey('school web page'),
         ),
-            '/auth': (context, state, data) => const AuthWrapper(), // Handles login check
+            '/auth': (context, state, data) => authController.authNavigate(), // Handles login check
             '/adminLogin': (context, state, data) => const BeamPage(
           child: LoginPage(),
           title: 'Admin Login',
@@ -102,7 +103,7 @@ class AuthGuard extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (FirebaseAuth.instance.currentUser == null) {
-        Beamer.of(context).beamToNamed('/adminLogin');
+        customNvigation(context, '/adminLogin');
       }
     });
 

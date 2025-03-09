@@ -1,5 +1,6 @@
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/RoutingPage.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/SideNav.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
@@ -62,9 +63,7 @@ class _LandingPageState extends State<LandingPage> {
         context: context, text: "Are you sure about to Sign-Out ?");
     
     if (valu == true) {
-       Beamer.of(context).beamToReplacementNamed(
-        '/adminLogin',
-       );
+      customPopNavigation(context, '/adminLogin');
       await collectionVar.signOutAccount(); // Sign out the user
       
      

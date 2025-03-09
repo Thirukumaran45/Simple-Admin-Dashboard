@@ -29,6 +29,11 @@ class AuthWrapper extends StatelessWidget {
   key: const ValueKey('notfound'),
 );
   }
+
+  void authNavigate()
+  {
+    
+  }
   
   @override
   Widget build(BuildContext context) {
