@@ -13,7 +13,12 @@ class LoginPage extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width / 8),
-       child:const Body() ,
+       child:const Column(
+         children:  [
+          SizedBox(height: 60,),
+           Body(),
+         ],
+       ) ,
       ),
     );
   }

@@ -62,13 +62,12 @@ class _LandingPageState extends State<LandingPage> {
         context: context, text: "Are you sure about to Sign-Out ?");
     
     if (valu == true) {
+       Beamer.of(context).beamToReplacementNamed(
+        '/adminLogin',
+       );
       await collectionVar.signOutAccount(); // Sign out the user
       
-      Beamer.of(context).beamToNamed(
-        '/adminLogin',
-        // replaceRouteInformation: true, // Properly replaces the current page
-        // stacked: false, // Clears the navigation stack to prevent conflicts
-      );
+     
     }
 
             },

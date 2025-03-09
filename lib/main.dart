@@ -1,6 +1,7 @@
 import 'dart:developer' show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/SchoolWebSite/websiteMainScreen.dart';
+import 'package:admin_pannel/SchoolWebSite/widgets/userAuthRedirect.dart';
 import 'package:admin_pannel/controller/AttendanceController.dart';
 import 'package:admin_pannel/controller/FessController.dart';
 import 'package:admin_pannel/controller/HigherOfficialController.dart';
@@ -9,7 +10,6 @@ import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/controller/StudentListBonafied.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/controller/dashboardController.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -51,8 +51,15 @@ Get.lazyPut(()=>DashboardController());
     Get.lazyPut(()=>StudentlistBonafiedController());
     Get.lazyPut(()=>FirebaseCollectionVariable());
 }
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+AuthWrapper authController = const AuthWrapper();
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +67,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routerDelegate: BeamerDelegate(
         initialPath: '/initialPage', // Start from InitialPage
-        notFoundPage: const BeamPage(
-          child: LandingPage(),
-          title: 'Dashboard',
-          type: BeamPageType.noTransition,
-          key: ValueKey('landingpage'),
-        ),
+       notFoundPage:authController.langingAuthPage(),
         locationBuilder: RoutesLocationBuilder(
           routes: {
             '/initialPage': (context, state, data) => const BeamPage(
-          child: MainPage(),
+          child: InitialPage(),
           title: 'NAG CBSE ERP',
           type: BeamPageType.scaleTransition,
           key: ValueKey('school web page'),
@@ -92,44 +94,20 @@ class MyApp extends StatelessWidget {
 
 
 
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator()); // Loading state
-        }
-
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (snapshot.hasData) {
-            customNvigation(context, '/home');
-          } else {
-            customNvigation(context, '/adminLogin');
-          }
-        });
-
-        return const SizedBox(); // Avoid unnecessary UI rendering
-      },
-    );
-  }
-}
-
 class AuthGuard extends StatelessWidget {
   final Widget child;
   const AuthGuard({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    if (FirebaseAuth.instance.currentUser == null) {
-      Beamer.of(context).beamToNamed('/adminLogin');
-      return const SizedBox(); 
-    }
-    
-    return child;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (FirebaseAuth.instance.currentUser == null) {
+        Beamer.of(context).beamToNamed('/adminLogin');
+      }
+    });
+
+    return FirebaseAuth.instance.currentUser == null ? const SizedBox() : child;
   }
 }
+
 

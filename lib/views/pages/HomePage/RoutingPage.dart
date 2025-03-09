@@ -68,9 +68,9 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
 
       '/attendance/class': (context, state, data) {
 
-  final classNumber = state.queryParameters['classNumber'] ?? '';
+            final classNumber = state.queryParameters['classNumber'] ?? '';
 
-  return BeamPage(
+      return BeamPage(
     title: 'Class - $classNumber',
     child: ClassPage(classNumber: classNumber),
     type: BeamPageType.slideRightTransition,
