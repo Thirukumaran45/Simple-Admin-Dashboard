@@ -92,42 +92,30 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
 },
 
                   // fees updation
-                  '/fees-updation': (context, state, data){
-                  if(state.pathPatternSegments.contains('feesTransactionHistry'))
-                  {
-                  return  const  BeamPage(child:  Feestransactionhistry(),
-                 title: 'Fees Transaction Histry',
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('Fees Transaction histry'));
-                  }
-
-                  else if(state.pathPatternSegments.contains('sectionWiseFeesUpdation'))
-                   {
-                     
-                   return  const  BeamPage(child:  SectionWiseFeesUpdation(),
-                 title: 'Class and Section Selection for Fee Update',
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('Sectionwise student fees update'));
-                 
-                   }
-               return  const  BeamPage(child:  FeesUpdateScreen(),
+                    '/fees-updation': (context, state, data)=>
+                const  BeamPage(child:  FeesUpdateScreen(),
                  title: 'Fees Updation',
-                    type: BeamPageType.scaleTransition,key: ValueKey('Fees Update'));},
+                    type: BeamPageType.scaleTransition,key: ValueKey('Fees Update')),
 
+                   '/fees-updation/feesTransactionHistry' : (context,data,state)=>
+                    const  BeamPage(child:  Feestransactionhistry(),
+                 title: 'Fees Transaction Histry',
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('Fees Transaction histry')),
+                 
+                  '/fees-updation/sectionWiseFeesUpdation': (context,state,data)=>
+                   const  BeamPage(child:  SectionWiseFeesUpdation(),
+                 title: 'Class and Section Selection for Fee Update',
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('Sectionwise student fees update')),
+               
               "/fees-updation/sectionWiseFeesUpdation/studentFeesList" :(context, state,data){
-               
-               
-
                  final classNumber = state.queryParameters['classNumber'] ?? '';
                  final sectionName = state.queryParameters['sectionName'] ?? '';
                   return    BeamPage(child:  StudentFeesList(stuClass: classNumber,section: sectionName,),
                  title: 'Student Fees List',
                     type: BeamPageType.slideLeftTransition,key: const ValueKey('student fees list'));
               },
-                  
-
-
-                '/fees-updation/sectionWiseFeesUpdation/studentFeesList/studentFeesUpdation': (context, state, data){
-                        final String stuName = state.queryParameters['name']??'';
-
+              '/fees-updation/sectionWiseFeesUpdation/studentFeesList/studentFeesUpdation': (context, state, data){
+                final String stuName = state.queryParameters['name']??'';
                  final classNumber = state.queryParameters['classNumber'] ?? '';
                  final sectionName = state.queryParameters['sectionName'] ?? '';
                 return   BeamPage(child:  StudentFeesUpdationpage( stuName: stuName,stuClass:  classNumber,stuSec: sectionName),
@@ -135,9 +123,7 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                     type: BeamPageType.slideLeftTransition,key:const ValueKey('Student Fees Updation'));},
                    
                    '/fees-updation/bankDetails':(context, state, data){
-                        
-
-                return  const BeamPage(child:  BankAccountDetails(),
+                 return  const BeamPage(child:  BankAccountDetails(),
                  title: 'Bank Account Details Detials',
                     type: BeamPageType.slideRightTransition,key: ValueKey('Bank account details Updation'));},
 
@@ -174,118 +160,96 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                        return   BeamPage(child: StudentResult(stuname: name, stuClass: stuClass,stuSec: stuSection,examName: examName ,) ,
                        title: 'Upload the Exam Result',
                     type: BeamPageType.slideLeftTransition,key:const  ValueKey('publish student result'));
-                 
-                     },
+                  },
+
                     //student management
-                      '/manage-student': (context, state, data){
-                  if(state.pathPatternSegments.contains('addStudent')){
-                    return const BeamPage(child: AddStudentTab(),
-                    title: 'Add Student',
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('Add Student'));
-                  }
-                 else if (state.pathPatternSegments.contains('viewStudentDetails')) {
-                    if (state.pathPatternSegments.contains('editStudentDetails')) {
-                     return const BeamPage(
-                      title: 'Edit Student Details',
-        child: StudentEditDownload(),
-        type: BeamPageType.slideLeftTransition,
-        key: ValueKey('Edit Student Details'),
-      );
-    }
-    return const BeamPage(
-      child: StudentDetailsTab(),
-      title: "View Student Details",
-      type: BeamPageType.slideLeftTransition,
-      key: ValueKey('View Student Details'),
-    );
-    }
-                 return const BeamPage(child:  StudentMainScreen(),
+                    '/manage-student':(context,state,data)=>
+                    const BeamPage(child:  StudentMainScreen(),
                  title: "Manage Students",
-                    type: BeamPageType.scaleTransition,key: ValueKey('Manage Student'));},
-                  
-                  
-                    //teacher management
-                      '/manage-teacher': (context, state, data){
-                  if(state.pathPatternSegments.contains('addTeacher')){
-                    return const BeamPage(child: AddTeacherTab(),
-                    title: "Add Teacher",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('Add Teacher'));
-                  }
-                  else if(state.pathPatternSegments.contains('classInchargerDetails'))
-                  {
-                    return const BeamPage(child: ClassInchargerDetails(),
-                    title: "Class and Section wise Incharger Name",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('class Incharger'));
-                  
-                  }
-                  else if(state.pathPatternSegments.contains('viewTeacherDetails')){
-                     if (state.pathPatternSegments.contains('editTeacherDetails')) {
-                     return const BeamPage(
-                      title: " Edit Teacher Details",
-                    child: TeacherEditDownload(),
-                        type: BeamPageType.slideLeftTransition,
-                       key: ValueKey('Edit Teacher Details'),
-      );
-    }
-                     return const BeamPage(child:  TeacherDetailsTab(),
-                     title: 'View Teacher Details',
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('View Teacher Details'));
+                    type: BeamPageType.scaleTransition,key: ValueKey('Manage Student')),
+
+                    '/manage-student/addStudent':(context,data,state)=>
+                    const BeamPage(child: AddStudentTab(),
+                    title: 'Add Student',
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('Add Student')),
+
+                    '/manage-student/viewStudentDetails':(context,data,state)=>
+                    const BeamPage(child: StudentDetailsTab(), title: "View Student Details",
+                    type: BeamPageType.slideLeftTransition, key: ValueKey('View Student Details'),),
+                    
+                    '/manage-student/viewStudentDetails/editStudentDetails':(context,data,state)=>
+                     const BeamPage( title: 'Edit Student Details', child: StudentEditDownload(),
+                        type: BeamPageType.slideLeftTransition, key: ValueKey('Edit Student Details'),),
+
+                    
                  
-                  } 
-                 return const BeamPage(child:  TeacherMainScreen(),
-                 title: "Manage Teachers",
-                    type: BeamPageType.scaleTransition,key: ValueKey('Manage Teacher'));},
+                    //teacher management
+                    '/manage-teacher':(context,state,data)=>
+                     const BeamPage(child:  TeacherMainScreen(),
+                 title: "Manage Teachers", type: BeamPageType.scaleTransition,key: ValueKey('Manage Teacher')),
+ 
+                     '/manage-teacher/addTeacher':(context,state,data)=>
+                     const BeamPage(child: AddTeacherTab(),title: "Add Teacher",
+                     type: BeamPageType.slideLeftTransition,key: ValueKey('Add Teacher')),
+
+                    '/manage-teacher/classInchargerDetails':(context,state,data)=>
+                    const BeamPage(child: ClassInchargerDetails(),
+                    title: "Class and Section wise Incharger Name",
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('class Incharger')),
+
+                     '/manage-teacher/viewTeacherDetails':(context,data,state)=>
+                       const BeamPage(child:  TeacherDetailsTab(),title: 'View Teacher Details',
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('View Teacher Details')),
+
+                    '/manage-teacher/viewTeacherDetails/editTeacherDetails':(context,data,state)=>
+                    const BeamPage( title: " Edit Teacher Details", child: TeacherEditDownload(),
+                        type: BeamPageType.slideLeftTransition, key: ValueKey('Edit Teacher Details'),),
+
+                    
                     
                     //higher official management
-                      '/manage-higher-official': (context, state, data){
-                  if(state.pathPatternSegments.contains('addOfficial')){
-                    return const BeamPage(child: AddHigherOfficialTab(),
-                    title: "Add Higher Officials",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('Add Official'));
-                  }
-                  else if(state.pathPatternSegments.contains('viewHigherOfficailDetails')){
-                    if (state.pathPatternSegments.contains('editHigherOfficialDetails')) {
-                     return const BeamPage(
-        child:HigherOfficialEditDownload (),
-        title: "Edit Higher Officials",
-        type: BeamPageType.slideLeftTransition,
-        key: ValueKey('Edit Higher Official Details'),
-      );
-    }
-                     return const BeamPage(child:  HigherOfficialDetailsTab(),
+
+                     '/manage-higher-official':(context,state,data)=>
+                     const  BeamPage(child:  HigherOfficialMainScreen(),
+                title: " Manage Higher Official",type: BeamPageType.scaleTransition,
+                key: ValueKey('Manage Officials')),
+
+                '/manage-higher-official/addOfficial':(context,data,state)=>
+                const BeamPage(child: AddHigherOfficialTab(),
+                    title: "Add Higher Officials",type: BeamPageType.slideLeftTransition,
+                    key: ValueKey('Add Official')),
+
+                '/manage-higher-official/viewHigherOfficailDetails':(context,data,state)=>
+                    const BeamPage(child:  HigherOfficialDetailsTab(),
                      title: "View Higher Official Details",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('View Official Details'));
-                 
-                  } 
-                return const  BeamPage(child:  HigherOfficialMainScreen(),
-                title: " Manage Higher Official",
-                    type: BeamPageType.scaleTransition,key: ValueKey('Manage Officials'));},
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('View Official Details')),
+                 '/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails':(context,data,state)=>
+                    const BeamPage( child:HigherOfficialEditDownload (),title: "Edit Higher Officials",
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('Edit Higher Official Details'),),
+    
 
                     //working staff management
-                      '/manage-working-staff': (context, state, data){
-                  if(state.pathPatternSegments.contains('addWorkingStaff')){
-                    return const BeamPage(child: AddStaffTab(),
-                    title: "Add Working Staff",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('Add Staff'));
-                  }
-                  else if(state.pathPatternSegments.contains('viewStaffDetails')){
-                    if (state.pathPatternSegments.contains('editWorkingStaffDetails')) {
-                     return const BeamPage(
-                      title: "Edit Working Staff Details",
-        child: StaffEditDownload(),
-        type: BeamPageType.slideLeftTransition,
-        key: ValueKey('Edit Working Staff Details'),
-      );
-    }
-                     return const BeamPage(child:  StaffDetailsTab(),
-                     title: "View Working Staff Details",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('View Staff Details'));
-                 
-                  } 
-                 return const  BeamPage(child:  StaffMainScreen(),
+                    '/manage-working-staff':(context,data,state)=>
+                    const  BeamPage(child:  StaffMainScreen(),
                  title: "Manage Working Staff",
-                    type: BeamPageType.scaleTransition,key: ValueKey('Manage Staff'));},
+                    type: BeamPageType.scaleTransition,key: ValueKey('Manage Staff')),
 
+                    '/manage-working-staff/addWorkingStaff':(context,state,data)=>
+                    const BeamPage(child: AddStaffTab(),
+                    title: "Add Working Staff",type: BeamPageType.slideLeftTransition,
+                    key: ValueKey('Add Staff')),
+                    
+                    '/manage-working-staff/viewStaffDetails':(context,data,state)=>
+                     const BeamPage(child:  StaffDetailsTab(),
+                     title: "View Working Staff Details",
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('View Staff Details')),
+
+                    '/manage-working-staff/viewStaffDetails/editWorkingStaffDetails':(context,data,state)=>
+                    const BeamPage(
+                      title: "Edit Working Staff Details",child: StaffEditDownload(),
+                      type: BeamPageType.slideLeftTransition, key: ValueKey('Edit Working Staff Details'),),
+
+                    
                     //school detaisl updation
                       '/school-details-updation': (context, state, data)=>
                  const  BeamPage(child:  SchoolUpdateMainScreen(),
@@ -315,26 +279,19 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                         
 
                    //bonafied' bus updation
-                      '/bonafied': (context, state, data){
-                        if(state.pathPatternSegments.contains("studentBonafied"))
-                        {
-                        return const  BeamPage(child:  StudentBonafied(),
-                 title: "Student Bonafied Generator",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('student bonafied'));
-                 
-                        }
-                        else if(state.pathPatternSegments.contains("classWiseBonafied"))
-                        {
-                         return const  BeamPage(child:  ClasswiseBonafied(),
-                 title: "Class and Section wise Bonafied Generator",
-                    type: BeamPageType.scaleTransition,key: ValueKey('class and section wise generator'));
-                 
-                        }
+                   '/bonafied': (context,data,state)=>
+                   const  BeamPage(child:  Bonafied(),title: "Generate Bonafied",
+                    type: BeamPageType.scaleTransition,key: ValueKey('bonafied')),
 
-                return const  BeamPage(child:  Bonafied(),
-                 title: "Generate Bonafied",
-                    type: BeamPageType.scaleTransition,key: ValueKey('bonafied'));
-                    },
+                    '/bonafied/studentBonafied':(context,data,state)=>
+                     const  BeamPage(child:  StudentBonafied(),
+                 title: "Student Bonafied Generator",
+                    type: BeamPageType.slideLeftTransition,key: ValueKey('student bonafied')),
+                 
+                 '/bonafied/classWiseBonafied':(context,state,data)=>
+                 const  BeamPage(child:  ClasswiseBonafied(),
+                 title: "Class and Section wise Bonafied Generator",
+                    type: BeamPageType.scaleTransition,key: ValueKey('class and section wise generator')),
                  
 
                     //live bus updation
@@ -344,20 +301,14 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                     type: BeamPageType.scaleTransition,key: ValueKey('Live Bus')),
 
                     //schoolyear reset
-                      '/schoolYear-data-updation': (context, state, data){
-                         if(state.pathPatternSegments.contains('sectionWiseResetHistry')){
-                    return  BeamPage(child: SectionWiseResetData(),
+                    '/schoolYear-data-updation/sectionWiseResetHistry':(context,data,state)=>
+                     BeamPage(child: SectionWiseResetData(),
                     title: "Select Section Reset Histry",
-                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Section wise Reset'));
-                  }
-                return const  BeamPage(child:  ResetSchoolYearScreen(),
-                 title: "Reset School Data",
-                    type: BeamPageType.scaleTransition,key: ValueKey('Reset Year'));},
-
-                           
-
-                    
-                    
+                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Section wise Reset')),
+                
+                      '/schoolYear-data-updation': (context, state, data){
+                    return const  BeamPage(child:  ResetSchoolYearScreen(), title: "Reset School Data",
+                    type: BeamPageType.scaleTransition,key: ValueKey('Reset Year'));},   
               }).call)
             
               ),

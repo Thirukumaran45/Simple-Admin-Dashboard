@@ -60,7 +60,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-AuthWrapper authController =  AuthWrapper();
+AuthWrapper authController =  const AuthWrapper();
 
   @override
   Widget build(BuildContext context) {

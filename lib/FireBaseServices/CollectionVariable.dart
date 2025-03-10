@@ -2,7 +2,79 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
+
+class CollectionVariable {}
+const int feesAmount = 500;
+
+// teacher variable
+const teacherProfileField = 'profile_photo';
+const teacherNameField = 'name';
+const teacherEmailfield = 'email';
+const teacherPhoneNumberfield = 'phone.no';
+const teacherAddressfield = 'Address';
+const dateofEmploymentfield = 'Date_of_employment';
+const collegedegreefield = 'college_degree';
+const yearOfExperiencefield = 'year_of_experience';
+const teacherSubjectHandlingfield = 'subject_handling';
+const teacherId = 'id';
+const teacherPasskey = '';
+const teacherrole = 'role';
+
+// principal variable
+const principalNamefield = 'name';
+const principalEmailfield = 'email';
+const principalPhoneNumberfield = 'phone.no';
+const principalAddressfield = 'address';
+const principalProfilefield = 'profile_photo';
+const principalId = 'id';
+const principalPasskey = '';
+const principalrole = 'role';
+
+// staff variable
+const staffNamefield = 'name';
+const staffEmailfield = 'email';
+const staffPhoneNumberfield = 'phone.no';
+const staffAddressfield = 'address';
+const staffProfilefield = 'profile_photo';
+const stafflId = 'id';
+const staffrole = 'role';
+
+
+//student variable
+
+const studentNamefield = 'name';
+const stuentEmailfield = 'email';
+const stdentIdField = 'studentId';
+const profilePhotfield = 'profile_photo';
+const studentrole = 'role';
+const classField = 'class';
+const sectionFild = 'section';
+const rollNofield = 'Roll.no';
+const dobfield = 'dob';
+const fatherNameField = 'Father name';
+const fatherPhoneNoField = 'Father Phone.no';
+const motherNameField = 'Mother Name';
+const motherPhoneNoField = 'Mother PhoneNo';
+const studentAddress = 'Address';
+const feesStatusField = 'Fess Status';
+const attendancePercentageField = 'Attendance Percentage';
+const todayAttendanceStatusField = 'Today Attendance';
+const studentAdminssionNoField = 'Adminnsion Number';
+const totalFees = 'total Fess'; 
+const studentPasskeyField = '';
+const totalAttendanceDays = 'totalAttendanceDays';
+
+var dueDate = '12-4-2024';
+var fee1 = 'Tuition Fees';
+var fee2 = 'Bus Fee';
+var fee3 = 'Lab Fee';
+var fee1amount = int.parse('6000');
+var fee2amount = int.parse('4000');
+var fee3amount = int.parse('9000');
+var totalfee = fee1amount + fee2amount + fee3amount;
+
 class FirebaseCollectionVariable extends GetxController {
+  
   final schoolDetails =
       FirebaseFirestore.instance.collection('School').doc('school_details');
 

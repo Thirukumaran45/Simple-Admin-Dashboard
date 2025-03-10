@@ -1,8 +1,44 @@
 import 'package:admin_pannel/views/pages/HomePage/widgets/barGraph.dart';
 import 'package:flutter/material.dart';
+import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import 'package:get/get.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
+
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  late FirebaseCollectionVariable collectionControler;
+  Map<String, dynamic> numberOfPeopleMap = {}; // Store results here
+
+  @override
+  void initState() {
+    super.initState();
+    collectionControler = Get.find<FirebaseCollectionVariable>();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    List<String> categories = ['officials', 'staffs', 'teachers', 'students'];
+
+    for (String category in categories) {
+      final  docSnapshot =
+          await collectionControler.loginCollection.doc(category).get();
+
+      if (docSnapshot.exists) {
+        setState(() {
+          // Ensure numberOfPeople is always stored as a String
+          var data = docSnapshot['numberOfPeople'];
+          numberOfPeopleMap[category] = (data is String) ? data : data.toString();
+        });
+      }
+    }
+
+    print("Fetched Data: $numberOfPeopleMap"); // Debugging purpose
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,37 +57,40 @@ class Homepage extends StatelessWidget {
       13000000, // ₹130L
     ];
     double lastAmtVal = monthFeesAmt[monthFeesAmt.length - 1];
-    // Parse the string values to double
-    double teacherPercentage = double.parse("80");
-    double studentPercentage = double.parse("1000");
-    double workerPercentage = double.parse("50");
+  // Parse numberOfPeople values to double, ensuring they are not null or empty
+  double teacherPercentage = double.tryParse(numberOfPeopleMap["teachers"] ?? "0") ?? 0;
+  double studentPercentage = double.tryParse(numberOfPeopleMap["students"] ?? "0") ?? 0;
+  double workerPercentage = double.tryParse(numberOfPeopleMap["staffs"] ?? "0") ?? 0;
+  
+  // Calculate the total
+  double total = teacherPercentage + studentPercentage + workerPercentage;
 
-    // Calculate the total
-    double total = teacherPercentage + studentPercentage + workerPercentage;
+  // Prevent division by zero error
+  double teacherAvg = total > 0 ? (teacherPercentage / total) * 100 : 0;
+  double studentAvg = total > 0 ? (studentPercentage / total) * 100 : 0;
+  double workerAvg = total > 0 ? (workerPercentage / total) * 100 : 0;
 
-    // Calculate the percentages for the pie chart
-    double teacherAvg = (teacherPercentage / total) * 100;
-    double studentAvg = (studentPercentage / total) * 100;
-    double workerAvg = (workerPercentage / total) * 100;
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             _buildDashboardcards(),
             const SizedBox(height: 30),
             Row(
               children: [
                 Expanded(
-                  flex: 1,
-                  child: buildLineChart(monthFeesAmt)),
-                 const SizedBox(width: 20,),
+                    flex: 1, child: buildLineChart(monthFeesAmt)),
+                const SizedBox(width: 20),
                 Expanded(
-                  flex: 1,
-                  child: buildPieChart(teacherAvg, studentAvg, workerAvg, lastAmtVal, teacherVal: teacherPercentage,studentVal: studentPercentage,workerVal: workerPercentage)),
-               
+                    flex: 1,
+                    child: buildPieChart(teacherAvg, studentAvg, workerAvg,
+                        lastAmtVal,
+                        teacherVal: teacherPercentage,
+                        studentVal: studentPercentage,
+                        workerVal: workerPercentage)),
               ],
             ),
           ],
@@ -63,59 +102,59 @@ class Homepage extends StatelessWidget {
   Widget _buildDashboardcards() {
     return Row(
       children: [
-        _buildCard("Number of Students", "1000", Icons.people, Colors.blue),
-        _buildCard("Number of Teachers ", "80", Icons.school, Colors.red),
-        _buildCard("Number of Staffs", "50", Icons.business_center,
+        _buildCard("Number of Students", numberOfPeopleMap["students"], Icons.people, Colors.blue),
+        _buildCard("Number of Teachers ", numberOfPeopleMap["teachers"], Icons.school, Colors.red),
+        _buildCard("Number of Staffs", numberOfPeopleMap["staffs"], Icons.business_center,
             Colors.orange),
         _buildCard(
-            "Number of Vechiles", "10", Icons.directions_bus, Colors.green),
+            "Number of Officials", numberOfPeopleMap["officials"], Icons.star, Colors.green),
       ],
     );
   }
 
-  Widget _buildCard(String title, String value, IconData icon, Color color) {
+  Widget _buildCard(String title, String? value, IconData icon, Color color) {
     return Expanded(
-      flex: 4,
+        flex: 4,
         child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-          color: color.withAlpha(80),
-          borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+              color: color.withAlpha(80),
+              borderRadius: BorderRadius.circular(15)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  icon,
-                  size: 30,
-                  color: color,
+                Row(
+                  children: [
+                    Icon(
+                      icon,
+                      size: 30,
+                      color: color,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    )
+                  ],
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(
+                  height: 10,
+                ),
                 Text(
-                  title,
+                  value ?? "0", // Ensure it is always a String
                   style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
                 )
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              value,
-              style:const  TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            )
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 }
