@@ -8,7 +8,7 @@ import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
 class TeacherEditDownload extends StatefulWidget {
-  const TeacherEditDownload({super.key});
+  const TeacherEditDownload({super.key, required String uid});
 
   @override
   _StudentEditDownloadState createState() => _StudentEditDownloadState();

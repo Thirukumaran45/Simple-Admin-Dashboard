@@ -1,21 +1,24 @@
 
 import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/controller/StudentController.dart';
+import 'package:admin_pannel/modules/studentModels.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfStudent/PdfStudentDetails.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StudentEditDownload extends StatefulWidget {
-  const StudentEditDownload({super.key});
+  final String uid;
+  const StudentEditDownload({super.key, required this.uid});
 
   @override
   _StudentEditDownloadState createState() => _StudentEditDownloadState();
 }
 
 class _StudentEditDownloadState extends State<StudentEditDownload> {
-  // Sample data for the student (using TextEditingController for editable fields)
   late TextEditingController studentNameController;
   late TextEditingController fatherNameController;
   late TextEditingController motherNameController;
@@ -26,33 +29,71 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
   late TextEditingController dobController;
   late TextEditingController studentClassController;
   late TextEditingController sectionController;
-  late TextEditingController currentYearController;
-
+  late TextEditingController rollNumberController;
   late TextEditingController totalFeesController;
   late TextEditingController pendingFeesController;
-
+  
+  StudentdetailsModel? studentDetails;
   bool isEdited = false;
+  StudentController controller = Get.find();
+  String? assetImage;
 
   @override
   void initState() {
     super.initState();
-    studentNameController = TextEditingController(text: "John Doe");
-    fatherNameController = TextEditingController(text: "Mark Doe");
-    motherNameController = TextEditingController(text: "Saroja samanikka");
-    fatherPhoneNumberController = TextEditingController(text: "9876543210");
-    motherPhoneNumberController = TextEditingController(text: "7876543210");
-    emailController = TextEditingController(text: "johndoe@example.com");
-    homeAddressController = TextEditingController(text: "No.60 , ambal city , queen victoriya road, poonamallee, chennai -600056");
-    dobController = TextEditingController(text: "01/01/2000");
-    studentClassController = TextEditingController(text: "10th Grade");
-    sectionController = TextEditingController(text: "A");
-    currentYearController = TextEditingController(text: "2025");
-    totalFeesController = TextEditingController(text: "1000.00");
-    pendingFeesController = TextEditingController(text: "500.00");
+    initializeFunction(); // Fetch student data asynchronously
+  }
+
+
+
+  Future<void> initializeFunction() async {
+    studentDetails = await controller.studentDataRead(uid: widget.uid);
+    String? photoUrl = await controller.getStudentPhotoUrl(studentDetails!.stdentId);
+    if (studentDetails != null) {
+      setState(() {
+        assetImage = photoUrl ?? studentDetails?.profilePhot;
+        studentNameController = TextEditingController(text: studentDetails?.studentName ?? '');
+        fatherNameController = TextEditingController(text: studentDetails?.fatherName ?? '');
+        motherNameController = TextEditingController(text: studentDetails?.motherName ?? '');
+        fatherPhoneNumberController = TextEditingController(text: studentDetails?.fatherPhone ?? '');
+        motherPhoneNumberController = TextEditingController(text: studentDetails?.motherPhoneNo ?? '');
+        emailController = TextEditingController(text: studentDetails?.studentEmail ?? '');
+        homeAddressController = TextEditingController(text: studentDetails?.address ?? '');
+        dobController = TextEditingController(text: studentDetails?.dob ?? '');
+        studentClassController = TextEditingController(text: studentDetails?.studentClass ?? '');
+        sectionController = TextEditingController(text: studentDetails?.studentSection ?? '');
+        totalFeesController = TextEditingController(text: studentDetails?.allFees ?? '');
+        pendingFeesController = TextEditingController(text: studentDetails?.feesStatus ?? '');
+        rollNumberController = TextEditingController(text: studentDetails?.rollNo ?? '');
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    studentNameController.dispose();
+    fatherNameController.dispose();
+    motherNameController.dispose();
+    fatherPhoneNumberController.dispose();
+    motherPhoneNumberController.dispose();
+    emailController.dispose();
+    homeAddressController.dispose();
+    dobController.dispose();
+    studentClassController.dispose();
+    sectionController.dispose();
+    rollNumberController.dispose();
+    totalFeesController.dispose();
+    pendingFeesController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (studentDetails == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -74,8 +115,8 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                             height: 500,
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
-                              image: const DecorationImage(
-                                image: AssetImage("assets/images/profile.png"),
+                              image:  DecorationImage(
+                                image: NetworkImage(assetImage!),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(8), 

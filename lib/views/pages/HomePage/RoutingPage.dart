@@ -97,7 +97,7 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                  title: 'Fees Updation',
                     type: BeamPageType.scaleTransition,key: ValueKey('Fees Update')),
 
-                   '/fees-updation/feesTransactionHistry' : (context,data,state)=>
+                   '/fees-updation/feesTransactionHistry' : (context,state,data)=>
                     const  BeamPage(child:  Feestransactionhistry(),
                  title: 'Fees Transaction Histry',
                     type: BeamPageType.slideLeftTransition,key: ValueKey('Fees Transaction histry')),
@@ -168,19 +168,21 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                  title: "Manage Students",
                     type: BeamPageType.scaleTransition,key: ValueKey('Manage Student')),
 
-                    '/manage-student/addStudent':(context,data,state)=>
+                    '/manage-student/addStudent':(context,state,data)=>
                     const BeamPage(child: AddStudentTab(),
                     title: 'Add Student',
                     type: BeamPageType.slideLeftTransition,key: ValueKey('Add Student')),
 
-                    '/manage-student/viewStudentDetails':(context,data,state)=>
+                    '/manage-student/viewStudentDetails':(context,state,data)=>
                     const BeamPage(child: StudentDetailsTab(), title: "View Student Details",
                     type: BeamPageType.slideLeftTransition, key: ValueKey('View Student Details'),),
                     
-                    '/manage-student/viewStudentDetails/editStudentDetails':(context,data,state)=>
-                     const BeamPage( title: 'Edit Student Details', child: StudentEditDownload(),
-                        type: BeamPageType.slideLeftTransition, key: ValueKey('Edit Student Details'),),
-
+                    '/manage-student/viewStudentDetails/editStudentDetails':(context,state,data){
+                    final String uid = state.queryParameters['uid']??'';
+                   
+                    return  BeamPage( title: 'Edit Student Details', child: StudentEditDownload(uid:uid ,),
+                        type: BeamPageType.slideLeftTransition, key: const ValueKey('Edit Student Details'),);
+                    },
                     
                  
                     //teacher management
@@ -197,13 +199,15 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                     title: "Class and Section wise Incharger Name",
                     type: BeamPageType.slideLeftTransition,key: ValueKey('class Incharger')),
 
-                     '/manage-teacher/viewTeacherDetails':(context,data,state)=>
+                     '/manage-teacher/viewTeacherDetails':(context,state,data)=>
                        const BeamPage(child:  TeacherDetailsTab(),title: 'View Teacher Details',
                     type: BeamPageType.slideLeftTransition,key: ValueKey('View Teacher Details')),
 
-                    '/manage-teacher/viewTeacherDetails/editTeacherDetails':(context,data,state)=>
-                    const BeamPage( title: " Edit Teacher Details", child: TeacherEditDownload(),
-                        type: BeamPageType.slideLeftTransition, key: ValueKey('Edit Teacher Details'),),
+                    '/manage-teacher/viewTeacherDetails/editTeacherDetails':(context,state,data){
+                    final String uid = state.queryParameters['uid']??'';
+
+                    return BeamPage( title: " Edit Teacher Details", child: TeacherEditDownload(uid:uid),
+                        type: BeamPageType.slideLeftTransition, key:const ValueKey('Edit Teacher Details'),);},
 
                     
                     
@@ -214,22 +218,23 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                 title: " Manage Higher Official",type: BeamPageType.scaleTransition,
                 key: ValueKey('Manage Officials')),
 
-                '/manage-higher-official/addOfficial':(context,data,state)=>
+                '/manage-higher-official/addOfficial':(context,state,data)=>
                 const BeamPage(child: AddHigherOfficialTab(),
                     title: "Add Higher Officials",type: BeamPageType.slideLeftTransition,
                     key: ValueKey('Add Official')),
 
-                '/manage-higher-official/viewHigherOfficailDetails':(context,data,state)=>
+                '/manage-higher-official/viewHigherOfficailDetails':(context,state,data)=>
                     const BeamPage(child:  HigherOfficialDetailsTab(),
                      title: "View Higher Official Details",
                     type: BeamPageType.slideLeftTransition,key: ValueKey('View Official Details')),
-                 '/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails':(context,data,state)=>
-                    const BeamPage( child:HigherOfficialEditDownload (),title: "Edit Higher Officials",
-                    type: BeamPageType.slideLeftTransition,key: ValueKey('Edit Higher Official Details'),),
+                 '/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails':(context,state,data){
+                    final String uid = state.queryParameters['uid']??'';
+                    return BeamPage( child:HigherOfficialEditDownload (uid:uid),title: "Edit Higher Officials",
+                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Edit Higher Official Details'),);},
     
 
                     //working staff management
-                    '/manage-working-staff':(context,data,state)=>
+                    '/manage-working-staff':(context,state,data)=>
                     const  BeamPage(child:  StaffMainScreen(),
                  title: "Manage Working Staff",
                     type: BeamPageType.scaleTransition,key: ValueKey('Manage Staff')),
@@ -239,15 +244,16 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                     title: "Add Working Staff",type: BeamPageType.slideLeftTransition,
                     key: ValueKey('Add Staff')),
                     
-                    '/manage-working-staff/viewStaffDetails':(context,data,state)=>
+                    '/manage-working-staff/viewStaffDetails':(context,state,data)=>
                      const BeamPage(child:  StaffDetailsTab(),
                      title: "View Working Staff Details",
                     type: BeamPageType.slideLeftTransition,key: ValueKey('View Staff Details')),
 
-                    '/manage-working-staff/viewStaffDetails/editWorkingStaffDetails':(context,data,state)=>
-                    const BeamPage(
-                      title: "Edit Working Staff Details",child: StaffEditDownload(),
-                      type: BeamPageType.slideLeftTransition, key: ValueKey('Edit Working Staff Details'),),
+                    '/manage-working-staff/viewStaffDetails/editWorkingStaffDetails':(context,state,data){
+                    final String uid = state.queryParameters['uid']??'';
+                    return BeamPage(
+                      title: "Edit Working Staff Details",child: StaffEditDownload(uid:uid),
+                      type: BeamPageType.slideLeftTransition, key:const  ValueKey('Edit Working Staff Details'),);},
 
                     
                     //school detaisl updation
@@ -279,11 +285,11 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                         
 
                    //bonafied' bus updation
-                   '/bonafied': (context,data,state)=>
+                   '/bonafied': (context,state,data)=>
                    const  BeamPage(child:  Bonafied(),title: "Generate Bonafied",
                     type: BeamPageType.scaleTransition,key: ValueKey('bonafied')),
 
-                    '/bonafied/studentBonafied':(context,data,state)=>
+                    '/bonafied/studentBonafied':(context,state,data)=>
                      const  BeamPage(child:  StudentBonafied(),
                  title: "Student Bonafied Generator",
                     type: BeamPageType.slideLeftTransition,key: ValueKey('student bonafied')),
@@ -301,7 +307,7 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                     type: BeamPageType.scaleTransition,key: ValueKey('Live Bus')),
 
                     //schoolyear reset
-                    '/schoolYear-data-updation/sectionWiseResetHistry':(context,data,state)=>
+                    '/schoolYear-data-updation/sectionWiseResetHistry':(context,state,data)=>
                      BeamPage(child: SectionWiseResetData(),
                     title: "Select Section Reset Histry",
                     type: BeamPageType.slideLeftTransition,key: const ValueKey('Section wise Reset')),

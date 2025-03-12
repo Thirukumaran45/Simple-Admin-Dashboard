@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 
 
@@ -49,10 +50,10 @@ const profilePhotfield = 'profile_photo';
 const studentrole = 'role';
 const classField = 'class';
 const sectionFild = 'section';
-const rollNofield = 'Roll.no';
+const rollNofield = "Roll.no";
 const dobfield = 'dob';
 const fatherNameField = 'Father name';
-const fatherPhoneNoField = 'Father Phone.no';
+const fatherPhoneNoField = "Father Phone.no";
 const motherNameField = 'Mother Name';
 const motherPhoneNoField = 'Mother PhoneNo';
 const studentAddress = 'Address';
@@ -74,7 +75,7 @@ var fee3amount = int.parse('9000');
 var totalfee = fee1amount + fee2amount + fee3amount;
 
 class FirebaseCollectionVariable extends GetxController {
-  
+  final Reference firebaseStorageRef = FirebaseStorage.instance.ref();
   final schoolDetails =
       FirebaseFirestore.instance.collection('School').doc('school_details');
 

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class StudentDetailsTab extends StatefulWidget {
-  const StudentDetailsTab({super.key});
+  const StudentDetailsTab({super.key,});
 
   @override
   State<StudentDetailsTab> createState() => _StudentDetailsTabState();
@@ -22,13 +22,20 @@ class _StudentDetailsTabState extends State<StudentDetailsTab> {
 
   final StudentController controler = Get.find();
  
-  List<Map<String, String>> filteredData = [];
- 
-  @override
-  void initState() {
-    super.initState();
-    filteredData = List.from(controler.studentData);
-  }
+  List<Map<String, dynamic>> filteredData = [];
+ @override
+void initState() {
+  super.initState();
+   setState(() {
+      filteredData = List.from(controler.studentData);
+    });
+  ever(controler.studentData, (_) {
+    setState(() {
+      filteredData = List.from(controler.studentData);
+    });
+  });
+}
+
 
   void applyFilters() {
     setState(() {
@@ -229,52 +236,51 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                         DataCell(Text(student['class']!,style: const TextStyle(color: Colors.black),)),
                         DataCell(Text(student['section']!,style: const TextStyle(color: Colors.black),)),
                         DataCell(Text(student['parentMobile']!,style: const TextStyle(color: Colors.black),)),
-                        DataCell(SizedBox(width: 150,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryGreenColors,
-                              foregroundColor: Colors.white,
-                               elevation: 10, // Elevation for shadow effect
-                              padding: const EdgeInsets.symmetric(
-                                   horizontal: 16, vertical: 12), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(20), // Rounded corners
-                              ),
-                            ),
-                            onPressed: () {
-                              customNvigation(context, '/manage-student/viewStudentDetails/editStudentDetails');
-                          
-                            },
-                            child: const Text('View More', style: TextStyle(
-                              fontSize: 14
-                            ),),
-                          ),
-                        )),
-                        DataCell(SizedBox(width:150 ,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor:
-                                  Colors.red, // Button background color
-                              elevation: 10, // Elevation for shadow effect
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(20), // Rounded corners
-                              ),
-                            ),
-                            onPressed: () {
-                              // Implement view more functionality
-                            },
-                            child: const Row(
-                              children: [ Icon(Icons.delete_sharp , color: Colors.white,),
-                                 Text(' Delete', style: TextStyle(fontSize: 14),),
-                              ],
-                            ),
-                          ),
-                        )),
+                      DataCell(
+  ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: primaryGreenColors,
+      foregroundColor: Colors.white,
+      elevation: 10,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+    onPressed: () {
+      customNvigation(context, '/manage-student/viewStudentDetails/editStudentDetails?uid=${student['id']!}');
+    },
+    child: const Text('View More', style: TextStyle(fontSize: 14)),
+  ),
+),
+
+DataCell(
+  ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      foregroundColor: Colors.white,
+      backgroundColor: Colors.red,
+      elevation: 10,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+    onPressed: () {
+      // Implement delete functionality
+    },
+    child: const Row(
+      mainAxisSize: MainAxisSize.min, // Prevents Row overflow
+      children: [
+        Icon(Icons.delete_sharp, color: Colors.white),
+        SizedBox(width: 5), // Adds space between icon and text
+        Text('Delete', style: TextStyle(fontSize: 14)),
+      ],
+    ),
+  ),
+),
+
+
+                        
                       ],
                     );
                   }).toList(),
@@ -287,3 +293,5 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
     );
   }
 }
+
+

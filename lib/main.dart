@@ -27,10 +27,13 @@ void main() async {
   try {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-        apiKey: "AIzaSyAVzXALmSlUAxNGUN5A2VlJdZ4ELnggq6I",
-        projectId: "school-5b7f0",
-        messagingSenderId: "715457715420",
-        appId: "1:715457715420:web:b1964a0d8843034d0ea819",
+      apiKey: "AIzaSyA_TZd03d0e_JhU3SIAdgvVch2-NnxnGYc",
+      authDomain: "school-5b7f0.firebaseapp.com",
+      projectId: "school-5b7f0",
+      storageBucket: "school-5b7f0.appspot.com",
+      messagingSenderId: "715457715420",
+      appId: "1:715457715420:web:953fb67940b828e00ea819",
+  measurementId: "G-GGQVTBJGYG"
       ),
     );
     log("Firebase initialized successfully");

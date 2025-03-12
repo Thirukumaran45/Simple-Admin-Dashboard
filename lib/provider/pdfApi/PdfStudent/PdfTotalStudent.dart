@@ -56,10 +56,10 @@ class PdfTotalStudentDetails {
             cellStyle: pw.TextStyle(font: font2, fontSize: 10),
             columnWidths: {
               0: const pw.FlexColumnWidth(1),
-              1: const pw.FlexColumnWidth(2),
+              1: const pw.FlexColumnWidth(3),
               2: const pw.FlexColumnWidth(2),
               3: const pw.FlexColumnWidth(2),
-              4: const pw.FlexColumnWidth(3),
+              4: const pw.FlexColumnWidth(2),
               5: const pw.FlexColumnWidth(2),
               6: const pw.FlexColumnWidth(2),
             },
