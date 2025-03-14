@@ -136,7 +136,7 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
                               }
                               return null;
                             }),
-                            buildPasswordField(isPasswordObscured: _isPasswordObscured),
+                            // buildPasswordField(isPasswordObscured: _isPasswordObscured),
                           ]),
                           const SizedBox(height: 30),
                           buildTextFieldRow([

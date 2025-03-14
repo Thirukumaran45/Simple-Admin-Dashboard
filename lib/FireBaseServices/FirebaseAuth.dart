@@ -20,5 +20,23 @@ class FirebaseAuthUser {
     return null; // Return null if authentication fails
   }
 }
+Future<Authuser?> createUser({required String email, required String password, required BuildContext context})async
+{
+  try{
+ final  userCredential = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return Authuser(id: userCredential.user!.uid, email: userCredential.user!.email!);
+
+  }
+  on FirebaseAuthException catch(e){
+   log("Firebase Auth Error: ${e.code}");
+    showCustomDialog(context, "Error ${e.code}");
+    return null; // Return null if authentication fails
+  
+}
+}
 
 }

@@ -104,7 +104,7 @@ class _AddStaffTabState extends State<AddStaffTab> {
                           }
                           return null;
                         }),
-                        buildPasswordField(isPasswordObscured: _isPasswordObscured),
+                        // buildPasswordField(isPasswordObscured: _isPasswordObscured),
                       ]),
                       const SizedBox(height: 30),
                   

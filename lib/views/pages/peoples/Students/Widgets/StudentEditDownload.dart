@@ -37,6 +37,7 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
   bool isEdited = false;
   StudentController controller = Get.find();
   String? assetImage;
+  String? updatePhotoUrl;
 
   @override
   void initState() {
@@ -45,6 +46,15 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
   }
 
 
+Future<void> handlePhotoUpdate(String studentId) async {
+  String newPhotoUrl = await  controller.updateStudentPhoto(studentDetails!.stdentId,updatePhotoUrl!);
+  
+  if (newPhotoUrl.isNotEmpty) {
+    setState(() {
+      assetImage = newPhotoUrl; // Update UI with new photo URL
+    });
+  }
+}
 
   Future<void> initializeFunction() async {
     studentDetails = await controller.studentDataRead(uid: widget.uid);
@@ -125,7 +135,9 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                           ), Positioned(
                 bottom: 0,
                 right: 0,
-                child: customIconTextButton(Colors.red, onPressed: (){}, icon: Icons.edit, text: "Change")
+                child: customIconTextButton(Colors.red, onPressed: ()async{
+                await handlePhotoUpdate(studentDetails!.stdentId);
+                }, icon: Icons.edit, text: "Change")
                         ),
                         ],
                       ),
@@ -136,10 +148,10 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                     Container(
                       width: 300,
                       padding: const EdgeInsets.all(20),
-                      child: const Text(overflow:TextOverflow.visible ,"Govindhan Gopalan S", style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
-                    const Row(
+                      child:  Text(overflow:TextOverflow.visible ,studentDetails?.studentName ?? '', style:const  TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text(" 10 - A ",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black)),],
+                      children: [Text(" ${studentDetails?.studentClass ?? ''} - ${studentDetails?.studentSection ?? ''} ",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black)),],
                     ),
                       const  SizedBox(
                       height:150,
@@ -207,7 +219,7 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                             const SizedBox(height: 5),
                             _buildCustomRow("Total Fees", totalFeesController),
                             const SizedBox(height: 5),
-                            _buildCustomRow("Pending Fees", pendingFeesController),
+                            _buildCustomRow("Fees Status", pendingFeesController),
                           ],
                         ),
                       ),
@@ -224,7 +236,23 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                               onPressed: ()async {
                                 if (isEdited) {
                      await showCustomDialog(context, "Student details Updated Succecfully");
-
+                  bool isUpdated = await controller.updateStudentDetails(
+                    address: homeAddressController.text.toString(),
+                    dob: dobController.text.toString(),
+                     email: emailController.text.toString(),
+                     fatherName: fatherNameController.text.toString(),
+                     fatherNumber: fatherPhoneNumberController.text.toString(),
+                     feesStatus: pendingFeesController.text.toString(),
+                     motherName:motherNameController.text.toString() ,
+                     motherNumber: motherPhoneNumberController.text.toString(),
+                     name: studentNameController.text.toString(),
+                     profilePhotoUrl: updatePhotoUrl??'',
+                     section: sectionController.text.toString(),
+                     studentClass: studentClassController.text.toString(),
+                     totalFee: totalFeesController.text.toString(),
+                     uid: widget.uid,
+                   );
+                   if(isUpdated) await customSnackbar(context: context, text: "Student Detials Changed updated succesfully");
                                   setState(() {
                                     isEdited = false;
                                   });
@@ -246,8 +274,11 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
                             child: ElevatedButton(
                               onPressed: ()async {
                               await   customSnackbar(context: context, text: "Donloaded Succesfully");
-                               await  PdfStudentDetails.openPdf(fileName: studentNameController.text, nameController: studentNameController, classController: studentClassController, sectionController: sectionController, fatherNameController: fatherNameController, fatherPhoneController: fatherPhoneNumberController, motherNameController: motherNameController, motherPhoneController: motherPhoneNumberController, dateOfBirthController: dobController, emailController: emailController, homeAddressController: homeAddressController,
-                                 totalFeesController: totalFeesController, pendingFeesController: pendingFeesController,);
+                               await  PdfStudentDetails.openPdf(fileName: studentNameController.text, nameController: studentNameController, 
+                               classController: studentClassController, sectionController: sectionController, 
+                               fatherNameController: fatherNameController, fatherPhoneController: fatherPhoneNumberController, motherNameController: motherNameController,
+                                motherPhoneController: motherPhoneNumberController, dateOfBirthController: dobController, emailController: emailController, homeAddressController: homeAddressController,
+                                 totalFeesController: totalFeesController, pendingFeesController: pendingFeesController,assetImage: assetImage,);
                                    },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,

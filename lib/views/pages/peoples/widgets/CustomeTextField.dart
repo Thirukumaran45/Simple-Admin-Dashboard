@@ -84,14 +84,14 @@ Widget buildTextFieldRow(List<Widget> fields) {
         .toList(),
   );
 }
+
 Widget buildAddressField({required TextEditingController addressContrl}) {
   return Padding(             
-     padding: const EdgeInsets.only(left: 8.2),
-
+    padding: const EdgeInsets.only(left: 8.2),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         const Text(
+        const Text(
           'Address',
           style: TextStyle(
             color: Colors.black,
@@ -100,51 +100,23 @@ Widget buildAddressField({required TextEditingController addressContrl}) {
           ),
         ),
         const SizedBox(height: 8),
-        // Wrap the TextFormField in a FormField to handle validation
-        FormField<String>(
+        TextFormField(
+          cursorColor: Colors.green,
+          controller: addressContrl,
+          decoration: const InputDecoration(
+            border: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.green),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.green),
+            ),
+            hintText: "  Enter your native address",
+          ),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Address is required';
             }
             return null;
-          },
-          builder: (FormFieldState<String> state) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blueGrey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextFormField(
-                    cursorColor: Colors.green,
-                    controller: addressContrl,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
-                      ),
-                      hintText: "  Enter your native address",
-                    ),
-                  ),
-                ),
-                // Error message below the container if validation fails
-                if (state.hasError)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Text(
-                      state.errorText ?? '',
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-              ],
-            );
           },
         ),
       ],
@@ -152,22 +124,26 @@ Widget buildAddressField({required TextEditingController addressContrl}) {
   );
 }
 
-Widget buildPasswordField({required bool isPasswordObscured}) {
+// Controllers
+
+
+Widget buildPasswordField({required bool isPasswordObscured, required passwordController}) {
   return StatefulBuilder(
     builder: (context, setState) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         const  Text(
+          const Text(
             'Password',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 15,
-              color: Colors.black
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 8),
           TextFormField(
+            controller: passwordController,
             cursorColor: Colors.green,
             obscureText: isPasswordObscured,
             decoration: InputDecoration(
@@ -205,7 +181,8 @@ Widget buildPasswordField({required bool isPasswordObscured}) {
   );
 }
 
-Widget buildParentDetailsRow() {
+Widget buildParentDetailsRow({required fatherNameController, required fatherMobileController,
+ required motherNameController, required motherMobileController }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -216,15 +193,17 @@ Widget buildParentDetailsRow() {
             child: Padding(
               padding: const EdgeInsets.only(left: 8.2),
               child: buildTextField(
-                  inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                  'Father Name',
-                  'Enter father\'s name',
-                  TextInputType.text, (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Father\'s name is required';
-                }
-                return null;
-              }),
+                'Father Name',
+                'Enter father\'s name',
+                TextInputType.text,
+                (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Father\'s name is required';
+                  }
+                  return null;
+                },
+                controller: fatherNameController,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -241,6 +220,7 @@ Widget buildParentDetailsRow() {
                 }
                 return null;
               },
+              controller: fatherMobileController,
               inputFormatters: [
                 LengthLimitingTextInputFormatter(10),
                 FilteringTextInputFormatter.digitsOnly, // Only allow digits
@@ -254,17 +234,20 @@ Widget buildParentDetailsRow() {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Padding(              
+            child: Padding(
               padding: const EdgeInsets.only(left: 8.2),
-
               child: buildTextField(
-                  'Mother Name', 'Enter mother\'s name', TextInputType.text,
-                  (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Mother\'s name is required';
-                }
-                return null;
-              }),
+                'Mother Name',
+                'Enter mother\'s name',
+                TextInputType.text,
+                (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Mother\'s name is required';
+                  }
+                  return null;
+                },
+                controller: motherNameController,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -281,6 +264,7 @@ Widget buildParentDetailsRow() {
                 }
                 return null;
               },
+              controller: motherMobileController,
               inputFormatters: [
                 LengthLimitingTextInputFormatter(10),
                 FilteringTextInputFormatter.digitsOnly, // Only allow digits
@@ -292,3 +276,4 @@ Widget buildParentDetailsRow() {
     ],
   );
 }
+

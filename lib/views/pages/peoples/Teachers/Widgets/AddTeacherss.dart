@@ -132,7 +132,7 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
                           }
                           return null;
                         }),
-                        buildPasswordField(isPasswordObscured: _isPasswordObscured),
+                        // buildPasswordField(isPasswordObscured: _isPasswordObscured),
                       ]),
                       const SizedBox(height: 30),
                       buildTextFieldRow([

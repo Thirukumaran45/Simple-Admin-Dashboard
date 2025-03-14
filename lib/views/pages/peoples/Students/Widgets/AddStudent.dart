@@ -1,4 +1,3 @@
-
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
@@ -20,6 +19,18 @@ class _AddStudentTabState extends State<AddStudentTab> {
 
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController addresscontrl = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController classNameController = TextEditingController();
+  final TextEditingController sectionController = TextEditingController();
+  final TextEditingController rollNumberController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController admissionNumberController = TextEditingController();
+final TextEditingController fatherNameController = TextEditingController();
+final TextEditingController fatherMobileController = TextEditingController();
+final TextEditingController motherNameController = TextEditingController();
+final TextEditingController motherMobileController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +76,14 @@ class _AddStudentTabState extends State<AddStudentTab> {
                                   return 'First name is required';
                                 }
                                 return null;
-                              }),
+                              }, controller: firstNameController),
                               buildTextField('Student Last Name', 'Enter last name',
                                   TextInputType.text, (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Last name is required';
                                 }
                                 return null;
-                              }),
+                              }, controller: lastNameController),
                             ]),
                             const SizedBox(height: 30),
                             buildTextFieldRow([
@@ -88,6 +99,7 @@ class _AddStudentTabState extends State<AddStudentTab> {
                                   }
                                   return null;
                                 },
+                                controller: classNameController,
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(2)
                                 ], // Maximum length is 2
@@ -104,6 +116,7 @@ class _AddStudentTabState extends State<AddStudentTab> {
                                   }
                                   return null;
                                 },
+                                controller: sectionController,
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(1)
                                 ], // Maximum length is 1
@@ -114,7 +127,7 @@ class _AddStudentTabState extends State<AddStudentTab> {
                                   return 'Roll number is required';
                                 }
                                 return null;
-                              }),
+                              }, controller: rollNumberController),
                             ]),
                             const SizedBox(height: 30),
                             buildTextFieldRow([
@@ -129,8 +142,8 @@ class _AddStudentTabState extends State<AddStudentTab> {
                                   return 'Enter a valid email address';
                                 }
                                 return null;
-                              }),
-                              buildPasswordField(isPasswordObscured: _isPasswordObscured),
+                              }, controller: emailController),
+                              buildPasswordField(isPasswordObscured: _isPasswordObscured, passwordController: passwordController  ),
                             ]),
                             const SizedBox(height: 30),
                             buildTextFieldRow([
@@ -180,21 +193,37 @@ class _AddStudentTabState extends State<AddStudentTab> {
                                   return 'Admisson Number is required';
                                 }
                                 return null;
-                              }),
+                              }, controller: admissionNumberController),
                             ]),
                             const SizedBox(height: 30),
-                            buildParentDetailsRow(),
+                            buildParentDetailsRow(fatherNameController: fatherNameController,fatherMobileController: fatherMobileController
+                           , motherMobileController: motherMobileController, motherNameController: motherNameController),
                             const SizedBox(height: 30),
                             buildAddressField(addressContrl: addresscontrl),
                             const SizedBox(height: 30),
                             Align(
                               alignment: Alignment.center,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState?.validate() ?? false) {
-                                    // Add submit logic here
-                                  }
-                                },
+                               onPressed: () {
+  if (_formKey.currentState?.validate() ?? false) {
+    print("Student Details:");
+    print("First Name: ${firstNameController.text}");
+    print("Last Name: ${lastNameController.text}");
+    print("Class Name: ${classNameController.text}");
+    print("Section: ${sectionController.text}");
+    print("Roll Number: ${rollNumberController.text}");
+    print("Email: ${emailController.text}");
+    print("father name: ${fatherNameController.text}");
+    print("mohter name : ${motherNameController.text}");
+    print("father mobile : ${fatherMobileController.text}");
+    print("mohter mobile : ${motherMobileController.text}");
+    print("Password: ${passwordController.text}");
+    print("Date of Birth: ${_dobController.text}");
+    print("Admission Number: ${admissionNumberController.text}");
+    print("Address: ${addresscontrl.text}");
+  }
+},
+
                                 style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor:primaryGreenColors,
@@ -224,7 +253,6 @@ class _AddStudentTabState extends State<AddStudentTab> {
               ),
             ],
           ),
-        
     );
   }
 }
