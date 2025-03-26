@@ -1,14 +1,19 @@
 
+import 'dart:io' show File;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-Widget buildProfilePicker() {
+Widget buildProfilePicker({required dynamic image, required VoidCallback onPress}) {
   return Center(
     child: Stack(
       children: [
         CircleAvatar(
           radius: 80,
-          backgroundImage: const AssetImage('assets/images/profile.png'),
+          backgroundImage: image == null
+              ? const AssetImage('assets/images/profile.png') as ImageProvider
+              : (kIsWeb
+                  ? MemoryImage(image) // For Web
+                  : FileImage(File(image))), // For Mobile
           backgroundColor: Colors.grey.shade300,
         ),
         Positioned(
@@ -18,13 +23,8 @@ Widget buildProfilePicker() {
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.white),
             child: IconButton(
-              icon: const Icon(
-                Icons.camera_alt,
-                color: Colors.red,
-              ),
-              onPressed: () {
-                // Add image picker logic here
-              },
+              icon: const Icon(Icons.camera_alt, color: Colors.red),
+              onPressed: onPress, // Correct function call
             ),
           ),
         ),
@@ -32,6 +32,8 @@ Widget buildProfilePicker() {
     ),
   );
 }
+
+
 
 Widget buildTextField(String label, String hint, TextInputType keyboardType,
     String? Function(String?)? validator,

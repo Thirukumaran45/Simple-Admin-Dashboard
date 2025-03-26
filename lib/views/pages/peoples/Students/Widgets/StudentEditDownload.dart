@@ -47,7 +47,7 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
 
 
 Future<void> handlePhotoUpdate(String studentId) async {
-  String newPhotoUrl = await  controller.updateStudentPhoto(studentDetails!.stdentId,updatePhotoUrl!);
+  String newPhotoUrl = await  controller.updateStudentPhoto(studentId );
   
   if (newPhotoUrl.isNotEmpty) {
     setState(() {
@@ -55,29 +55,34 @@ Future<void> handlePhotoUpdate(String studentId) async {
     });
   }
 }
-
-  Future<void> initializeFunction() async {
+Future<void> initializeFunction() async {
+  
     studentDetails = await controller.studentDataRead(uid: widget.uid);
-    String? photoUrl = await controller.getStudentPhotoUrl(studentDetails!.stdentId);
-    if (studentDetails != null) {
-      setState(() {
-        assetImage = photoUrl ?? studentDetails?.profilePhot;
-        studentNameController = TextEditingController(text: studentDetails?.studentName ?? '');
-        fatherNameController = TextEditingController(text: studentDetails?.fatherName ?? '');
-        motherNameController = TextEditingController(text: studentDetails?.motherName ?? '');
-        fatherPhoneNumberController = TextEditingController(text: studentDetails?.fatherPhone ?? '');
-        motherPhoneNumberController = TextEditingController(text: studentDetails?.motherPhoneNo ?? '');
-        emailController = TextEditingController(text: studentDetails?.studentEmail ?? '');
-        homeAddressController = TextEditingController(text: studentDetails?.address ?? '');
-        dobController = TextEditingController(text: studentDetails?.dob ?? '');
-        studentClassController = TextEditingController(text: studentDetails?.studentClass ?? '');
-        sectionController = TextEditingController(text: studentDetails?.studentSection ?? '');
-        totalFeesController = TextEditingController(text: studentDetails?.allFees ?? '');
-        pendingFeesController = TextEditingController(text: studentDetails?.feesStatus ?? '');
-        rollNumberController = TextEditingController(text: studentDetails?.rollNo ?? '');
-      });
+
+    if (studentDetails == null) {
+      return;
     }
-  }
+
+    String? photoUrl = await controller.getStudentPhotoUrl(studentDetails!.stdentId);
+    
+    setState(() {
+      assetImage = photoUrl ?? studentDetails?.profilePhot;
+      studentNameController = TextEditingController(text: studentDetails?.studentName ?? '');
+      fatherNameController = TextEditingController(text: studentDetails?.fatherName ?? '');
+      motherNameController = TextEditingController(text: studentDetails?.motherName ?? '');
+      fatherPhoneNumberController = TextEditingController(text: studentDetails?.fatherPhone ?? '');
+      motherPhoneNumberController = TextEditingController(text: studentDetails?.motherPhoneNo ?? '');
+      emailController = TextEditingController(text: studentDetails?.studentEmail ?? '');
+      homeAddressController = TextEditingController(text: studentDetails?.address ?? '');
+      dobController = TextEditingController(text: studentDetails?.dob ?? '');
+      studentClassController = TextEditingController(text: studentDetails?.studentClass ?? '');
+      sectionController = TextEditingController(text: studentDetails?.studentSection ?? '');
+      totalFeesController = TextEditingController(text: studentDetails?.allFees ?? '');
+      pendingFeesController = TextEditingController(text: studentDetails?.feesStatus ?? '');
+      rollNumberController = TextEditingController(text: studentDetails?.rollNo ?? '');
+    });
+  
+}
 
   @override
   void dispose() {
@@ -110,6 +115,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
         child: Row(
           children: [
             Row(crossAxisAlignment: CrossAxisAlignment.start,
+            
               children: [
                 
                 customIconNavigation(context,'/manage-student/viewStudentDetails'),
@@ -135,9 +141,10 @@ Future<void> handlePhotoUpdate(String studentId) async {
                           ), Positioned(
                 bottom: 0,
                 right: 0,
-                child: customIconTextButton(Colors.red, onPressed: ()async{
-                await handlePhotoUpdate(studentDetails!.stdentId);
-                }, icon: Icons.edit, text: "Change")
+                child: customIconTextButton(Colors.red, onPressed: () async {
+  
+  await handlePhotoUpdate(studentDetails!.stdentId);
+  }, icon: Icons.edit, text: "Change")
                         ),
                         ],
                       ),
@@ -203,6 +210,8 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             const SizedBox(height: 5),
                             _buildCustomRow("Section", sectionController),
                             const SizedBox(height: 5),
+                            _buildCustomRow("Roll Number",rollNumberController ),
+                            const SizedBox(height: 5),
                             _buildCustomRow("Father's Name", fatherNameController),
                             const SizedBox(height: 5),
                             _buildCustomRow("Father Phone.No", fatherPhoneNumberController),
@@ -236,6 +245,8 @@ Future<void> handlePhotoUpdate(String studentId) async {
                               onPressed: ()async {
                                 if (isEdited) {
                      await showCustomDialog(context, "Student details Updated Succecfully");
+                    String name = studentNameController.text.toUpperCase();
+                     print(name);
                   bool isUpdated = await controller.updateStudentDetails(
                     address: homeAddressController.text.toString(),
                     dob: dobController.text.toString(),
@@ -245,12 +256,12 @@ Future<void> handlePhotoUpdate(String studentId) async {
                      feesStatus: pendingFeesController.text.toString(),
                      motherName:motherNameController.text.toString() ,
                      motherNumber: motherPhoneNumberController.text.toString(),
-                     name: studentNameController.text.toString(),
+                     name: name,
                      profilePhotoUrl: updatePhotoUrl??'',
-                     section: sectionController.text.toString(),
+                     section: sectionController.text.toUpperCase(). toString(),
                      studentClass: studentClassController.text.toString(),
                      totalFee: totalFeesController.text.toString(),
-                     uid: widget.uid,
+                     uid: widget.uid, rollNo: rollNumberController.text.toString(),
                    );
                    if(isUpdated) await customSnackbar(context: context, text: "Student Detials Changed updated succesfully");
                                   setState(() {

@@ -56,7 +56,7 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
               customIconNavigation(context, '/manage-higher-official'),
                     const   SizedBox(width: 10),
               
-                              buildProfilePicker(),
+                              // buildProfilePicker(),
                             ],
                           ),
                           const SizedBox(height: 40),
@@ -166,9 +166,7 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
                                           onPrimary:
                                               Colors.white, // Text color on selection
                                           onSurface: Colors.black, // Default text color
-                                        ),
-                                        dialogBackgroundColor:
-                                            Colors.white, // Background color
+                                        ), dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Background color
                                       ),
                                       child: child!,
                                     );
@@ -206,9 +204,7 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
                                           onPrimary:
                                               Colors.white, // Text color on selection
                                           onSurface: Colors.black, // Default text color
-                                        ),
-                                        dialogBackgroundColor:
-                                            Colors.white, // Background color
+                                        ), dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Background color
                                       ),
                                       child: child!,
                                     );

@@ -1,8 +1,8 @@
 import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
+import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/modules/studentModels.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot;
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
@@ -10,7 +10,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart'; 
 class StudentController extends GetxController {
-  FirebaseAuthUser authControlelr = FirebaseAuthUser();
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
@@ -27,29 +26,35 @@ class StudentController extends GetxController {
   snapshot = await collectionControler.studentLoginCollection.get();
   studentData.value = snapshot.docs.map((doc) {
     return {
-      'rollNumber': doc.data()?['Roll.no'] ?? '',
+      'rollNumber': doc[rollNofield] ?? '',
       'name': doc[studentNamefield] ?? '',
-      'id': doc[stdentIdField] ?? '',
+      'id': doc[studentIdField] ?? '',
       'class': doc[classField] ?? '',
       'section': doc[sectionFild] ?? '',
       'parentMobile': doc[motherPhoneNoField] ?? '',
     };
   }).toList().cast<Map<String, dynamic>>(); 
 }   catch (e) {
-  log(e.toString());
+  log('error in fetching the data $e');
 }
   }
 
 Future<StudentdetailsModel?> studentDataRead({required String uid}) async {
   try {
-   final  doc = await collectionControler.studentLoginCollection.doc(uid).get();
-   final  castedDoc = doc as DocumentSnapshot<Map<String, dynamic>>;
-    return StudentdetailsModel.fromSnapshot(castedDoc);
-  } catch (e) {
-    log('Error fetching student data: $e');
-   return null;
+    final doc = await collectionControler.studentLoginCollection.doc(uid).get();
     
-     }
+    if (!doc.exists) {
+      log("Document does not exist");
+      return null;
+    }
+
+    final castedDoc = doc as DocumentSnapshot<Map<String, dynamic>>;
+    
+    return StudentdetailsModel.fromSnapshot(castedDoc);
+  }  catch (e) {
+    log('Error fetching student data: $e');
+    return null;
+  }
 }
 
 Future<bool> updateStudentDetails({
@@ -67,11 +72,13 @@ Future<bool> updateStudentDetails({
   required String address,
   required String totalFee,
   required String feesStatus,
+  required String rollNo,
 }) async {
   try {
     final docRef = collectionControler.studentLoginCollection.doc(uid);
 
     await docRef.update({
+      rollNofield:rollNo,
       studentNamefield: name,
       classField: studentClass,
       sectionFild: section,
@@ -96,55 +103,55 @@ Future<bool> updateStudentDetails({
 }
 
 
-Future<String> updateStudentPhoto(String studentId, String profilePhotoUrl) async {
-    String downloadUrl='';
-    
-  final docRef = collectionControler.studentLoginCollection.doc(studentId);
+Future<String> updateStudentPhoto(String studentId,) async {
+    String downloadUrl = '';
 
-  try {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image, // Allows only images
-      withData: kIsWeb, // Needed for web support
-    );
+    final docRef = collectionControler.studentLoginCollection.doc(studentId);
 
-    if (result != null) {
-      Uint8List? fileBytes;
-      File? file;
+    try {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+            type: FileType.custom, // Custom type for specific extensions
+            allowedExtensions: ['jpg', 'jpeg', 'png'], // Only allow JPEG and PNG
+            withData: kIsWeb, // Needed for web support
+        );
 
-      if (kIsWeb) {
-        // Web case
-        fileBytes = result.files.first.bytes;
-      } else {
-        // Non-web (mobile, desktop)
-        file = File(result.files.first.path!);
-      }
+        if (result != null) {
+            Uint8List? fileBytes;
+            File? file;
 
-      final ref = collectionControler.firebaseStorageRef.child("Student photo/$studentId");
+            if (kIsWeb) {
+                // Web case
+                fileBytes = result.files.first.bytes;
+            } else {
+                // Non-web (mobile, desktop)
+                file = File(result.files.first.path!);
+            }
 
-      // Upload file
-      UploadTask uploadTask;
-      if (kIsWeb && fileBytes != null) {
-        uploadTask = ref.putData(fileBytes);
-      } else if (file != null) {
-        uploadTask = ref.putFile(file);
-      } else {
-        throw Exception("No valid file selected.");
-      }
-     
-      TaskSnapshot snapshot = await uploadTask;
-       downloadUrl = await snapshot.ref.getDownloadURL();
-         await docRef.update({
-   profilePhotfield: profilePhotoUrl,
-         });
+            final ref = collectionControler.firebaseStorageRef.child("Student photo/$studentId");
 
-      log("Updated photo URL: $downloadUrl");
-    } else {
-      log("No file selected.");
+            // Upload file
+            UploadTask uploadTask;
+            if (kIsWeb && fileBytes != null) {
+                uploadTask = ref.putData(fileBytes);
+            } else if (file != null) {
+                uploadTask = ref.putFile(file);
+            } else {
+                throw Exception("No valid file selected.");
+            }
+
+            TaskSnapshot snapshot = await uploadTask;
+            downloadUrl = await snapshot.ref.getDownloadURL();
+            await docRef.update({
+                profilePhotfield: downloadUrl,
+            });
+
+        } else {
+            log("No file selected.");
+        }
+    } catch (e) {
+        log("Error updating student photo: $e");
     }
-  } catch (e) {
-    log("Error updating student photo: $e");
-  }
-  return downloadUrl;
+    return downloadUrl;
 }
 
 
@@ -154,49 +161,119 @@ Future<String?> getStudentPhotoUrl(String studentId) async {
     final doc = await ref.getDownloadURL();
     return doc;
   } catch (e) {
-    log(e.toString()); 
+    log(
+      'error in getting the downloads url $e'); 
     return null; 
   }
 }
 
 Future<void> registerUser({
-  required TextEditingController emailController,
-  required TextEditingController passwordController,
-  required TextEditingController nameController,
-  required TextEditingController phoneController,
-  required TextEditingController addressController,
-  required TextEditingController fatherNameController,
-  required TextEditingController fatherPhoneController,
-  required TextEditingController motherNameController,
-  required TextEditingController motherPhoneController,
+  required String studentName,
+  required String stuClass,
+  required String stuSection,
+  required String sturollNo,
+  required String stuEmail,
+  required String stufatherName,
+  required String stumotherName,
+  required String stufatherNo,
+  required String stumotherNo,
+  required String stuDob,
+  required String stuAdminNo,
+  required String stuAddress,
+  required dynamic stupicUrl,
+  required String userId,
   required BuildContext context,
 }) async {
   try {
-    // Create user in Firebase Authentication
-   final user = await authControlelr.createUser(email: emailController.text, password: passwordController.text, context: context);
-    String userId = user!.id;
+  
+  
     await collectionControler.studentLoginCollection.doc(userId).set({
-      'name': nameController.text.trim(),
-      'email': emailController.text.trim(),
-      'phone': phoneController.text.trim(),
-      'address': addressController.text.trim(),
-      'fatherName': fatherNameController.text.trim(),
-      'fatherPhone': fatherPhoneController.text.trim(),
-      'motherName': motherNameController.text.trim(),
-      'motherPhone': motherPhoneController.text.trim(),
+      studentNamefield: studentName,
+      classField:stuClass,
+      studentIdField:userId,
+      profilePhotfield:stupicUrl,
+      sectionFild:stuSection,
+      rollNofield:sturollNo,
+      stuentEmailfield:stuEmail,
+      fatherNameField:stufatherName,
+      motherNameField:stumotherName,
+      fatherPhoneNoField:stufatherNo,
+      motherPhoneNoField:stumotherNo,
+      dobfield:stuDob,
+      attendancePercentageField:'',
+      feesStatusField:"Pending",
+      todayAttendanceStatusField:'',
+      studentrole:"Student",
+      studentAdminssionNoField:stuAdminNo,
+      studentAddress:stuAddress,
+      totalAttendanceDays:''
     });
 
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Registration Successful')),
-    );
+      await customSnackbar(context: context, text: "Registration succesfull");
+
   } catch (e) {
-    // Handle errors (e.g., weak password, email already in use, network issues)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: ${e.toString()}')),
-    );
+    log(e.toString());
+      await customSnackbar(context: context, text: "failed to create person $e");
+                               
+   
   }
 }
+Future<dynamic> addPhoto() async {
+  try {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom, // Custom type for specific extensions
+      allowedExtensions: ['jpg', 'jpeg', 'png'], // Only allow JPEG and PNG
+      withData: kIsWeb, // Needed for web support
+    );
 
+    if (result != null) {
+      if (kIsWeb) {
+        return result.files.first.bytes;
+      } else {
+        return File(result.files.first.path!);
+      }
+    } 
+  } catch (e) {
+    log(e.toString());
+  }
+}  
+
+Future<String> photoStorage({required String userId, required dynamic image}) async {
+  String downloadUrl = '';
+
+  final ref = collectionControler.firebaseStorageRef.child("Student photo/$userId");
+
+  UploadTask uploadTask;
+
+  if (kIsWeb && image is Uint8List) {
+    // Web: Use putData for Uint8List
+    uploadTask = ref.putData(image);
+  } else if (image is File) {
+    // Mobile: Use putFile for File
+    uploadTask = ref.putFile(image);
+  } else {
+    throw Exception("Invalid image format");
+  }
+
+  // Wait for upload to complete
+  TaskSnapshot snapshot = await uploadTask;
+
+  // Get download URL
+  downloadUrl = await snapshot.ref.getDownloadURL();
+  return downloadUrl;
+}
+
+Future<void>updateNumberofStudent()async{
+ await collectionControler.loginCollection.doc('students').update({
+      'numberOfPeople': FieldValue.increment(1),
+    });
+}
+
+Future<void>deleteStudent({required String studentId, required String stuClass , required String stuSec})async{
+ await collectionControler.studentLoginCollection.doc(studentId).delete();
+ await collectionControler.firebaseStorageRef.child("Student photo/$studentId").delete();
+ await collectionControler.firebaseStorageRef.child("AnnouncementChatPost/$studentId").delete();
+ await collectionControler.firebaseStorageRef.child("RemainderChatPost/$stuClass/$stuSec/$studentId").delete();
+}
 
 }

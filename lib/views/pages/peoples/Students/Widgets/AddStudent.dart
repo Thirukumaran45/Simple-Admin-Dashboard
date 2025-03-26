@@ -1,8 +1,12 @@
+import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
+import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class AddStudentTab extends StatefulWidget {
@@ -14,23 +18,57 @@ class AddStudentTab extends StatefulWidget {
 
 class _AddStudentTabState extends State<AddStudentTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  String? assetImage;
+  dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
+  FirebaseAuthUser authControlelr = FirebaseAuthUser();
+  
+  late final TextEditingController _dobController ;
+  late final TextEditingController addresscontrl ;
+  late final TextEditingController firstNameController ;
+  late final TextEditingController lastNameController ;
+  late final TextEditingController classNameController ;
+  late final TextEditingController sectionController ;
+  late final TextEditingController rollNumberController ;
+  late final TextEditingController emailController ;
+  late final TextEditingController passwordController ;
+  late final TextEditingController admissionNumberController ;
+late final TextEditingController fatherNameController ;
+late final TextEditingController fatherMobileController ;
+late final TextEditingController motherNameController ;
+late final TextEditingController motherMobileController ;
+final StudentController controller = Get.find();
+@override
+  void initState() {
+    super.initState();
+       _dobController = TextEditingController();
+   addresscontrl = TextEditingController();
+   firstNameController = TextEditingController();
+   lastNameController = TextEditingController();
+   classNameController = TextEditingController();
+   sectionController = TextEditingController();
+   rollNumberController = TextEditingController();
+   emailController = TextEditingController();
+   passwordController = TextEditingController();
+   admissionNumberController = TextEditingController();
+ fatherNameController = TextEditingController();
+ fatherMobileController = TextEditingController();
+ motherNameController = TextEditingController();
+ motherMobileController = TextEditingController();
+ 
+}
 
-  final TextEditingController _dobController = TextEditingController();
-  final TextEditingController addresscontrl = TextEditingController();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController classNameController = TextEditingController();
-  final TextEditingController sectionController = TextEditingController();
-  final TextEditingController rollNumberController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController admissionNumberController = TextEditingController();
-final TextEditingController fatherNameController = TextEditingController();
-final TextEditingController fatherMobileController = TextEditingController();
-final TextEditingController motherNameController = TextEditingController();
-final TextEditingController motherMobileController = TextEditingController();
+Future<void> profileFuntion() async {
+  final pickedImage = await controller. addPhoto();
+  if (pickedImage != null) {
+    setState(() {
+      updatePhotoUrl = pickedImage;
+    });
+  }
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +103,11 @@ final TextEditingController motherMobileController = TextEditingController();
                                 
                                 customIconNavigation(context, '/manage-student'),
                             const    SizedBox( width: 10,),
-                                buildProfilePicker(),
+                              buildProfilePicker(
+                           image: updatePhotoUrl, 
+                           onPress: profileFuntion,
+                          ),
+
                               ],
                             ),
                             const SizedBox(height: 40),
@@ -173,9 +215,7 @@ final TextEditingController motherMobileController = TextEditingController();
                                             onPrimary:
                                                 Colors.white, // Text color on selection
                                             onSurface: Colors.black, // Default text color
-                                          ),
-                                          dialogBackgroundColor:
-                                              Colors.white, // Background color
+                                          ), dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Background color
                                         ),
                                         child: child!,
                                       );
@@ -204,23 +244,49 @@ final TextEditingController motherMobileController = TextEditingController();
                             Align(
                               alignment: Alignment.center,
                               child: ElevatedButton(
-                               onPressed: () {
+                               onPressed: ()async {
   if (_formKey.currentState?.validate() ?? false) {
-    print("Student Details:");
-    print("First Name: ${firstNameController.text}");
-    print("Last Name: ${lastNameController.text}");
-    print("Class Name: ${classNameController.text}");
-    print("Section: ${sectionController.text}");
-    print("Roll Number: ${rollNumberController.text}");
-    print("Email: ${emailController.text}");
-    print("father name: ${fatherNameController.text}");
-    print("mohter name : ${motherNameController.text}");
-    print("father mobile : ${fatherMobileController.text}");
-    print("mohter mobile : ${motherMobileController.text}");
-    print("Password: ${passwordController.text}");
-    print("Date of Birth: ${_dobController.text}");
-    print("Admission Number: ${admissionNumberController.text}");
-    print("Address: ${addresscontrl.text}");
+        // Create user in Firebase Authentication
+   try {
+  final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+   String userId = user!.id;
+   final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
+   String name = '${firstNameController.text} ${lastNameController.text}';
+   if(url.isNotEmpty)
+   {
+await  controller.registerUser(
+   userId: userId,
+     context: context,
+     stuAddress: addresscontrl.text,
+     stuAdminNo: admissionNumberController.text,
+     stuClass: classNameController.text,
+     stuDob: _dobController.text,
+     stuEmail: emailController.text,
+     stuSection: sectionController.text.toUpperCase(),
+     studentName: name.toUpperCase() ,
+     stufatherName: fatherNameController.text,
+     stufatherNo: fatherMobileController.text,
+     stumotherName: motherNameController.text,
+     stumotherNo: motherMobileController.text,
+     sturollNo: rollNumberController.text, stupicUrl: url
+  
+   );
+   await controller.updateNumberofStudent();
+   bool val = await showCustomConfirmDialog(context: context, text: 'Student registered Succesfully');
+   if(val)
+   {
+    customPopNavigation(context, 'manage-student');
+   }
+   }
+   else{
+    await showCustomDialog(context, "Student Profile picture is not uploaded !");
+   }
+
+  
+}  catch (e) {
+  await showCustomDialog(context, e.toString());
+}
+
   }
 },
 

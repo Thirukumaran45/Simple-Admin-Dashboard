@@ -49,26 +49,26 @@ class StudentdetailsModel {
   });
 //the below constructor is used in the case of returning all the user and all the user text .
 // we can specify the user by using the where functions
-  StudentdetailsModel.fromSnapshot(
+StudentdetailsModel.fromSnapshot(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
-  )   : studentName = snapshot.data()![studentNamefield],
+  )   : studentName = snapshot.data()? [studentNamefield] ?? '',
         stdentId = snapshot.id,
-        studentAdminssion = snapshot.data()![studentAdminssionNoField],
-        profilePhot = snapshot.data()![profilePhotfield],
-        role = snapshot.data()![studentrole],
-        studentClass = snapshot.data()![classField],
-        studentSection = snapshot.data()![sectionFild],
-        rollNo = snapshot.data()![rollNofield],
-        dob = snapshot.data()![dobfield],
-        fatherName = snapshot.data()![fatherNameField],
-        fatherPhone = snapshot.data()![fatherPhoneNoField],
-        motherName = snapshot.data()![motherNameField],
-        motherPhoneNo = snapshot.data()![motherNameField],
-        address = snapshot.data()![studentAddress],
-        feesStatus = snapshot.data()![feesStatusField],
-        attendancePercentage = snapshot.data()![attendancePercentageField],
-        todayAttendanceStatus = snapshot.data()![todayAttendanceStatusField],
-        studentEmail = snapshot.data()![stuentEmailfield],
-        allFees = snapshot.data()![totalFees],
-        totalAttendanceDaysCount = snapshot.data()![totalAttendanceDays];
+        studentAdminssion = snapshot.data()? [studentAdminssionNoField]?.toString() ?? '',
+        profilePhot = snapshot.data()? [profilePhotfield] ?? '',
+        role = snapshot.data()? [studentrole] ?? '',
+        studentClass = snapshot.data()? [classField]?.toString() ?? '',
+        studentSection = snapshot.data()? [sectionFild] ?? '',
+        rollNo = snapshot.data()? [rollNofield]?.toString() ?? '',
+        dob = snapshot.data()? [dobfield] ?? '',
+        fatherName = snapshot.data()? [fatherNameField] ?? '',
+        fatherPhone = snapshot.data()? [fatherPhoneNoField]?.toString() ?? '',
+        motherName = snapshot.data()? [motherNameField] ?? '',
+        motherPhoneNo = snapshot.data()? [motherPhoneNoField]?.toString() ?? '',
+        address = snapshot.data()? [studentAddress] ?? '',
+        feesStatus = snapshot.data()? [feesStatusField] ?? '',
+        attendancePercentage = snapshot.data()? [attendancePercentageField]?.toString() ?? '',
+        todayAttendanceStatus = snapshot.data()? [todayAttendanceStatusField]?.toString() ?? '',
+        studentEmail = snapshot.data()? [stuentEmailfield] ?? '',
+        allFees = snapshot.data()? [totalFees]?.toString() ?? '',
+        totalAttendanceDaysCount = snapshot.data()? [totalAttendanceDays]?.toString() ?? '';
 }

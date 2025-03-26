@@ -1,11 +1,19 @@
 
+import 'dart:developer';
+import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,9 +46,11 @@ class _BodyState extends State<Body> {
   bool isObsecure = true;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   String? emailError;
   String? passwordError;
  late FirebaseAuthUser controller ;
+ late FirebaseCollectionVariable collectioncontrolelr;
   // Function to validate email format
   bool isValidEmail(String email) {
     final RegExp emailRegex =
@@ -52,8 +62,26 @@ class _BodyState extends State<Body> {
   void initState() {
     super.initState();
     controller = FirebaseAuthUser();
+    collectioncontrolelr = FirebaseCollectionVariable();
     
   }
+
+  Future<bool> checkBackendEmail(String email) async {
+  try {
+    // Reference to the schoolDetails document
+    final  docSnapshot = await collectioncontrolelr.schoolDetails.get();
+
+    if (docSnapshot.exists) {
+      // Get the admin_email field from Firestore
+      String adminEmail = docSnapshot.get('admin_email');
+      return adminEmail == email;
+    }
+  } catch (e) {
+    log("Error checking backend email: $e");
+  }
+  
+  return false; // Return false if not found or an error occurs
+}
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -202,9 +230,14 @@ class _BodyState extends State<Body> {
                     // Proceed if no errors
                     if (emailError == null && passwordError == null) {
                      final currentUser =  await controller.signinUser(email: emailController.text,password: passwordController.text, context: context);
-                      if(currentUser !=null)
+                      bool isUser = await checkBackendEmail(emailController.text);
+                      if(currentUser !=null && isUser)
                       {
                         customNvigation(context, '/home');
+                      }
+                      else
+                      {
+                        await showCustomDialog(context, "UnAuthorized Credentials, check correct email and password");
                       }
                     }
                   },

@@ -49,7 +49,7 @@ class _AddStaffTabState extends State<AddStaffTab> {
                           
           customIconNavigation(context, '/manage-working-staff'),
                const   SizedBox(width: 10,),
-                          buildProfilePicker(),
+                          // buildProfilePicker(),
                         ],
                       ),
                       const SizedBox(height: 40),
