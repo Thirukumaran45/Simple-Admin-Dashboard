@@ -1,5 +1,7 @@
+import 'dart:developer' show log;
 import 'dart:typed_data';
 import 'package:admin_pannel/constant.dart';
+import 'package:http/http.dart' as http show get;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +49,8 @@ class PdfStaffDetails {
                 ),
                 // Student Photo (Right-aligned)
                 pw.Container(
-                  width: 100,
-                  height: 100,
+                  width: 180,
+                  height: 180,
                   decoration: pw.BoxDecoration(
                     border: pw.Border.all(),
                   ),
@@ -89,15 +91,28 @@ class PdfStaffDetails {
     required TextEditingController phoneNumberController,
     required TextEditingController emailController,
     required TextEditingController homeAddressController,
-    Uint8List? photo,
+    String? assetImage,
   }) async {
+     Uint8List? imageBytes;
+
+  if (assetImage != null && assetImage.isNotEmpty) {
+    try {
+      final response = await http.get(Uri.parse(assetImage));
+      if (response.statusCode == 200) {
+        imageBytes = response.bodyBytes;
+      }
+    } catch (e) {
+      log("Error loading image: $e");
+    }
+  }
+
     final pdfData = await generateStudentDetailsSheet(
       fileName: fileName,
       nameController: nameController.text,
       emailController: emailController.text,
       homeAddressController: homeAddressController.text,
       phoneNumber: phoneNumberController.text,
-      photo: photo,
+      photo: imageBytes,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");
   }

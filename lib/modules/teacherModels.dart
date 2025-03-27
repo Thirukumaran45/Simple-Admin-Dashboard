@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 @immutable
 class Teacherdetailmodel {
   final String teacherProfile;
-  final String teacherName;
+  final String teacherName; 
   final String teacherEmail;
   final String teacherPhoneNumber;
   final String teacherAddress;
-  final String Date_of_employment;
-  final String college_degree;
-  final String year_of_experience;
+  final String dateofemployment;
+  final String collegedegree;
+  final String yearofexperience;
   final String teacherSubjectHandling;
-  final String Id;
+  final String id;
   final String role;
 // the below constructor is used in the case of returning the specific user id and the text
   const Teacherdetailmodel({
@@ -23,26 +23,26 @@ class Teacherdetailmodel {
     required this.teacherEmail,
     required this.teacherPhoneNumber,
     required this.teacherAddress,
-    required this.Date_of_employment,
-    required this.college_degree,
-    required this.year_of_experience,
+    required this.dateofemployment,
+    required this.collegedegree,
+    required this.yearofexperience,
     required this.teacherSubjectHandling,
-    required this.Id,
+    required this.id,
     required this.role,
   });
 //the below constructor is used in the case of returning all the user and all the user text .
 // we can specify the user by using the where functions
   Teacherdetailmodel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> snapshot)
-      : Id = snapshot.id,
-        teacherProfile = snapshot.data()![teacherProfileField],
-        role = snapshot.data()![teacherrole],
-        teacherName = snapshot.data()![teacherNameField],
-        teacherEmail = snapshot.data()![teacherEmailfield],
-        teacherPhoneNumber = snapshot.data()![teacherPhoneNumberfield],
-        teacherAddress = snapshot.data()![teacherAddressfield],
-        Date_of_employment = snapshot.data()![dateofEmploymentfield],
-        college_degree = snapshot.data()![collegedegreefield],
-        year_of_experience = snapshot.data()![yearOfExperiencefield],
-        teacherSubjectHandling = snapshot.data()![teacherSubjectHandlingfield];
+      : id = snapshot.id,
+        teacherProfile = snapshot.data()?[teacherProfileField] ?? " ",
+        role = snapshot.data()?[teacherrole] ?? " ",
+        teacherName = snapshot.data()?[teacherNameField] ?? " ",
+        teacherEmail = snapshot.data()?[teacherEmailfield] ?? " ",
+        teacherPhoneNumber = snapshot.data()?[teacherPhoneNumberfield] ?? " ",
+        teacherAddress = snapshot.data()?[teacherAddressfield] ?? " ",
+        dateofemployment = snapshot.data()?[dateofEmploymentfield] ?? " ",
+        collegedegree = snapshot.data()?[collegedegreefield] ?? " ",
+        yearofexperience = snapshot.data()?[yearOfExperiencefield] ?? " ",
+        teacherSubjectHandling = snapshot.data()?[teacherSubjectHandlingfield] ?? " ";
 }

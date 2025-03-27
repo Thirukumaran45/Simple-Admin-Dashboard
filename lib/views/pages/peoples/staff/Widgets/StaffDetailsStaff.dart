@@ -3,6 +3,7 @@ import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/StafffController.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfStaff/pdfTotalstaffDetails.dart';
+import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -45,29 +46,6 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
     });
   }
 
-Widget customFilterBox  ( { required String label, required Function(String)?  onfunction })
-{
-  return  SizedBox(
-              width: 150,
-              child: TextField(
-                decoration:  InputDecoration(
-                  labelText: label,
-                  labelStyle:const TextStyle(color: Colors.black) ,
-
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                ),
-                onChanged:onfunction
-              ),
-            );
-} 
 
   @override
   Widget build(BuildContext context) {

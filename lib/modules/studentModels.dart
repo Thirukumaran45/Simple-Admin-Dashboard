@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 
 @immutable
-class StudentdetailsModel {
+class StudentdetailsModel { 
   final String studentName;
   final String role;
   final String studentEmail;

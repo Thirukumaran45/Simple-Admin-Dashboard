@@ -263,17 +263,50 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
   return downloadUrl;
 }
 
-Future<void>updateNumberofStudent()async{
- await collectionControler.loginCollection.doc('students').update({
-      'numberOfPeople': FieldValue.increment(1),
-    });
+Future<void> updateNumberOfStudent(bool isIncrement) async {
+  await collectionControler.loginCollection.doc('students').update({
+    'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
+  });
 }
 
-Future<void>deleteStudent({required String studentId, required String stuClass , required String stuSec})async{
- await collectionControler.studentLoginCollection.doc(studentId).delete();
- await collectionControler.firebaseStorageRef.child("Student photo/$studentId").delete();
- await collectionControler.firebaseStorageRef.child("AnnouncementChatPost/$studentId").delete();
- await collectionControler.firebaseStorageRef.child("RemainderChatPost/$stuClass/$stuSec/$studentId").delete();
-}
 
+
+Future<bool> deleteStudent({
+  required String studentId,
+  required String stuClass,
+  required String stuSec,
+}) async {
+  try {
+    // Check if student exists in Firestore before deleting
+    final studentDoc = await collectionControler.studentLoginCollection.doc(studentId).get();
+    if (studentDoc.exists) {
+      await collectionControler.studentLoginCollection.doc(studentId).delete();
+    }
+
+    // Check if student photo exists in Storage before deleting
+    final studentPhotoRef = collectionControler.firebaseStorageRef.child("Student photo/$studentId");
+    if ((await studentPhotoRef.listAll()).items.isNotEmpty) {
+      await studentPhotoRef.delete();
+    }
+
+    // Check if AnnouncementChatPost exists before deleting
+    final announcementRef = collectionControler.firebaseStorageRef.child("AnnouncementChatPost/$studentId");
+    if ((await announcementRef.listAll()).items.isNotEmpty) {
+      await announcementRef.delete();
+    }
+
+    // Check if RemainderChatPost exists before deleting
+    final remainderRef = collectionControler.firebaseStorageRef.child("RemainderChatPost/$stuClass/$stuSec/$studentId");
+    if ((await remainderRef.listAll()).items.isNotEmpty) {
+      await remainderRef.delete();
+    }
+   await updateNumberOfStudent(false);
+
+  log("deleted the student data");
+    return true;
+  } catch (e) {
+    log("Error in delete: $e");
+    return false;
+  }
+}
 }

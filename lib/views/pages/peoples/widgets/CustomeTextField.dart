@@ -1,5 +1,6 @@
 
 import 'dart:io' show File;
+import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -181,6 +182,29 @@ Widget buildPasswordField({required bool isPasswordObscured, required passwordCo
       );
     },
   );
+}
+
+Widget customFilterBox  ( { required String label, required Function(String)?  onfunction })
+{
+  return  SizedBox(
+              width: 150,
+              child: TextField(
+                decoration:  InputDecoration(
+                  labelStyle:const TextStyle(color: Colors.black) ,
+                  labelText: label,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreenColors),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreenColors),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: primaryGreenColors),
+                  ),
+                ),
+                onChanged:onfunction
+              ),
+            );
 }
 
 Widget buildParentDetailsRow({required fatherNameController, required fatherMobileController,

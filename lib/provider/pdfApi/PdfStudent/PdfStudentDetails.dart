@@ -96,7 +96,7 @@ class PdfStudentDetails {
             child: pw.Text(value, style: pw.TextStyle(font: font2, fontSize: 12)),
           ),
         ],
-      ),
+      ), 
     );
   }
 

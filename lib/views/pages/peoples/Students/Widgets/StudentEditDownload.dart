@@ -14,7 +14,7 @@ class StudentEditDownload extends StatefulWidget {
   final String uid;
   const StudentEditDownload({super.key, required this.uid});
 
-  @override
+  @override 
   _StudentEditDownloadState createState() => _StudentEditDownloadState();
 }
 
@@ -49,7 +49,7 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
 Future<void> handlePhotoUpdate(String studentId) async {
   String newPhotoUrl = await  controller.updateStudentPhoto(studentId );
   
-  if (newPhotoUrl.isNotEmpty) {
+  if (newPhotoUrl.isNotEmpty) { 
     setState(() {
       assetImage = newPhotoUrl; // Update UI with new photo URL
     });
@@ -246,7 +246,7 @@ Future<void> initializeFunction() async {
                                 if (isEdited) {
                      await showCustomDialog(context, "Student details Updated Succecfully");
                     String name = studentNameController.text.toUpperCase();
-                     print(name);
+                     
                   bool isUpdated = await controller.updateStudentDetails(
                     address: homeAddressController.text.toString(),
                     dob: dobController.text.toString(),
@@ -261,7 +261,8 @@ Future<void> initializeFunction() async {
                      section: sectionController.text.toUpperCase(). toString(),
                      studentClass: studentClassController.text.toString(),
                      totalFee: totalFeesController.text.toString(),
-                     uid: widget.uid, rollNo: rollNumberController.text.toString(),
+                     uid: widget.uid, 
+                     rollNo: rollNumberController.text.toString(),
                    );
                    if(isUpdated) await customSnackbar(context: context, text: "Student Detials Changed updated succesfully");
                                   setState(() {
@@ -280,7 +281,7 @@ Future<void> initializeFunction() async {
                               ),
                             ),
                           ),
-                          // Download Button
+                           // Download Button
                           SizedBox(height: 50,
                             child: ElevatedButton(
                               onPressed: ()async {

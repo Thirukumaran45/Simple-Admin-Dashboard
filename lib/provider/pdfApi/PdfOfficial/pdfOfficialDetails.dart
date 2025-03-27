@@ -1,5 +1,7 @@
+import 'dart:developer' show log;
 import 'dart:typed_data';
 import 'package:admin_pannel/constant.dart';
+import 'package:http/http.dart' as http;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:flutter/material.dart';
@@ -55,8 +57,8 @@ class PdfOfficialsDetails {
                 ),
                 // Student Photo (Right-aligned)
                 pw.Container(
-                  width: 100,
-                  height: 100,
+                  width: 180,
+                  height: 180,
                   decoration: pw.BoxDecoration(
                     border: pw.Border.all(),
                   ),
@@ -100,9 +102,24 @@ class PdfOfficialsDetails {
     required TextEditingController dateOfBirthController,
     required TextEditingController emailController,
     required TextEditingController homeAddressController,
-    required TextEditingController yearofExperience,
-    Uint8List? photo,
+    required TextEditingController yearofExperience, 
+    required String? assetImage, // Now it's a String (URL)
+
   }) async {
+ Uint8List? imageBytes;
+
+  if (assetImage != null && assetImage.isNotEmpty) {
+    try {
+      final response = await http.get(Uri.parse(assetImage));
+      if (response.statusCode == 200) {
+        imageBytes = response.bodyBytes;
+      }
+    } catch (e) {
+      log("Error loading image: $e");
+    }
+  }
+
+
     final pdfData = await generateStudentDetailsSheet(
       fileName: fileName,
       nameController: nameController.text,
@@ -113,7 +130,7 @@ class PdfOfficialsDetails {
       graduateDegree: degreeController.text,
       phoneNumber: phoneNumberController.text,
       yearofExperience: yearofExperience.text,
-      photo: photo,
+      photo: imageBytes,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");
   }

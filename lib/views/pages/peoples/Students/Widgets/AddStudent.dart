@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class AddStudentTab extends StatefulWidget {
-  const AddStudentTab({super.key});
+  const AddStudentTab({super.key}); 
 
   @override
   State<AddStudentTab> createState() => _AddStudentTabState();
@@ -36,7 +36,7 @@ class _AddStudentTabState extends State<AddStudentTab> {
 late final TextEditingController fatherNameController ;
 late final TextEditingController fatherMobileController ;
 late final TextEditingController motherNameController ;
-late final TextEditingController motherMobileController ;
+late final TextEditingController motherMobileController ; 
 final StudentController controller = Get.find();
 @override
   void initState() {
@@ -57,7 +57,7 @@ final StudentController controller = Get.find();
  motherMobileController = TextEditingController();
  
 }
-
+ 
 Future<void> profileFuntion() async {
   final pickedImage = await controller. addPhoto();
   if (pickedImage != null) {
@@ -271,7 +271,7 @@ await  controller.registerUser(
      sturollNo: rollNumberController.text, stupicUrl: url
   
    );
-   await controller.updateNumberofStudent();
+   await controller.updateNumberOfStudent(true);
    bool val = await showCustomConfirmDialog(context: context, text: 'Student registered Succesfully');
    if(val)
    {

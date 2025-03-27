@@ -191,7 +191,10 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                             child: ElevatedButton(
                               onPressed: ()async {
                                  await  customSnackbar(context: context, text: "Downloaded Succesfully");
-                                   await PdfOfficialsDetails.openPdf(fileName: firstNameController.text, nameController: firstNameController, employmentDate: emplymentDateController, degreeController: degreeController, phoneNumberController: phoneNumberController, dateOfBirthController: dobController, emailController: emailController, homeAddressController: homeAddressController, yearofExperience: experienceController);
+                                   await PdfOfficialsDetails.openPdf(fileName: firstNameController.text, nameController: firstNameController,
+                                    employmentDate: emplymentDateController, degreeController: degreeController, phoneNumberController: phoneNumberController, 
+                                    dateOfBirthController: dobController, emailController: emailController,
+                                    homeAddressController: homeAddressController, yearofExperience: experienceController, assetImage: '');
                                 },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,

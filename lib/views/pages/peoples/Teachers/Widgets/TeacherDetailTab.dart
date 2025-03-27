@@ -3,6 +3,8 @@ import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/pdfTeacher/pdfTotalTeacherDetails.dart';
+import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +24,19 @@ class _TeacherDetailsTabState extends State<TeacherDetailsTab> {
 
   
 Teachercontroller controller = Get.find();
-  List<Map<String, String>> filteredData = [];
+  List<Map<String, dynamic>> filteredData = [];
 
   @override
   void initState() {
     super.initState();
-    filteredData = List.from(controller.teacherData);
+     setState(() {
+      filteredData = List.from(controller.teacherData);
+    });
+  ever(controller.teacherData, (_) {
+    setState(() {
+      filteredData = List.from(controller.teacherData);
+    });
+  });
   }
 
   void applyFilters() {
@@ -46,28 +55,6 @@ Teachercontroller controller = Get.find();
     });
   }
 
-Widget customFilterBox  ( { required String label, required Function(String)?  onfunction })
-{
-  return  SizedBox(
-              width: 150,
-              child: TextField(
-                decoration:  InputDecoration(
-                  labelStyle:const TextStyle(color: Colors.black) ,
-                  labelText: label,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                ),
-                onChanged:onfunction
-              ),
-            );
-} 
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +163,7 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                             ),
                           ),
                             onPressed: () {
-                              customNvigation(context, '/manage-teacher/viewTeacherDetails/editTeacherDetails');
+                              customNvigation(context, '/manage-teacher/viewTeacherDetails/editTeacherDetails?uid=${teacher['id']!}');
                             },
                             child: const Text('View More',style: TextStyle(fontSize: 14),),
                           ),
@@ -195,8 +182,17 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                                     BorderRadius.circular(20), // Rounded corners
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: ()async {
                               // Implement view more functionality
+                             bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+  if (val) {
+    await controller.deleteTeacher(teacherId: teacher['id']!,);
+   ever(controller.teacherData, (_) {
+    setState(() {
+      filteredData = List.from(controller.teacherData);
+    });
+  });
+  }
                             },
                             child: const Row(
                               children: [ Icon(Icons.delete_sharp , color: Colors.white,),

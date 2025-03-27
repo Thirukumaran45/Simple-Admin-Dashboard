@@ -1,18 +1,20 @@
+import 'dart:developer' show log;
 import 'dart:typed_data';
 import 'package:admin_pannel/constant.dart';
+import 'package:http/http.dart' as http;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' ;
 
 class PdfTeacherDetails {
   static Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
     required String nameController,
     required String graduateDegree,
+    required String subjectHandling,
     required String yearofExperience,
     required String employmentDate,
     required String phoneNumber,
-    required String dateOfBirthController,
     required String emailController,
     required String homeAddressController,
     Uint8List? photo,
@@ -34,6 +36,8 @@ class PdfTeacherDetails {
             pw.SizedBox(height: 20),
             pw.Row(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
+               mainAxisAlignment: pw.MainAxisAlignment.center,
+                 
               children: [
                 // Student Details (Left-aligned)
                 pw.Expanded(
@@ -46,8 +50,8 @@ class PdfTeacherDetails {
                       detailText("Graduated Degree", graduateDegree, font1, font2),
                       detailText("Year of Experience", yearofExperience, font1, font2),
                       detailText("Employment Date", employmentDate, font1, font2),
+                      detailText("Subject Handling ", subjectHandling, font1, font2),
                       detailText("Phone Number",phoneNumber, font1, font2),
-                      detailText("Date of Birth", dateOfBirthController, font1, font2),
                       detailText("Email Address", emailController, font1, font2),
                       detailText("Home Address", homeAddressController, font1, font2),
                     ],
@@ -55,8 +59,8 @@ class PdfTeacherDetails {
                 ),
                 // Student Photo (Right-aligned)
                 pw.Container(
-                  width: 100,
-                  height: 100,
+                  width: 180,
+                  height: 180,
                   decoration: pw.BoxDecoration(
                     border: pw.Border.all(),
                   ),
@@ -101,19 +105,34 @@ class PdfTeacherDetails {
     required TextEditingController emailController,
     required TextEditingController homeAddressController,
     required TextEditingController yearofExperience,
-    Uint8List? photo,
+    required TextEditingController subjectHandling,
+  required String? assetImage, // Now it's a String (URL)
+
   }) async {
+  Uint8List? imageBytes;
+
+  if (assetImage != null && assetImage.isNotEmpty) {
+    try {
+      final response = await http.get(Uri.parse(assetImage));
+      if (response.statusCode == 200) {
+        imageBytes = response.bodyBytes;
+      }
+    } catch (e) {
+      log("Error loading image: $e");
+    }
+  }
+
+
     final pdfData = await generateStudentDetailsSheet(
       fileName: fileName,
       nameController: nameController.text,
-      dateOfBirthController: dateOfBirthController.text,
       emailController: emailController.text,
       homeAddressController: homeAddressController.text,
       employmentDate: employmentDate.text,
       graduateDegree: degreeController.text,
       phoneNumber: phoneNumberController.text,
       yearofExperience: yearofExperience.text,
-      photo: photo,
+      photo: imageBytes, subjectHandling: subjectHandling.text,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");
   }

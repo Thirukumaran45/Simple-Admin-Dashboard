@@ -2,6 +2,8 @@ import 'package:admin_pannel/constant.dart';
 import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfStudent/PdfTotalStudent.dart';
+import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ import 'package:get/get.dart';
 
 class StudentDetailsTab extends StatefulWidget {
   const StudentDetailsTab({super.key,});
-
+ 
   @override
   State<StudentDetailsTab> createState() => _StudentDetailsTabState();
 }
@@ -56,28 +58,7 @@ void initState() {
     });
   }
 
-Widget customFilterBox  ( { required String label, required Function(String)?  onfunction })
-{
-  return  SizedBox(
-              width: 150,
-              child: TextField(
-                decoration:  InputDecoration(
-                  labelStyle:const TextStyle(color: Colors.black) ,
-                  labelText: label,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: primaryGreenColors),
-                  ),
-                ),
-                onChanged:onfunction
-              ),
-            );
-} 
+ 
 
 
   @override
@@ -236,7 +217,7 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
                         DataCell(Text(student['class']!,style: const TextStyle(color: Colors.black),)),
                         DataCell(Text(student['section']!,style: const TextStyle(color: Colors.black),)),
                         DataCell(Text(student['parentMobile']!,style: const TextStyle(color: Colors.black),)),
-                      DataCell(
+                      DataCell( 
   ElevatedButton(
     style: ElevatedButton.styleFrom(
       backgroundColor: primaryGreenColors,
@@ -265,9 +246,17 @@ DataCell(
         borderRadius: BorderRadius.circular(20),
       ),
     ),
-    onPressed: () {
-      // Implement delete functionality
-    },
+   onPressed: () async {
+  bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+  if (val) {
+    await controler.deleteStudent(studentId: student['id']!, stuClass: student['class'], stuSec: student['section']);
+   ever(controler.studentData, (_) {
+    setState(() {
+      filteredData = List.from(controler.studentData);
+    });
+  });
+  }
+},
     child: const Row(
       mainAxisSize: MainAxisSize.min, // Prevents Row overflow
       children: [
