@@ -21,7 +21,7 @@ class _TeacherDetailsTabState extends State<HigherOfficialDetailsTab> {
   String phoneNumber = '';
   String emailAddress = '';
 Higherofficialcontroller controller = Get.find();
-  List<Map<String, String>> filteredData = [];
+  List<Map<String, dynamic>> filteredData = [];
 
   @override
   void initState() {

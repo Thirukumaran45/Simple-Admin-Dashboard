@@ -22,7 +22,7 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
   String emailAddress = '';
 
   StaffController controller = Get.find();
-  List<Map<String, String>> filteredData = [];
+  List<Map<String, dynamic>> filteredData = [];
 
   @override
   void initState() {

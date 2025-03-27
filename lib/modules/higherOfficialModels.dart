@@ -2,7 +2,7 @@ import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-@immutable
+@immutable 
 class Principaldetailmodel {
   final String principalName;
   final String principalEmail;
@@ -26,10 +26,10 @@ class Principaldetailmodel {
   Principaldetailmodel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> snapshot)
       : Id = snapshot.id,
-        principalProfile = snapshot.data()![principalProfilefield],
-        role = snapshot.data()![principalrole],
-        principalName = snapshot.data()![principalNamefield],
-        principalAddress = snapshot.data()![principalAddressfield],
-        principalEmail = snapshot.data()![principalEmailfield],
-        principalPhoneNumber = snapshot.data()![principalPhoneNumberfield];
+        principalProfile = snapshot.data()?[principalProfilefield] ?? "" ,
+        role = snapshot.data()?[principalRoleField] ?? "",
+        principalName = snapshot.data()?[principalNamefield] ?? "",
+        principalAddress = snapshot.data()?[principalAddressfield] ?? "",
+        principalEmail = snapshot.data()?[principalEmailfield] ?? "",
+        principalPhoneNumber = snapshot.data()?[principalPhoneNumberfield] ?? "";
 }

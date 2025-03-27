@@ -137,7 +137,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                 Container(
                   width: 300,
                   padding: const EdgeInsets.all(20),
-                  child: const Text(" Thiru Kumaran N R", overflow: TextOverflow.visible,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                  child:  Text(firstNameController.text, overflow: TextOverflow.visible,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
                
                    const  SizedBox(
                         height:150,

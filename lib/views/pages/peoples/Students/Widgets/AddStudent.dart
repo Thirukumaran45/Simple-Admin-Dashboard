@@ -41,7 +41,39 @@ final StudentController controller = Get.find();
 @override
   void initState() {
     super.initState();
-       _dobController = TextEditingController();
+       _dobController .dispose();
+   addresscontrl .dispose();
+   firstNameController .dispose();
+   lastNameController .dispose();
+   classNameController .dispose();
+   sectionController .dispose();
+   rollNumberController .dispose();
+   emailController .dispose();
+   passwordController .dispose();
+   admissionNumberController .dispose();
+ fatherNameController .dispose();
+ fatherMobileController .dispose();
+ motherNameController .dispose();
+ motherMobileController .dispose();
+ 
+}
+
+
+
+Future<void> profileFuntion() async {
+  final pickedImage = await controller. addPhoto();
+  if (pickedImage != null) {
+    setState(() {
+      updatePhotoUrl = pickedImage;
+    });
+  }
+}
+
+
+
+@override
+  void dispose() {
+          _dobController = TextEditingController();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
    lastNameController = TextEditingController();
@@ -55,21 +87,8 @@ final StudentController controller = Get.find();
  fatherMobileController = TextEditingController();
  motherNameController = TextEditingController();
  motherMobileController = TextEditingController();
- 
-}
- 
-Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto();
-  if (pickedImage != null) {
-    setState(() {
-      updatePhotoUrl = pickedImage;
-    });
+    super.dispose();
   }
-}
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -215,7 +234,7 @@ Future<void> profileFuntion() async {
                                             onPrimary:
                                                 Colors.white, // Text color on selection
                                             onSurface: Colors.black, // Default text color
-                                          ), dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Background color
+                                          ), dialogTheme: const DialogThemeData(backgroundColor: Colors.white), // Background color
                                         ),
                                         child: child!,
                                       );
@@ -247,6 +266,8 @@ Future<void> profileFuntion() async {
                                onPressed: ()async {
   if (_formKey.currentState?.validate() ?? false) {
         // Create user in Firebase Authentication
+              await showCustomDialog(context, "Student details Updated Succecfully");
+
    try {
   final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
    String userId = user!.id;

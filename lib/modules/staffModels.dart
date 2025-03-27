@@ -26,10 +26,10 @@ class Stafffdetailsmodel {
   Stafffdetailsmodel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> snapshot)
       : Id = snapshot.id,
-        staffProfile = snapshot.data()![staffProfilefield],
-        role = snapshot.data()![staffrole],
-        staffName = snapshot.data()![staffNamefield],
-        staffEmail = snapshot.data()![staffEmailfield],
-        staffAddress = snapshot.data()![staffAddressfield],
-        staffPhoneNumber = snapshot.data()![staffPhoneNumberfield];
+        staffProfile = snapshot.data()?[staffProfilefield]?? "",
+        role = snapshot.data()?[staffroleField]?? "",
+        staffName = snapshot.data()?[staffNamefield]?? "",
+        staffEmail = snapshot.data()?[staffEmailfield]?? "",
+        staffAddress = snapshot.data()?[staffAddressfield]?? "",
+        staffPhoneNumber = snapshot.data()?[staffPhoneNumberfield]?? "";
 }

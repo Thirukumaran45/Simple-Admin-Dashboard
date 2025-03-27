@@ -41,7 +41,7 @@ void fetchTeacherData() async {
     log('Error in fetching the data: $e');
   }
 }
-
+ 
 
 Future<Teacherdetailmodel?> teacherDataRead({required String uid}) async {
   try {

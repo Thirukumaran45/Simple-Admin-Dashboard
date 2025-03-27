@@ -29,7 +29,8 @@ const principalAddressfield = 'address';
 const principalProfilefield = 'profile_photo';
 const principalId = 'id';
 const principalPasskey = '';
-const principalrole = 'role';
+const principalRoleField = 'role';
+
 
 // staff variable
 const staffNamefield = 'name';
@@ -38,7 +39,8 @@ const staffPhoneNumberfield = 'phoneNo';
 const staffAddressfield = 'address';
 const staffProfilefield = 'profile_photo';
 const stafflId = 'id';
-const staffrole = 'role';
+const staffroleField = 'role';
+const staffPassKey ='';
 
 
 //student variable
