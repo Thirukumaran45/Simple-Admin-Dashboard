@@ -9,9 +9,11 @@ import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog;
+
 class HigherOfficialDetailsTab extends StatefulWidget {
   const HigherOfficialDetailsTab({super.key});
-
+ 
   @override
   State<HigherOfficialDetailsTab> createState() => _TeacherDetailsTabState();
 }
@@ -23,10 +25,18 @@ class _TeacherDetailsTabState extends State<HigherOfficialDetailsTab> {
 Higherofficialcontroller controller = Get.find();
   List<Map<String, dynamic>> filteredData = [];
 
+
   @override
   void initState() {
     super.initState();
-    filteredData = List.from(controller.officialData);
+     setState(() {
+      filteredData = List.from(controller.officialData);
+    });
+  ever(controller.officialData, (_) {
+    setState(() {
+      filteredData = List.from(controller.officialData);
+    });
+  });
   }
 
   void applyFilters() {
@@ -114,6 +124,11 @@ Higherofficialcontroller controller = Get.find();
                         label: Text('Email Address',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16))),
+                     DataColumn(
+                        label: Text('Acting role',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16))),
+                    
                     DataColumn(
                         label: Text('Phone Number',
                             style: TextStyle(
@@ -134,6 +149,7 @@ Higherofficialcontroller controller = Get.find();
                         )),
                         DataCell(Text(teacher['name']!, style: const TextStyle(color: Colors.black))),
                         DataCell(Text(teacher['email']!, style: const TextStyle(color: Colors.black))),
+                        DataCell(Text(teacher['role']!, style: const TextStyle(color: Colors.black))),
                         DataCell(Text(teacher['phone']!, style: const TextStyle(color: Colors.black))), DataCell(SizedBox(width: 150,
                           child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -149,7 +165,7 @@ Higherofficialcontroller controller = Get.find();
                               ),
                             ),
                             onPressed: () {
-                              customNvigation(context, '/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails');
+                              customNvigation(context, '/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails?uid=${teacher['id']!}');
                              
       
                             },
@@ -170,8 +186,15 @@ Higherofficialcontroller controller = Get.find();
                                     BorderRadius.circular(20), // Rounded corners
                               ),
                             ),
-                            onPressed: () {
-                              // Implement view more functionality
+                            onPressed: ()async {           bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+  if (val) {
+    await controller.deleteOfficials(officialId: teacher['id']!,);
+   ever(controller.officialData, (_) {
+    setState(() {
+      filteredData = List.from(controller.officialData);
+    });
+  });
+  }
                             },
                             child: const Row(
                               children: [ Icon(Icons.delete_sharp , color: Colors.white,),

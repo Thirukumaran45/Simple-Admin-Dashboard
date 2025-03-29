@@ -9,7 +9,7 @@ import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+ 
 class TeacherEditDownload extends StatefulWidget {
    final String uid;
   const TeacherEditDownload({super.key, required this.uid});

@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 class TeacherDetailsTab extends StatefulWidget {
   const TeacherDetailsTab({super.key});
 
-  @override
+  @override 
   State<TeacherDetailsTab> createState() => _TeacherDetailsTabState();
 }
 

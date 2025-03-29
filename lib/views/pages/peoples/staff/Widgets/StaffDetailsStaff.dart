@@ -9,9 +9,11 @@ import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog;
+
 class StaffDetailsTab extends StatefulWidget {
   const StaffDetailsTab({super.key});
-
+ 
   @override
   State<StaffDetailsTab> createState() => _StaffDetailsTabState();
 }
@@ -27,8 +29,16 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
   @override
   void initState() {
     super.initState();
-    filteredData = List.from(controller.staffData);
+     setState(() {
+      filteredData = List.from(controller.staffData);
+    });
+  ever(controller.staffData, (_) {
+    setState(() {
+      filteredData = List.from(controller.staffData);
+    });
+  });
   }
+
 
   void applyFilters() {
     setState(() {
@@ -148,7 +158,18 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
                                   BorderRadius.circular(20), // Rounded corners
                             ),
                           ),
-                            onPressed: () {},
+                            onPressed: ()async {
+  bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+  if (val) {
+    await controller.deleteStaffs(staffId: staff['id']!,);
+   ever(controller.staffData, (_) {
+    setState(() {
+      filteredData = List.from(controller.staffData);
+    });
+  });
+  }
+
+                            },
                             child: const Row(
                               children: [Icon(Icons.delete_sharp, color: Colors.white), Text(' Delete',style: TextStyle(fontSize: 14),)],
                             ),

@@ -1,15 +1,19 @@
 
 import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/controller/HigherOfficialController.dart';
+import 'package:admin_pannel/modules/higherOfficialModels.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfOfficial/pdfOfficialDetails.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HigherOfficialEditDownload extends StatefulWidget {
-  const HigherOfficialEditDownload({super.key, required String uid});
-
+final String uid;
+  const HigherOfficialEditDownload({super.key, required this. uid});
+ 
   @override
   _StudentEditDownloadState createState() => _StudentEditDownloadState();
 }
@@ -17,28 +21,63 @@ class HigherOfficialEditDownload extends StatefulWidget {
 class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
   // Sample data for the student (using TextEditingController for editable fields)
   late TextEditingController firstNameController;
-  late TextEditingController degreeController;
   late TextEditingController phoneNumberController;
   late TextEditingController emailController;
   late TextEditingController homeAddressController;
-  late TextEditingController dobController;
-  late TextEditingController emplymentDateController;
-  late TextEditingController experienceController;
-
+  late TextEditingController role;
+ String? assetImage;
+  String? updatePhotoUrl;
   bool isEdited = false;
+  Principaldetailmodel? teacherDetails;
+  Higherofficialcontroller controller = Get.find();
+
+
 
   @override
   void initState() {
     super.initState();
-    experienceController = TextEditingController(text: "5 years");
-    firstNameController = TextEditingController(text: " dong lee ");
-    degreeController = TextEditingController(text: "B.E Computer science and engineering");
-    phoneNumberController = TextEditingController(text: "9876543210");
-    emailController = TextEditingController(text: "johndoe@example.com");
-    homeAddressController = TextEditingController(text: "123 Main St, Apartment 456, City, Country");
-    dobController = TextEditingController(text: "01/01/2000");
-    emplymentDateController = TextEditingController(text: "12/1/2025");
+    initializeFunction();
+   }
+
+Future<void> handlePhotoUpdate(String studentId) async {
+  String newPhotoUrl = await  controller.updateOfficialsPhoto(studentId );
+  
+  if (newPhotoUrl.isNotEmpty) { 
+    setState(() {
+      assetImage = newPhotoUrl; // Update UI with new photo URL
+    });
   }
+}
+  Future<void>initializeFunction()async{
+  teacherDetails = await controller.officialDataRead(uid: widget.uid);
+   if (teacherDetails == null) {
+      return;
+    }
+
+    String? photoUrl = await controller.getOfficialsPhotoUrl(teacherDetails!.Id);
+    
+    setState(() {
+       assetImage = photoUrl ?? teacherDetails?.principalProfile;
+       role = TextEditingController(text: teacherDetails?.role??'');
+    firstNameController = TextEditingController(text:teacherDetails?.principalName??'');
+   phoneNumberController = TextEditingController(text:teacherDetails?.principalPhoneNumber??'');
+    emailController = TextEditingController(text: teacherDetails?.principalEmail??'');
+    homeAddressController = TextEditingController(text: teacherDetails?.principalAddress??'');
+   
+    });
+  }
+
+  @override
+  void dispose() {
+    role.dispose();
+    firstNameController.dispose();
+    phoneNumberController.dispose();
+    emailController.dispose();
+    homeAddressController.dispose();
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +114,9 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                       ), Positioned(
             bottom: 0,
             right: 0,
-            child: customIconTextButton(Colors.red, onPressed: (){
+            child: customIconTextButton(Colors.red, onPressed: ()async{
+            await handlePhotoUpdate(teacherDetails!.Id);
+            
             }, icon: Icons.edit, text: "Change")
           ),
                     ],
@@ -88,7 +129,7 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                      width: 300,
                 padding: const EdgeInsets.all(20),
                
-                  child: const Text(" Thiru Kumaran N R", overflow:TextOverflow.visible ,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                  child:  Text(teacherDetails!.principalName, overflow:TextOverflow.visible ,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
                const SizedBox(
                 height: 150,
                )
@@ -134,18 +175,11 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildCustomRow("Higher Official Name", firstNameController),
-                            const SizedBox(height: 8),
-                            _buildCustomRow("Graduated Degree", degreeController),
-                            const SizedBox(height: 8),
-                            _buildCustomRow("year of Experience", experienceController),
-                            const SizedBox(height: 8),
-                            _buildCustomRow("Employment Date", emplymentDateController),
-                          
+                            _buildCustomRow("Higher Official Name", firstNameController),                          
                             const SizedBox(height: 8),
                             _buildCustomRow("Phone Number", phoneNumberController),
                             const SizedBox(height: 8),
-                            _buildCustomRow("Date of Birth", dobController),
+                            _buildCustomRow("Acting role", role),
                             const SizedBox(height: 8),
                             _buildCustomRow("Email", emailController),
                             const SizedBox(height: 8),
@@ -169,7 +203,17 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                               onPressed: () async{
                                 if (isEdited) {
                               await showCustomDialog(context, "Higher Official details Updated Succecfully");
-                                
+                                bool isUpdated = await controller.updateOfficialDetails(
+                    principalAddress: homeAddressController.text.toString(),
+                     principalEmail: emailController.text.toString(),
+                     principalName: firstNameController.text.toUpperCase(),
+                     principalProfile: updatePhotoUrl??'',
+                    userId: widget.uid, 
+                   principalRole: role.text,
+                   principalPhoneNumber: phoneNumberController.text.toString(),
+                   );
+                   if(isUpdated) await customSnackbar(context: context, text: "Higher Official  Detials Changed updated succesfully");
+                   
                                   setState(() {
                                     isEdited = false;
                                   });
@@ -192,9 +236,9 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
                               onPressed: ()async {
                                  await  customSnackbar(context: context, text: "Downloaded Succesfully");
                                    await PdfOfficialsDetails.openPdf(fileName: firstNameController.text, nameController: firstNameController,
-                                    employmentDate: emplymentDateController, degreeController: degreeController, phoneNumberController: phoneNumberController, 
-                                    dateOfBirthController: dobController, emailController: emailController,
-                                    homeAddressController: homeAddressController, yearofExperience: experienceController, assetImage: '');
+                                  phoneNumberController: phoneNumberController, 
+                                     emailController: emailController,
+                                    homeAddressController: homeAddressController, roleController: role, assetImage: assetImage);
                                 },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,

@@ -10,11 +10,8 @@ class PdfOfficialsDetails {
   static Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
     required String nameController,
-    required String graduateDegree,
-    required String yearofExperience,
-    required String employmentDate,
+    required String role,
     required String phoneNumber,
-    required String dateOfBirthController,
     required String emailController,
     required String homeAddressController,
     Uint8List? photo,
@@ -45,11 +42,8 @@ class PdfOfficialsDetails {
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     children: [
                       detailText("Name", nameController, font1, font2),
-                      detailText("Graduated Degree", graduateDegree, font1, font2),
-                      detailText("Year of Experience", yearofExperience, font1, font2),
-                      detailText("Employment Date", employmentDate, font1, font2),
-                      detailText("Phone Number",phoneNumber, font1, font2),
-                      detailText("Date of Birth", dateOfBirthController, font1, font2),
+                      detailText("Acting role", role, font1, font2),
+                    detailText("Phone Number",phoneNumber, font1, font2),
                       detailText("Email Address", emailController, font1, font2),
                       detailText("Home Address", homeAddressController, font1, font2),
                     ],
@@ -96,13 +90,10 @@ class PdfOfficialsDetails {
   static Future<void> openPdf({
     required String fileName,
     required TextEditingController nameController,
-    required TextEditingController employmentDate,
-    required TextEditingController degreeController,
+    required TextEditingController roleController,
     required TextEditingController phoneNumberController,
-    required TextEditingController dateOfBirthController,
     required TextEditingController emailController,
     required TextEditingController homeAddressController,
-    required TextEditingController yearofExperience, 
     required String? assetImage, // Now it's a String (URL)
 
   }) async {
@@ -123,13 +114,10 @@ class PdfOfficialsDetails {
     final pdfData = await generateStudentDetailsSheet(
       fileName: fileName,
       nameController: nameController.text,
-      dateOfBirthController: dateOfBirthController.text,
       emailController: emailController.text,
       homeAddressController: homeAddressController.text,
-      employmentDate: employmentDate.text,
-      graduateDegree: degreeController.text,
       phoneNumber: phoneNumberController.text,
-      yearofExperience: yearofExperience.text,
+      role: roleController.text,
       photo: imageBytes,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");

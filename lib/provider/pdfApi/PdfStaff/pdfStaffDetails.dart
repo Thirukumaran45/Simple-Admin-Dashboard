@@ -12,6 +12,7 @@ class PdfStaffDetails {
     required String nameController,
     required String phoneNumber,
     required String emailController,
+    required String role,
     required String homeAddressController,
     Uint8List? photo,
   }) async {
@@ -41,6 +42,7 @@ class PdfStaffDetails {
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     children: [
                       detailText("Name", nameController, font1, font2),
+                       detailText("Acting role", role, font1, font2),
                       detailText("Phone Number",phoneNumber, font1, font2),
                       detailText("Email Address", emailController, font1, font2),
                       detailText("Home Address", homeAddressController, font1, font2),
@@ -87,6 +89,7 @@ class PdfStaffDetails {
 
   static Future<void> openPdf({
     required String fileName,
+    required TextEditingController role,
     required TextEditingController nameController,
     required TextEditingController phoneNumberController,
     required TextEditingController emailController,
@@ -112,7 +115,7 @@ class PdfStaffDetails {
       emailController: emailController.text,
       homeAddressController: homeAddressController.text,
       phoneNumber: phoneNumberController.text,
-      photo: imageBytes,
+      photo: imageBytes, role: role.text,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");
   }

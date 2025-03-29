@@ -3,7 +3,7 @@ import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
+import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog;
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,14 +12,13 @@ import 'package:intl/intl.dart';
 
 class AddTeacherTab extends StatefulWidget {
   const AddTeacherTab({super.key});
-
+ 
   @override
   State<AddTeacherTab> createState() => _AddTeacherTabState();
 }
 
 class _AddTeacherTabState extends State<AddTeacherTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String? assetImage;
   dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
   FirebaseAuthUser authControlelr = FirebaseAuthUser();

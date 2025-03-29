@@ -1,10 +1,13 @@
 
+import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
+import 'package:admin_pannel/controller/HigherOfficialController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:get/get.dart';
+import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog;
 
 class AddHigherOfficialTab extends StatefulWidget {
   const AddHigherOfficialTab({super.key});
@@ -15,14 +18,48 @@ class AddHigherOfficialTab extends StatefulWidget {
 
 class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
+  FirebaseAuthUser authControlelr = FirebaseAuthUser();
+  late final TextEditingController addresscontrl ;
+  late final TextEditingController firstNameController ;
+  late final TextEditingController lastNameController ;
+  late final TextEditingController officialMobileController ;
+  late final TextEditingController emailController ;
+  late final TextEditingController passwordController;
+  final Higherofficialcontroller controller = Get.find();
+@override
+  void initState() {
+    super.initState();
 
-  final TextEditingController _dobController = TextEditingController();
+   addresscontrl = TextEditingController();
+   firstNameController = TextEditingController();
+   lastNameController = TextEditingController();
+   officialMobileController = TextEditingController();
+   emailController = TextEditingController();
+   passwordController= TextEditingController();
+    
+  }
 
-  final TextEditingController addresscontrl = TextEditingController();
+Future<void> profileFuntion() async {
+  final pickedImage = await controller. addPhoto();
+  if (pickedImage != null) {
+    setState(() {
+      updatePhotoUrl = pickedImage;
+    });
+  }
+}
 
-  final TextEditingController _empDateController = TextEditingController();
+@override
+  void dispose() {
+   addresscontrl .dispose();
+   firstNameController .dispose();
+   lastNameController .dispose();
+   officialMobileController .dispose();
+   emailController .dispose();
+   passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +92,10 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
                               
               customIconNavigation(context, '/manage-higher-official'),
                     const   SizedBox(width: 10),
-              
-                              // buildProfilePicker(),
+                buildProfilePicker(
+                            image: updatePhotoUrl,
+                            onPress: profileFuntion
+                          ),
                             ],
                           ),
                           const SizedBox(height: 40),
@@ -67,43 +106,36 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
                                 return 'First name is required';
                               }
                               return null;
-                            }),
+                            }, controller: firstNameController),
                             buildTextField('Higher Official Last Name', 'Enter last name',
                                 TextInputType.text, (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Last name is required';
                               }
                               return null;
-                            }),
+                            }, controller: lastNameController),
                           ]),
                           const SizedBox(height: 30),
                           buildTextFieldRow([
                             buildTextField(
-                                'Graduated Degree',
-                                'Enter Completed Degree course name',
-                                TextInputType.text, (value) {
+                                'Email', 'Enter email', TextInputType.emailAddress,
+                                (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Graduated Degree is required';
+                                return 'Email is required';
+                              } else if (!RegExp(
+                                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
+                                  .hasMatch(value)) {
+                                return 'Enter a valid email address';
                               }
                               return null;
-                            }),
-                            buildTextField(
-                              'Year of Experience',
-                              'Enter your experience (up to 2 digits)',
-                              TextInputType.number,
-                              (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Class name is required';
-                                } else if (!RegExp(r'^\d{1,2}$').hasMatch(value)) {
-                                  return 'Enter a valid class (1-2 digits)';
-                                }
-                                return null;
-                              },
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(2)
-                              ], // Maximum length is 2
-                            ),
-                            buildTextField(
+                            }, controller: emailController),
+                            buildPasswordField(
+                              isPasswordObscured: _isPasswordObscured,
+                              passwordController: passwordController),
+                          ]),
+                          const SizedBox(height: 30),
+                           buildTextFieldRow([
+                          buildTextField(
                               'Higher Official Mobile',
                               'Enter mobile number',
                               TextInputType.number,
@@ -119,113 +151,49 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
                                 LengthLimitingTextInputFormatter(10),
                                 FilteringTextInputFormatter
                                     .digitsOnly, // Only allow digits
-                              ],
+                              ],controller: officialMobileController
                             ),
-                          ]),
-                          const SizedBox(height: 30),
-                          buildTextFieldRow([
-                            buildTextField(
-                                'Email', 'Enter email', TextInputType.emailAddress,
-                                (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Email is required';
-                              } else if (!RegExp(
-                                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
-                                  .hasMatch(value)) {
-                                return 'Enter a valid email address';
-                              }
-                              return null;
-                            }),
-                            // buildPasswordField(isPasswordObscured: _isPasswordObscured),
-                          ]),
-                          const SizedBox(height: 30),
-                          buildTextFieldRow([
-                            buildTextField(
-                              'Date of Birth',
-                              'Select date of birth',
-                              TextInputType.datetime,
-                              (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Date of birth is required';
-                                }
-                                return null;
-                              },
-                              controller: _dobController,
-                              onTap: () async {
-                                FocusScope.of(context).requestFocus(FocusNode());
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  lastDate: DateTime.now(),
-                                  builder: (context, child) {
-                                    return Theme(
-                                      data: Theme.of(context).copyWith(
-                                        colorScheme: const ColorScheme.light(
-                                          primary: Colors.green, // Selection color
-                                          onPrimary:
-                                              Colors.white, // Text color on selection
-                                          onSurface: Colors.black, // Default text color
-                                        ), dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Background color
-                                      ),
-                                      child: child!,
-                                    );
-                                  },
-                                );
-                                if (pickedDate != null) {
-                                  _dobController.text =
-                                      DateFormat('dd-MM-yyyy').format(pickedDate);
-                                }
-                              },
-                            ),
-                            buildTextField(
-                              'Employment Date',
-                              'Select start date of employment',
-                              TextInputType.datetime,
-                              (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Employment Date is required';
-                                }
-                                return null;
-                              },
-                              controller: _empDateController,
-                              onTap: () async {
-                                FocusScope.of(context).requestFocus(FocusNode());
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  lastDate: DateTime.now(),
-                                  builder: (context, child) {
-                                    return Theme(
-                                      data: Theme.of(context).copyWith(
-                                        colorScheme: const ColorScheme.light(
-                                          primary: Colors.green, // Selection color
-                                          onPrimary:
-                                              Colors.white, // Text color on selection
-                                          onSurface: Colors.black, // Default text color
-                                        ), dialogTheme: DialogThemeData(backgroundColor: Colors.white), // Background color
-                                      ),
-                                      child: child!,
-                                    );
-                                  },
-                                );
-                                if (pickedDate != null) {
-                                  _dobController.text =
-                                      DateFormat('dd-MM-yyyy').format(pickedDate);
-                                }
-                              },
-                            ),
-                          ]),
-                          const SizedBox(height: 30),
-                          buildAddressField(addressContrl: addresscontrl),
+                             buildAddressField(addressContrl: addresscontrl),
+                           ]),
                           const SizedBox(height: 30),
                           Align(
                             alignment: Alignment.center,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async{
                                 if (_formKey.currentState?.validate() ?? false) {
-                                  // Add submit logic here
+                                   try {
+  await showCustomDialog(context, "Higher official details Updated Succecfully");
+         final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+     String userId = user!.id;
+     final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
+     String name = '${firstNameController.text} ${lastNameController.text}';
+     if(url.isNotEmpty)
+     {
+  await  controller.registerOfficials(
+     userId: userId,
+       context: context,
+     principalAddress: addresscontrl.text,
+     principalEmail: emailController.text,
+     principalName: name.toUpperCase(),
+     principalPhoneNumber: officialMobileController.text,
+     principalProfile: url,
+     principalRole: "Higher Official",
+
+     );
+     await controller.updateNumberOfOfficials(true);
+     bool val = await showCustomConfirmDialog(context: context, text: 'Higher official registered Succesfully');
+     if(val)
+     {
+      customPopNavigation(context, 'manage-higher-official');
+     }
+     }
+     else{
+      await showCustomDialog(context, "Higher official Profile picture is not uploaded !");
+     }
+}  catch (e) {
+  await showCustomDialog(context, e.toString());
+}
+
                                 }
                               },
                               style: ElevatedButton.styleFrom(

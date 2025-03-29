@@ -1,36 +1,73 @@
 
 import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/controller/StafffController.dart';
+import 'package:admin_pannel/modules/staffModels.dart';
 import 'package:admin_pannel/provider/CustomNavigation.dart';
 import 'package:admin_pannel/provider/pdfApi/PdfStaff/pdfStaffDetails.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StaffEditDownload extends StatefulWidget {
-  const StaffEditDownload({super.key, required String uid});
-
+  final String uid;
+  const StaffEditDownload({super.key, required this. uid});
+ 
   @override
   _StudentEditDownloadState createState() => _StudentEditDownloadState();
 }
 
 class _StudentEditDownloadState extends State<StaffEditDownload> {
   // Sample data for the student (using TextEditingController for editable fields)
-  late TextEditingController firstNameController;
+late TextEditingController firstNameController;
   late TextEditingController phoneNumberController;
   late TextEditingController emailController;
   late TextEditingController homeAddressController;
-
+  late TextEditingController role;
+  String? assetImage;
+  String? updatePhotoUrl;
   bool isEdited = false;
+  Stafffdetailsmodel? teacherDetails;
+  StaffController controller = Get.find();
+
 
   @override
   void initState() {
     super.initState();
-    firstNameController = TextEditingController(text: " dong lee ");
-    phoneNumberController = TextEditingController(text: "9876543210");
-    emailController = TextEditingController(text: "johndoe@example.com");
-    homeAddressController = TextEditingController(text: "123 Main St, Apartment 456, City, Country");
+    initializeFunction();
+    }
+Future<void> handlePhotoUpdate(String studentId) async {
+  String newPhotoUrl = await  controller.updateStaffsPhoto(studentId );
+  
+  if (newPhotoUrl.isNotEmpty) { 
+    setState(() {
+      assetImage = newPhotoUrl; // Update UI with new photo URL
+    });
   }
+}
+
+
+  Future<void>initializeFunction()async{
+  teacherDetails = await controller.staffDataRead(uid: widget.uid);
+   if (teacherDetails == null) {
+      return;
+    }
+
+    String? photoUrl = await controller.getStaffsPhotoUrl(teacherDetails!.Id);
+    
+    setState(() {
+       assetImage = photoUrl ?? teacherDetails?.staffProfile;
+       role = TextEditingController(text: teacherDetails?.role??'');
+    firstNameController = TextEditingController(text:teacherDetails?.staffName??'');
+   phoneNumberController = TextEditingController(text:teacherDetails?.staffPhoneNumber??'');
+    emailController = TextEditingController(text: teacherDetails?.staffEmail??'');
+    homeAddressController = TextEditingController(text: teacherDetails?.staffAddress??'');
+   
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +104,9 @@ class _StudentEditDownloadState extends State<StaffEditDownload> {
               ), Positioned(
                   bottom: 0,
                   right: 0,
-                  child:  customIconTextButton(Colors.red, onPressed: (){
+                  child:  customIconTextButton(Colors.red, onPressed: ()async{
+            await handlePhotoUpdate(teacherDetails!.Id);
+                 
                   }, icon: Icons.edit, text: "Change")
                 ),
                     ],
@@ -80,7 +119,7 @@ class _StudentEditDownloadState extends State<StaffEditDownload> {
                     Container(
                       width: 300,
                       padding: const EdgeInsets.all(20),
-                      child: const Text(" Thiru Kumaran N R",overflow:TextOverflow.visible , style: TextStyle(fontSize: 25,fontWeight: FontWeight.normal,color: Colors.black),)),
+                      child:  Text(teacherDetails!.staffName,overflow:TextOverflow.visible , style: TextStyle(fontSize: 25,fontWeight: FontWeight.normal,color: Colors.black),)),
                    
                     ],
                     
@@ -150,8 +189,17 @@ class _StudentEditDownloadState extends State<StaffEditDownload> {
                           onPressed: () async{
                             if (isEdited) {
                      await showCustomDialog(context, "Staff details Updated Succecfully");
-
-                              setState(() {
+       bool isUpdated = await controller.updateStaffDetails(
+                    staffAddress: homeAddressController.text.toString(),
+                     staffEmail: emailController.text.toString(),
+                     staffName: firstNameController.text.toUpperCase(),
+                     staffProfile: updatePhotoUrl??'',
+                    userId: widget.uid, 
+                   staffrole: role.text,
+                   staffPhoneNumber: phoneNumberController.text.toString(),
+                   );
+                   if(isUpdated) await customSnackbar(context: context, text: "Higher Official  Detials Changed updated succesfully");
+                     setState(() {
                                 isEdited = false;
                               });   }
                           },
@@ -171,7 +219,9 @@ class _StudentEditDownloadState extends State<StaffEditDownload> {
                         child: ElevatedButton(
                           onPressed: ()async {
                          await customSnackbar(context: context, text: "Downloaded Succesfully");
-                         await PdfStaffDetails.openPdf(fileName: firstNameController.text, nameController: firstNameController, phoneNumberController: phoneNumberController, emailController: emailController, homeAddressController: homeAddressController);
+                         await PdfStaffDetails.openPdf(fileName: firstNameController.text, 
+                         nameController: firstNameController, phoneNumberController: phoneNumberController, emailController: emailController,
+                          homeAddressController: homeAddressController,assetImage: assetImage, role: role);
                           },
                           style: ElevatedButton.styleFrom(
                          
