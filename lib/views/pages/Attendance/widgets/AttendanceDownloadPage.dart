@@ -1,8 +1,8 @@
 
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/controller/AttendanceController.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
-import 'package:admin_pannel/provider/pdfApi/PdfAttendance.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/contant/pdfApi/PdfAttendance.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';

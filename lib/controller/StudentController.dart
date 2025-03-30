@@ -1,6 +1,6 @@
 import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/modules/studentModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
 import 'package:flutter/material.dart';
@@ -264,9 +264,25 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 }
 
 Future<void> updateNumberOfStudent(bool isIncrement) async {
-  await collectionControler.loginCollection.doc('students').update({
+
+
+final dataDoc = collectionControler.loginCollection.doc('students');
+final val = await dataDoc.get();
+
+if(val.exists)
+{
+ await collectionControler.loginCollection.doc('students').update({
     'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
   });
+}
+else
+{
+   await collectionControler.loginCollection.doc('students').set({
+    'numberOfPeople': 1,
+  });
+}
+
+
 }
 
 

@@ -2,7 +2,7 @@
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/controller/HigherOfficialController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -162,13 +162,13 @@ Future<void> profileFuntion() async {
                               onPressed: () async{
                                 if (_formKey.currentState?.validate() ?? false) {
                                    try {
-  await showCustomDialog(context, "Higher official details Updated Succecfully");
-         final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+       
+     if(updatePhotoUrl.isNotEmpty)
+     {
+        final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
      String userId = user!.id;
      final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
      String name = '${firstNameController.text} ${lastNameController.text}';
-     if(url.isNotEmpty)
-     {
   await  controller.registerOfficials(
      userId: userId,
        context: context,
@@ -184,14 +184,17 @@ Future<void> profileFuntion() async {
      bool val = await showCustomConfirmDialog(context: context, text: 'Higher official registered Succesfully');
      if(val)
      {
-      customPopNavigation(context, 'manage-higher-official');
+      customPopNavigation(context, '/manage-higher-official');
      }
-     }
+     
      else{
       await showCustomDialog(context, "Higher official Profile picture is not uploaded !");
      }
+     }
 }  catch (e) {
-  await showCustomDialog(context, e.toString());
+  if(!context.mounted) return;
+  await showCustomDialog(context, "Please pick profile photo for the person !");
+
 }
 
                                 }

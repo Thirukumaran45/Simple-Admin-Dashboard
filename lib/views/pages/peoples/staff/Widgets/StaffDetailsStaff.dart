@@ -1,8 +1,8 @@
 
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/controller/StafffController.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
-import 'package:admin_pannel/provider/pdfApi/PdfStaff/pdfTotalstaffDetails.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/contant/pdfApi/PdfStaff/pdfTotalstaffDetails.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';

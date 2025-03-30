@@ -1,6 +1,6 @@
 import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/modules/teacherModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
 import 'package:flutter/material.dart';
@@ -40,6 +40,7 @@ void fetchTeacherData() async {
   } catch (e) { 
     log('Error in fetching the data: $e');
   }
+   update(); // Notify GetX listeners
 }
  
 
@@ -53,12 +54,13 @@ Future<Teacherdetailmodel?> teacherDataRead({required String uid}) async {
     }
 
     final castedDoc = doc as DocumentSnapshot<Map<String, dynamic>>;
-    
+     update(); // Notify GetX listeners
     return Teacherdetailmodel.fromSnapshot(castedDoc);
   }  catch (e) {
     log('Error fetching teacher data: $e');
     return null;
   }
+  
 }
 
 Future<bool> updateTeacherDetails({
@@ -89,13 +91,14 @@ Future<bool> updateTeacherDetails({
       teacherIdFireld:userId,
       teacherrole:role
     });
-
+    update(); // Notify GetX listeners
     log("teacher details updated successfully.");
     return true; // Return success
   } catch (e) {
     log("Error updating teacher details: $e");
     return false; // Return failure
   }
+  
 }
 
 
@@ -143,6 +146,7 @@ Future<String> updateTeacherPhoto(String teacherId,) async {
         } else {
             log("No file selected.");
         }
+         update(); // Notify GetX listeners
     } catch (e) {
         log("Error updating teacher photo: $e");
     }
@@ -154,6 +158,7 @@ Future<String?> getTeacherPhotoUrl(String teacherId) async {
   try {
     final ref =collectionControler.firebaseStorageRef.child("Teacher photo/$teacherId");
     final doc = await ref.getDownloadURL();
+     update(); // Notify GetX listeners
     return doc;
   } catch (e) {
     log(
@@ -192,15 +197,16 @@ Future<void> registerTeacher({
       teacherIdFireld:userId,
       teacherrole:role
     });
-
+if(!context.mounted)return;
       await customSnackbar(context: context, text: "Registration succesfull");
 
   } catch (e) {
     log(e.toString());
+if(!context.mounted)return;
+
       await customSnackbar(context: context, text: "failed to create person $e");
-                               
-   
   }
+   update(); // Notify GetX listeners
 }
 Future<dynamic> addPhoto() async {
   try {
@@ -216,7 +222,9 @@ Future<dynamic> addPhoto() async {
       } else {
         return File(result.files.first.path!);
       }
+      
     } 
+     update(); // Notify GetX listeners
   } catch (e) {
     log(e.toString());
   }
@@ -244,13 +252,28 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 
   // Get download URL
   downloadUrl = await snapshot.ref.getDownloadURL();
+   update(); // Notify GetX listeners
   return downloadUrl;
 }
 
 Future<void> updateNumberOfTeacher(bool isIncrement) async {
-  await collectionControler.loginCollection.doc('teachers').update({
+  
+final dataDoc = collectionControler.loginCollection.doc('teachers');
+final val = await dataDoc.get();
+
+if(val.exists)
+{
+ await collectionControler.loginCollection.doc('teachers').update({
     'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
   });
+}
+else
+{
+   await collectionControler.loginCollection.doc('teachers').set({
+    'numberOfPeople': 1,
+  });
+}
+ update(); // Notify GetX listeners
 }
 
 
@@ -298,6 +321,7 @@ Future<bool> deleteTeacher({
   
     // Delete Firestore document
     await doc.reference.delete();
+  
   }
   }
   
@@ -325,7 +349,7 @@ Future<bool> deleteTeacher({
   }
   }
   await updateNumberOfTeacher(false);
-  
+   update(); // Notify GetX listeners
   log("deleted the teacher data");
   return true;
 }  catch (e) {
@@ -334,4 +358,63 @@ Future<bool> deleteTeacher({
 }
 
 }
+
+Future<void>addAndUpdateClassInchargers({required String stuClass,
+ required String stuSec, required String name,
+ required String phoneNo,
+ required String email
+})async{
+String section = stuSec.toUpperCase();
+final data =  collectionControler.loginCollection.doc('teachers').collection('ClassIncharger');
+final isData = await data.doc("$stuClass$section").get();  
+if(isData.exists)
+{
+await data.doc('$stuClass$section').update({
+"name": name,
+"phoneNo":phoneNo,
+"email":email
+});
+}
+else{
+  await data.doc('$stuClass$section').set({
+"name": name,
+"phoneNo":phoneNo,
+"email":email
+});
+}
+ update(); // Notify GetX listeners
+}
+
+Future<void> fetchAllClassInchargeDetails(
+    List<List<TextEditingController>> nameControllers,
+    List<List<TextEditingController>> phoneNumberControllers,
+    List<List<TextEditingController>> emailControllers,
+  ) async {
+    try {
+      for (int classIndex = 0; classIndex < 12; classIndex++) {
+        for (int sectionIndex = 0; sectionIndex < 4; sectionIndex++) {
+          String className = (classIndex + 1).toString();
+          String sectionName = String.fromCharCode(65 + sectionIndex); // 'A', 'B', 'C', 'D'
+          String docId = '$className$sectionName'; // Example: "1A", "2B", ..., "12D"
+
+          DocumentSnapshot snapshot = await collectionControler.loginCollection.doc('teachers').
+          collection('ClassIncharger')
+              .doc(docId).get();
+
+          if (snapshot.exists) {
+            Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+            // Set fetched values into the corresponding controllers
+            nameControllers[classIndex][sectionIndex].text = data['name'] ?? '';
+            phoneNumberControllers[classIndex][sectionIndex].text = data['phoneNo'] ?? '';
+            emailControllers[classIndex][sectionIndex].text = data['email'] ?? '';
+          }
+        }
+        update(); // Notify GetX listeners
+
+      }
+    } catch (e) {
+      log('Error fetching class incharge details: $e');
+    }
+  }
 }

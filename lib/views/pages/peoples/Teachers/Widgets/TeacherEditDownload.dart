@@ -1,9 +1,9 @@
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/modules/teacherModels.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
-import 'package:admin_pannel/provider/pdfApi/pdfTeacher/pdfTeacherDetails.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/contant/pdfApi/pdfTeacher/pdfTeacherDetails.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';

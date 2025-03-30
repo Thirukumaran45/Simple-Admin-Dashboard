@@ -1,16 +1,19 @@
 import 'dart:developer' show log;
 import 'dart:typed_data';
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' ;
 
-class PdfOfficialsDetails {
+class PdfTeacherDetails {
   static Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
     required String nameController,
-    required String role,
+    required String graduateDegree,
+    required String subjectHandling,
+    required String yearofExperience,
+    required String employmentDate,
     required String phoneNumber,
     required String emailController,
     required String homeAddressController,
@@ -33,6 +36,8 @@ class PdfOfficialsDetails {
             pw.SizedBox(height: 20),
             pw.Row(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
+               mainAxisAlignment: pw.MainAxisAlignment.center,
+                 
               children: [
                 // Student Details (Left-aligned)
                 pw.Expanded(
@@ -42,8 +47,11 @@ class PdfOfficialsDetails {
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     children: [
                       detailText("Name", nameController, font1, font2),
-                      detailText("Acting role", role, font1, font2),
-                    detailText("Phone Number",phoneNumber, font1, font2),
+                      detailText("Graduated Degree", graduateDegree, font1, font2),
+                      detailText("Year of Experience", yearofExperience, font1, font2),
+                      detailText("Employment Date", employmentDate, font1, font2),
+                      detailText("Subject Handling ", subjectHandling, font1, font2),
+                      detailText("Phone Number",phoneNumber, font1, font2),
                       detailText("Email Address", emailController, font1, font2),
                       detailText("Home Address", homeAddressController, font1, font2),
                     ],
@@ -90,14 +98,18 @@ class PdfOfficialsDetails {
   static Future<void> openPdf({
     required String fileName,
     required TextEditingController nameController,
-    required TextEditingController roleController,
+    required TextEditingController employmentDate,
+    required TextEditingController degreeController,
     required TextEditingController phoneNumberController,
+    required TextEditingController dateOfBirthController,
     required TextEditingController emailController,
     required TextEditingController homeAddressController,
-    required String? assetImage, // Now it's a String (URL)
+    required TextEditingController yearofExperience,
+    required TextEditingController subjectHandling,
+  required String? assetImage, // Now it's a String (URL)
 
   }) async {
- Uint8List? imageBytes;
+  Uint8List? imageBytes;
 
   if (assetImage != null && assetImage.isNotEmpty) {
     try {
@@ -116,9 +128,11 @@ class PdfOfficialsDetails {
       nameController: nameController.text,
       emailController: emailController.text,
       homeAddressController: homeAddressController.text,
+      employmentDate: employmentDate.text,
+      graduateDegree: degreeController.text,
       phoneNumber: phoneNumberController.text,
-      role: roleController.text,
-      photo: imageBytes,
+      yearofExperience: yearofExperience.text,
+      photo: imageBytes, subjectHandling: subjectHandling.text,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");
   }

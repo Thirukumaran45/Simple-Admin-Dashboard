@@ -1,9 +1,9 @@
 
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/modules/studentModels.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
-import 'package:admin_pannel/provider/pdfApi/PdfStudent/PdfStudentDetails.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/contant/pdfApi/PdfStudent/PdfStudentDetails.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';

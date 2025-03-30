@@ -17,5 +17,5 @@ void customNvigation(BuildContext context, String uri)
 
 void customPopNavigation(BuildContext context, String uri)
 {
-   return  Beamer.of(context).popToNamed(uri); 
+    Beamer.of(context).beamToNamed(uri, replaceRouteInformation: true);
 }

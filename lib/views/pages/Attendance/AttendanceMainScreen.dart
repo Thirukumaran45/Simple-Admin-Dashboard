@@ -1,5 +1,5 @@
 
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 

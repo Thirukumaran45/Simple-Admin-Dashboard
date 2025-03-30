@@ -1,6 +1,6 @@
 import 'dart:developer' show log;
 import 'dart:typed_data';
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:http/http.dart' as http show get;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';

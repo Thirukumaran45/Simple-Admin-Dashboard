@@ -1,6 +1,6 @@
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/constant.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/constant.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/RoutingPage.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/SideNav.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';

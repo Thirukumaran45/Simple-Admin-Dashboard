@@ -1,8 +1,8 @@
 
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/controller/HigherOfficialController.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
-import 'package:admin_pannel/provider/pdfApi/PdfOfficial/pdfTotalOfficialDetails.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/contant/pdfApi/PdfOfficial/pdfTotalOfficialDetails.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
@@ -29,6 +29,7 @@ Higherofficialcontroller controller = Get.find();
   @override
   void initState() {
     super.initState();
+  
      setState(() {
       filteredData = List.from(controller.officialData);
     });
@@ -129,10 +130,7 @@ Higherofficialcontroller controller = Get.find();
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16))),
                     
-                    DataColumn(
-                        label: Text('Phone Number',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16))),   DataColumn(
+                      DataColumn(
                         label: Text('Update',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16))),
@@ -150,7 +148,7 @@ Higherofficialcontroller controller = Get.find();
                         DataCell(Text(teacher['name']!, style: const TextStyle(color: Colors.black))),
                         DataCell(Text(teacher['email']!, style: const TextStyle(color: Colors.black))),
                         DataCell(Text(teacher['role']!, style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(teacher['phone']!, style: const TextStyle(color: Colors.black))), DataCell(SizedBox(width: 150,
+                         DataCell(SizedBox(width: 150,
                           child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,

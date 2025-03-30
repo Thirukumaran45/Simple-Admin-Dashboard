@@ -10,7 +10,7 @@ import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/controller/StudentListBonafied.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/controller/dashboardController.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';

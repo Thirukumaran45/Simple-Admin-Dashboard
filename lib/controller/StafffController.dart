@@ -1,6 +1,6 @@
 import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/modules/staffModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
 import 'package:flutter/material.dart';
@@ -223,7 +223,7 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
     // Mobile: Use putFile for File
     uploadTask = ref.putFile(image);
   } else {
-    throw Exception("Invalid image format");
+   throw Exception("Invalid image format");
   }
 
   // Wait for upload to complete
@@ -235,9 +235,22 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 }
 
 Future<void> updateNumberOfStaffs(bool isIncrement) async {
-  await collectionControler.loginCollection.doc('staffs').update({
+  
+final dataDoc = collectionControler.loginCollection.doc('staffs');
+final val = await dataDoc.get();
+
+if(val.exists)
+{
+ await collectionControler.loginCollection.doc('staffs').update({
     'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
   });
+}
+else
+{
+   await collectionControler.loginCollection.doc('staffs').set({
+    'numberOfPeople': 1,
+  });
+}
 }
 
 

@@ -1,7 +1,7 @@
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/controller/StudentController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -38,41 +38,9 @@ late final TextEditingController fatherMobileController ;
 late final TextEditingController motherNameController ;
 late final TextEditingController motherMobileController ; 
 final StudentController controller = Get.find();
+
 @override
   void initState() {
-    super.initState();
-       _dobController .dispose();
-   addresscontrl .dispose();
-   firstNameController .dispose();
-   lastNameController .dispose();
-   classNameController .dispose();
-   sectionController .dispose();
-   rollNumberController .dispose();
-   emailController .dispose();
-   passwordController .dispose();
-   admissionNumberController .dispose();
- fatherNameController .dispose();
- fatherMobileController .dispose();
- motherNameController .dispose();
- motherMobileController .dispose();
- 
-}
-
-
-
-Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto();
-  if (pickedImage != null) {
-    setState(() {
-      updatePhotoUrl = pickedImage;
-    });
-  }
-}
-
-
-
-@override
-  void dispose() {
           _dobController = TextEditingController();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
@@ -87,8 +55,42 @@ Future<void> profileFuntion() async {
  fatherMobileController = TextEditingController();
  motherNameController = TextEditingController();
  motherMobileController = TextEditingController();
-    super.dispose();
+    super.initState();
   }
+Future<void> profileFuntion() async {
+  final pickedImage = await controller. addPhoto();
+  if (pickedImage != null) {
+    setState(() {
+      updatePhotoUrl = pickedImage;
+    });
+  }
+}
+
+
+@override
+  void dispose() {
+       _dobController .dispose();
+   addresscontrl .dispose();
+   firstNameController .dispose();
+   lastNameController .dispose();
+   classNameController .dispose();
+   sectionController .dispose();
+   rollNumberController .dispose();
+   emailController .dispose();
+   passwordController .dispose();
+   admissionNumberController .dispose();
+ fatherNameController .dispose();
+ fatherMobileController .dispose();
+ motherNameController .dispose();
+ motherMobileController .dispose();
+    super.dispose();
+ 
+}
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -265,16 +267,15 @@ Future<void> profileFuntion() async {
                               child: ElevatedButton(
                                onPressed: ()async {
   if (_formKey.currentState?.validate() ?? false) {
-        // Create user in Firebase Authentication
-              await showCustomDialog(context, "Student details Updated Succecfully");
-
+       
    try {
-  final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+ 
+   if(updatePhotoUrl.isNotEmpty)
+   {
+     final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
    String userId = user!.id;
    final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
    String name = '${firstNameController.text} ${lastNameController.text}';
-   if(url.isNotEmpty)
-   {
 await  controller.registerUser(
    userId: userId,
      context: context,
@@ -296,7 +297,7 @@ await  controller.registerUser(
    bool val = await showCustomConfirmDialog(context: context, text: 'Student registered Succesfully');
    if(val)
    {
-    customPopNavigation(context, 'manage-student');
+    customPopNavigation(context, '/manage-student');
    }
    }
    else{
@@ -305,7 +306,7 @@ await  controller.registerUser(
 
   
 }  catch (e) {
-  await showCustomDialog(context, e.toString());
+   await showCustomDialog(context, "Please pick profile photo for the person !");
 }
 
   }

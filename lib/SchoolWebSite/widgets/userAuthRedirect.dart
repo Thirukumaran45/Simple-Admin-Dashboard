@@ -1,4 +1,4 @@
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:admin_pannel/views/pages/LoginPage/LoginScreen.dart';
 import 'package:beamer/beamer.dart';

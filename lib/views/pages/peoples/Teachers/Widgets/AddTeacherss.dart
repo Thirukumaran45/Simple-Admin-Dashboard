@@ -2,7 +2,7 @@
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/controller/TeacherController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog;
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
@@ -239,13 +239,13 @@ Future<void> profileFuntion() async {
                           onPressed: () async{
                             if (_formKey.currentState?.validate() ?? false) {
                        try {
-  await showCustomDialog(context, "Teacher details Updated Succecfully");
-         final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+        
+     if(updatePhotoUrl.isNotEmpty)
+     {
+       final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
      String userId = user!.id;
      final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
      String name = '${firstNameController.text} ${lastNameController.text}';
-     if(url.isNotEmpty)
-     {
   await  controller.registerTeacher(
      userId: userId,
        context: context,
@@ -264,14 +264,15 @@ Future<void> profileFuntion() async {
      bool val = await showCustomConfirmDialog(context: context, text: 'Teacher registered Succesfully');
      if(val)
      {
-      customPopNavigation(context, 'manage-teacher');
+      customPopNavigation(context, '/manage-teacher');
      }
      }
      else{
       await showCustomDialog(context, "Teacher Profile picture is not uploaded !");
      }
 }  catch (e) {
-  await showCustomDialog(context, e.toString());
+  await showCustomDialog(context, "Please pick profile photo for the person !");
+
 }
 
                             }

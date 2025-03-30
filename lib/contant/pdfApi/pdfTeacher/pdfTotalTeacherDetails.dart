@@ -1,12 +1,12 @@
 import 'dart:typed_data';
-import 'package:admin_pannel/constant.dart';
+import 'package:admin_pannel/contant/constant.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-class PdfTotalStaffDetails {
+class PdfTotalTeacherDetails {
   static Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
-    required List<Map<String, dynamic>> staff,
+    required List<Map<String, dynamic>> teacher,
   }) async {
     final font1 = await fontBold();
     final font2 = await fontMedium();
@@ -19,7 +19,7 @@ class PdfTotalStaffDetails {
             child: pw.Header(
               child: pw.Center(
                 child: pw.Text(
-                  "Working Staff Details",
+                  "Teacher Details",
                   style: pw.TextStyle(font: font1, fontSize: 24),
                 ),
               ),
@@ -31,19 +31,23 @@ class PdfTotalStaffDetails {
             headers: [
               "S.No",
               "Name",
+              "Degree",
               "email",
-              "Mobile Number",
-              "Home Address"
+              "Date of Birth",
+              "Employment Date",
+              "Mobile Number"
             ],
-            data: staff.asMap().entries.map((entry) {
+            data: teacher.asMap().entries.map((entry) {
               final index = entry.key + 1;
-              final staff = entry.value;
+              final teacher = entry.value;
               return [
                 index.toString(),
-                staff['name'],
-                staff['email'],
-                staff['phone'],
-                staff['address']
+                teacher['name'],
+                teacher['degree'],
+                teacher['email'],
+                "12-12-2002",
+                '05-02-2025',
+                teacher['phone'],
               ];
             }).toList(),
             headerStyle: pw.TextStyle(font: font1, fontSize: 11),
@@ -66,13 +70,12 @@ class PdfTotalStaffDetails {
 
   static Future<void> openPdf({
     required String fileName,
-    required List<Map<String, dynamic>> staff,
+    required List<Map<String, dynamic>> teacher,
   }) async {
     final pdfData = await generateStudentDetailsSheet(
       fileName: fileName,
-      staff: staff,
+      teacher: teacher,
     );
     await Printing.sharePdf(bytes: pdfData, filename: "$fileName.pdf");
   }
 }
- 

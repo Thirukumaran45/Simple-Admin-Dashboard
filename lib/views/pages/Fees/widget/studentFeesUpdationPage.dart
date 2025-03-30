@@ -1,9 +1,9 @@
 import 'package:admin_pannel/controller/FessController.dart';
-import 'package:admin_pannel/provider/pdfApi/PdfFees/PdfSingleScript.dart';
+import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfSingleScript.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:get/get.dart';
 
 class StudentFeesUpdationpage extends StatefulWidget {

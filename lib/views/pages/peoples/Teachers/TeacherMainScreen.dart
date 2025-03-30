@@ -1,4 +1,4 @@
-import 'package:admin_pannel/provider/CustomNavigation.dart';
+import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeProfileCard.dart';
 import 'package:flutter/material.dart';
 
