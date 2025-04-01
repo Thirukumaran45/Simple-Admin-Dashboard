@@ -1,4 +1,4 @@
-import 'package:admin_pannel/controller/TeacherController.dart';
+import 'package:admin_pannel/controller/classControllers/TeacherController.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';

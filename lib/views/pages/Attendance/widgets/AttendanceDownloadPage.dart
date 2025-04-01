@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/AttendanceController.dart';
+import 'package:admin_pannel/controller/classControllers/AttendanceController.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfAttendance.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';

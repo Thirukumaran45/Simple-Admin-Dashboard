@@ -36,7 +36,7 @@ class PdfApi {
           pw.SizedBox(height: 20),
           pw.Paragraph(
             text:  '''This is to certify that $studentName, son/daughter of $parentName, is a bonafide student of $schoolName, in Tamil Nadu. He/She is ${val?'currently studying in' :'successfully completed'} Class $studentClass, for the academic year $academicYear. As per our school records, his/her date of birth is $dob. During his/her tenure at our School, he/she has maintained good academic and disciplinary records. He/She is pursuing the curriculum as per the guidelines of the Government. This certificate is issued as proof of his/her enrollment and academic record. We extend our best wishes to $studentName for his/her future endeavors.''',
-            style: pw.TextStyle(font: font2, fontSize: 12.5, lineSpacing: 4),
+            style: pw.TextStyle(font: font2, fontSize: 12.5, lineSpacing: 8, letterSpacing: 0.5,),
           ),
         ],
         footer: (context) => pw.Row(

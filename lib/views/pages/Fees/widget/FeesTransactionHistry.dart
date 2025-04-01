@@ -1,5 +1,5 @@
 
-import 'package:admin_pannel/controller/FessController.dart';
+import 'package:admin_pannel/controller/classControllers/FessController.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfSingleScript.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfTotalFeesScript.dart';

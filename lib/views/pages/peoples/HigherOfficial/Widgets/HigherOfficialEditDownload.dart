@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/HigherOfficialController.dart';
+import 'package:admin_pannel/controller/classControllers/HigherOfficialController.dart';
 import 'package:admin_pannel/modules/higherOfficialModels.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfOfficial/pdfOfficialDetails.dart';
@@ -129,7 +129,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                      width: 300,
                 padding: const EdgeInsets.all(20),
                
-                  child:  Text(teacherDetails!.principalName, overflow:TextOverflow.visible ,style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
+                  child:  Text(teacherDetails!.principalName, overflow:TextOverflow.visible ,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
                const SizedBox(
                 height: 150,
                )

@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
-import 'package:admin_pannel/controller/StafffController.dart';
+import 'package:admin_pannel/controller/classControllers/StafffController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';

@@ -1,7 +1,7 @@
 import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/modules/higherOfficialModels.dart';
+import 'package:admin_pannel/modules/staffModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,44 +10,48 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart'; 
 
-class Higherofficialcontroller extends GetxController {
- late FirebaseCollectionVariable collectionControler;
+
+class StaffController extends GetxController{
+   late FirebaseCollectionVariable collectionControler;
 late dynamic snapshot;
  
-final RxList<Map<String, dynamic>> officialData = <Map<String, dynamic>>[].obs;
+ final RxList<Map<String, dynamic>> staffData = <Map<String, dynamic>>[].obs;
+
 
   @override
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchOfficialData();
+    fetchStaffData();
   }
 
-void fetchOfficialData() async {
+void fetchStaffData() async {
   try {
-    snapshot = await collectionControler.officialLoginCollection.get();
-    officialData.value = snapshot.docs.asMap().entries.map((entry) {
+    snapshot = await collectionControler.staffLoginCollection.get();
+    staffData.value = snapshot.docs.asMap().entries.map((entry) {
       int index = entry.key + 1; // Auto-generate serial number starting from 1
       var doc = entry.value;
 
       return {
         'sNo': index.toString(),
-        'name': doc[principalNamefield] ?? '',
-        'id': doc[principalId] ?? '',
-        'role': doc[principalRoleField] ?? '',
-        'email': doc[principalEmailfield] ?? '',
-        'phone': doc[principalPhoneNumberfield] ?? '',
+        'name': doc[staffNamefield] ?? '',
+        'id': doc[stafflId] ?? '',
+        'phone': doc[staffPhoneNumberfield] ?? '',
+        'email': doc[staffEmailfield] ?? '',
+        'address': doc[staffAddressfield] ?? '',
       };
-    }).toList().cast<Map<String, dynamic>>(); ;
+    }).toList().cast<Map<String, dynamic>>(); 
+        update(); // Notify GetX listeners
+
   } catch (e) { 
     log('Error in fetching the data: $e');
   }
 }
  
 
-Future<Principaldetailmodel?> officialDataRead({required String uid}) async {
+Future<Stafffdetailsmodel?> staffDataRead({required String uid}) async {
   try {
-    final doc = await collectionControler.officialLoginCollection.doc(uid).get();
+    final doc = await collectionControler.staffLoginCollection.doc(uid).get();
     
     if (!doc.exists) {
       log("Document does not exist");
@@ -55,47 +59,49 @@ Future<Principaldetailmodel?> officialDataRead({required String uid}) async {
     }
 
     final castedDoc = doc as DocumentSnapshot<Map<String, dynamic>>;
+        update(); // Notify GetX listeners
     
-    return Principaldetailmodel.fromSnapshot(castedDoc);
+    return Stafffdetailsmodel.fromSnapshot(castedDoc);
   }  catch (e) {
-    log('Error fetching higher official data: $e');
+    log('Error fetching staff data: $e');
     return null;
   }
 }
 
-Future<bool> updateOfficialDetails({
-required  String  principalName ,
-required  String  principalEmail ,
-required  String  principalPhoneNumber ,
-required  String  principalAddress ,
-required  String  principalProfile ,
-required  String  userId,
-required  String  principalRole ,
+Future<bool> updateStaffDetails({
+required String  staffName ,
+required String  staffEmail ,
+required String  staffPhoneNumber,
+required String  staffAddress,
+required String  staffProfile ,
+required String  userId ,
+required String  staffrole,
 }) async {
   try {
-    final docRef = collectionControler.officialLoginCollection.doc(userId);
+    final docRef = collectionControler.staffLoginCollection.doc(userId);
     await docRef.update({
-     principalNamefield : principalName,
-     principalEmailfield : principalEmail,
-     principalPhoneNumberfield : principalPhoneNumber,
-     principalAddressfield : principalAddress,
-     principalProfilefield : principalProfile,
-     principalId : userId,
-     principalRoleField : principalRole,
+      staffNamefield:staffName,
+      staffEmailfield:staffEmail,
+      staffPhoneNumberfield :staffPhoneNumber,
+      staffAddressfield: staffAddress,
+      staffProfilefield :staffAddress,
+      stafflId :userId,
+      staffroleField :staffrole
     });
+        update(); // Notify GetX listeners
 
-    log("Officials details updated successfully.");
+    log("Staffs details updated successfully.");
     return true; // Return success
   } catch (e) {
-    log("Error updating Officials details: $e");
+    log("Error updating Staffs details: $e");
     return false; // Return failure
   }
 }
 
 
-Future<String> updateOfficialsPhoto(String officialId,) async {
+Future<String> updateStaffsPhoto(String staffId,) async {
     String downloadUrl = '';
-    final docRef = collectionControler.officialLoginCollection.doc(officialId);
+    final docRef = collectionControler.staffLoginCollection.doc(staffId);
 
     try {
         FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -116,7 +122,7 @@ Future<String> updateOfficialsPhoto(String officialId,) async {
                 file = File(result.files.first.path!);
             }
 
-            final ref = collectionControler.firebaseStorageRef.child("Higher Official Photo/$officialId");
+            final ref = collectionControler.firebaseStorageRef.child("Staff Photo/$staffId");
 
             // Upload file
             UploadTask uploadTask;
@@ -138,16 +144,20 @@ Future<String> updateOfficialsPhoto(String officialId,) async {
             log("No file selected.");
         }
     } catch (e) {
-        log("Error updating officials photo: $e");
+        log("Error updating Staffs photo: $e");
     }
+        update(); // Notify GetX listeners
+
     return downloadUrl;
 }
 
 
-Future<String?> getOfficialsPhotoUrl(String officialsId) async {
+Future<String?> getStaffsPhotoUrl(String staffsId) async {
   try {
-    final ref =collectionControler.firebaseStorageRef.child("Higher Official Photo/$officialsId");
+    final ref =collectionControler.firebaseStorageRef.child("Staff Photo/$staffsId");
     final doc = await ref.getDownloadURL();
+        update(); // Notify GetX listeners
+
     return doc;
   } catch (e) {
     log(
@@ -156,36 +166,36 @@ Future<String?> getOfficialsPhotoUrl(String officialsId) async {
   }
 }
 
-Future<void> registerOfficials({
-required  String  principalName ,
-required  String  principalEmail ,
-required  String  principalPhoneNumber ,
-required  String  principalAddress ,
-required  String  principalProfile ,
-required  String  userId,
-required  String  principalRole ,
+Future<void> registerStaffs({
+required String  staffName ,
+required String  staffEmail ,
+required String  staffPhoneNumber,
+required String  staffAddress,
+required String  staffProfile ,
+required String  userId ,
+required String  staffrole,
   required BuildContext context,
 }) async {
   try {
   
   
-    await collectionControler.officialLoginCollection.doc(userId).set({
-          principalNamefield : principalName,
-     principalEmailfield : principalEmail,
-     principalPhoneNumberfield : principalPhoneNumber,
-     principalAddressfield : principalAddress,
-     principalProfilefield : principalProfile,
-     principalId : userId,
-     principalRoleField : principalRole,
+    await collectionControler.staffLoginCollection.doc(userId).set({
+      staffNamefield:staffName,
+      staffEmailfield:staffEmail,
+      staffPhoneNumberfield :staffPhoneNumber,
+      staffAddressfield: staffAddress,
+      staffProfilefield :staffAddress,
+      stafflId :userId,
+      staffroleField :staffrole
     });
 
       await customSnackbar(context: context, text: "Registration succesfull");
+        update(); // Notify GetX listeners
 
   } catch (e) {
     log(e.toString());
       await customSnackbar(context: context, text: "failed to create person $e");
-                               
-   
+ 
   }
 }
 Future<dynamic> addPhoto() async {
@@ -203,6 +213,8 @@ Future<dynamic> addPhoto() async {
         return File(result.files.first.path!);
       }
     } 
+        update(); // Notify GetX listeners
+
   } catch (e) {
     log(e.toString());
   }
@@ -211,7 +223,7 @@ Future<dynamic> addPhoto() async {
 Future<String> photoStorage({required String userId, required dynamic image}) async {
   String downloadUrl = '';
 
-  final ref = collectionControler.firebaseStorageRef.child("Higher Official Photo/$userId");
+  final ref = collectionControler.firebaseStorageRef.child("Staff Photo/$userId");
 
   UploadTask uploadTask;
 
@@ -222,7 +234,7 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
     // Mobile: Use putFile for File
     uploadTask = ref.putFile(image);
   } else {
-    throw Exception("Invalid image format");
+   throw Exception("Invalid image format");
   }
 
   // Wait for upload to complete
@@ -230,65 +242,60 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 
   // Get download URL
   downloadUrl = await snapshot.ref.getDownloadURL();
+        update(); // Notify GetX listeners
+
   return downloadUrl;
 }
 
-Future<void> updateNumberOfOfficials(bool isIncrement) async {
-
-final dataDoc = collectionControler.loginCollection.doc('officials');
+Future<void> updateNumberOfStaffs(bool isIncrement) async {
+  
+final dataDoc = collectionControler.loginCollection.doc('staffs');
 final val = await dataDoc.get();
 
 if(val.exists)
 {
- await collectionControler.loginCollection.doc('officials').update({
+ await collectionControler.loginCollection.doc('staffs').update({
     'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
   });
 }
 else
 {
-   await collectionControler.loginCollection.doc('officials').set({
+   await collectionControler.loginCollection.doc('staffs').set({
     'numberOfPeople': 1,
   });
-}
 
 }
+        update(); // Notify GetX listeners
+
+}
 
 
 
-Future<bool> deleteOfficials({
-  required String officialId,
+Future<bool> deleteStaffs({
+  required String staffId,
 }) async {
   try {
-  final officialDoc = await collectionControler.officialLoginCollection.doc(officialId).get();
-  if (officialDoc.exists) {
-    await collectionControler.officialLoginCollection.doc(officialId).delete();
+  final staffDoc = await collectionControler.staffLoginCollection.doc(staffId).get();
+  if (staffDoc.exists) {
+    await collectionControler.staffLoginCollection.doc(staffId).delete();
   }
   
   // Check if student photo exists in Storage before deleting
-  final OfficialsPhotoRef = collectionControler.firebaseStorageRef.child("Higher Official Photo/$officialId");
-  if ((await OfficialsPhotoRef.listAll()).items.isNotEmpty) {
-    await OfficialsPhotoRef.delete();
+  final staffsPhotoRef = collectionControler.firebaseStorageRef.child("Staff Photo/$staffId");
+  if ((await staffsPhotoRef.listAll()).items.isNotEmpty) {
+    await staffsPhotoRef.delete();
   }
   
   // Check if AnnouncementChatPost exists before deleting
-  final announcementRef = collectionControler.firebaseStorageRef.child("AnnouncementChatPost/$officialId");
+  final announcementRef = collectionControler.firebaseStorageRef.child("AnnouncementChatPost/$staffId");
   if ((await announcementRef.listAll()).items.isNotEmpty) {
     await announcementRef.delete();
   }
   
-   // Iterate through all class and section combinations
-  for (int classNum = 1; classNum <= 12; classNum++) {
-  for (String section in ['A', 'B', 'C', 'D']) {
-    final remainderRef = collectionControler.firebaseStorageRef.child("RemainderChatPost/$classNum/$section/$officialId");
-    
-    if ((await remainderRef.listAll()).items.isNotEmpty) {
-      await remainderRef.delete();
-    }
-  }
-  }
-  await updateNumberOfOfficials(false);
+  await updateNumberOfStaffs(false);
+        update(); // Notify GetX listeners
   
-  log("deleted the officials data");
+  log("deleted the Staffs data");
   return true;
 }  catch (e) {
   log("error in deleting :$e");

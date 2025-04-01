@@ -1,28 +1,19 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/SchoolWebSite/websiteMainScreen.dart';
 import 'package:admin_pannel/SchoolWebSite/widgets/userAuthRedirect.dart';
-import 'package:admin_pannel/controller/AttendanceController.dart';
-import 'package:admin_pannel/controller/FessController.dart';
-import 'package:admin_pannel/controller/HigherOfficialController.dart';
-import 'package:admin_pannel/controller/StafffController.dart';
-import 'package:admin_pannel/controller/StudentController.dart';
-import 'package:admin_pannel/controller/StudentListBonafied.dart';
-import 'package:admin_pannel/controller/TeacherController.dart';
-import 'package:admin_pannel/controller/dashboardController.dart';
+import 'package:admin_pannel/controller/InitializeController.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:admin_pannel/views/pages/LoginPage/LoginScreen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
-  initializeGetController();
+  await initializeGetController();
 
   try {
     await Firebase.initializeApp(
@@ -44,17 +35,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-Future<void> initializeGetController()async{
-Get.lazyPut(()=>DashboardController()); 
-    Get.lazyPut(()=>StudentController()); 
-    Get.lazyPut(()=>Teachercontroller());
-    Get.lazyPut(()=>Higherofficialcontroller());
-    Get.lazyPut(()=>StaffController());
-    Get.lazyPut(()=>FeesController());
-    Get.lazyPut(()=>AttendanceController());
-    Get.lazyPut(()=>StudentlistBonafiedController());
-    Get.lazyPut(()=>FirebaseCollectionVariable());
-}
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 

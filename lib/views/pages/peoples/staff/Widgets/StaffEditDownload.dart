@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/StafffController.dart';
+import 'package:admin_pannel/controller/classControllers/StafffController.dart';
 import 'package:admin_pannel/modules/staffModels.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfStaff/pdfStaffDetails.dart';
@@ -119,7 +119,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     Container(
                       width: 300,
                       padding: const EdgeInsets.all(20),
-                      child:  Text(teacherDetails!.staffName,overflow:TextOverflow.visible , style: TextStyle(fontSize: 25,fontWeight: FontWeight.normal,color: Colors.black),)),
+                      child:  Text(teacherDetails!.staffName,overflow:TextOverflow.visible , style: const TextStyle(fontSize: 25,fontWeight: FontWeight.normal,color: Colors.black),)),
                    
                     ],
                     

@@ -1,9 +1,11 @@
+
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/TimetableController.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'dart:math';
+import 'package:get/get.dart';
 
 class SectionWiseTimetable extends StatefulWidget {
   final String stuClass;
@@ -16,8 +18,7 @@ class SectionWiseTimetable extends StatefulWidget {
 
 class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
   final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  final List<String> periods = ["Period 1", "Period 2", "Period 3", "Period 4", "Period 5", "Period 6", "Period 7", "Period 8"];
-  List<String> teachers = ["Mr. Smith", "Ms. Johnson", "Dr. Brown", "Prof. Davis", "Mrs. Wilson","Mr. Smith", "Ms. Johnson", "Dr. Brown", "Prof. Davis", "Mrs. Wilson",];
+  TimetableController timetableContrl=Get.find();
 
   Map<String, TimeOfDay> startTimes = {};
   Map<String, TimeOfDay> endTimes = {};
@@ -25,19 +26,68 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
   Map<String, Map<String, String?>> selectedTeachers = {};
   bool isChanged = false;
 
+
   @override
   void initState() {
     super.initState();
-    final random = Random();
     for (var day in days) {
       timetable[day] = {};
       selectedTeachers[day] = {};
-      for (var period in periods) {
-        timetable[day]![period] = TextEditingController(text: "null");
-        selectedTeachers[day]![period] = teachers[random.nextInt(teachers.length)];
+      for (var period in timetableContrl.periods) {
+        timetable[day]![period] = TextEditingController(text: "");
+        selectedTeachers[day]![period] = "";
       }
     }
+    loadTimetableFromFirestore();
   }
+
+Future<void> loadTimetableFromFirestore() async {
+  String classSection = "${widget.stuClass}${widget.stuSec}";
+
+  for (var day in days) {
+    for (var period in timetableContrl.periods) {
+      
+        dynamic snapshot = await timetableContrl.loadTimetableCollection(
+          classSection: classSection,
+          day: day,
+          period: period,
+        );
+
+        if (snapshot.exists) {
+          var data = snapshot.data();
+          if (data != null) {
+            setState(() {
+              timetable[day]![period]!.text = data["subject"] ?? "";
+              selectedTeachers[day]![period] = data["teacher"] ?? "";
+
+              // 🔹 Validate and Parse Start Time
+              if (data["startTime"] != null && data["startTime"].contains(":")) {
+                List<String> startParts = data["startTime"].split(":");
+                if (startParts.length > 1) {
+                  startTimes[period] = TimeOfDay(
+                    hour: int.tryParse(startParts[0]) ?? 0,
+                    minute: int.tryParse(startParts[1].split(" ")[0]) ?? 0,
+                  );
+                }
+              }
+
+              // 🔹 Validate and Parse End Time
+              if (data["endTime"] != null && data["endTime"].contains(":")) {
+                List<String> endParts = data["endTime"].split(":");
+                if (endParts.length > 1) {
+                  endTimes[period] = TimeOfDay(
+                    hour: int.tryParse(endParts[0]) ?? 0,
+                    minute: int.tryParse(endParts[1].split(" ")[0]) ?? 0,
+                  );
+                }
+              }
+            });
+          }
+        }
+    
+    }
+  }
+}
 
   Future<void> _selectTime(BuildContext context, String period, bool isStart) async {
     TimeOfDay? pickedTime = await showTimePicker(
@@ -107,9 +157,29 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
               height: 40,
               width: 140,
               child: ElevatedButton(
-                onPressed: () {
-                  isChanged?showCustomDialog(context, "Time Table as been Updated"):null;
-                },
+              onPressed: () {
+      if (isChanged) {
+        showCustomDialog(context, "Time Table has been Updated");
+
+        // Print timetable details
+        for (var day in days) {
+
+          for (var period in timetableContrl.periods) {
+             String? subject = timetable[day]![period]?.text??'';
+      String teacher = selectedTeachers[day]![period] ?? "";
+      String? startTime = startTimes[period]?.format(context)??'';
+          String? endTime = endTimes[period]?.format(context)??'';
+           timetableContrl.saveTimetableToFirestore(stuClaa: widget.stuClass,
+            stuSec: widget.stuSec, subject: subject, teacher: teacher, 
+            startTime: startTime, endTime: endTime, day: day, 
+            period: period) ;
+          }
+        }
+      }
+      setState(() {
+      isChanged = false;
+    });
+    },
                 style: ElevatedButton.styleFrom(
                                 backgroundColor: isChanged?Colors.blue:Colors.grey,
                                 foregroundColor: Colors.white,
@@ -135,7 +205,7 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
             )
           ],
          ),
-         const SizedBox(height: 20,),
+         const SizedBox(height: 40,),
           Expanded(
             child: SizedBox(
               width: screenWidth * 1.2,
@@ -145,7 +215,8 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
                   Row(
                     children: [
                       const SizedBox(width: 100,),
-                      ...periods.map((period) {
+                      ...timetableContrl.periods.map((period) {
+                        final ired = startTimes[period]?.format(context)==null;
                         return Expanded(
                           child: Column(
                             children: [
@@ -159,9 +230,9 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
                                 
                     child: Text(
                       startTimes[period]?.format(context) ?? "Start",
-                      style: const TextStyle(
+                      style:  TextStyle(
                         overflow: TextOverflow.ellipsis, // Prevent overflow by showing '...'
-                        color: Colors.red,
+                        color:ired? Colors.red:Colors.blue,
                         fontWeight: FontWeight.bold,
                         fontSize:13 ,
                       ),
@@ -173,9 +244,9 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
                   onTap: ()=>_selectTime(context, period, false),
                   child: Text(
                     endTimes[period]?.format(context) ?? "End",
-                    style: const TextStyle(
+                    style:  TextStyle(
                       overflow: TextOverflow.ellipsis, // Prevent overflow by showing '...'
-                      color: Colors.red,
+                      color: ired? Colors.red:Colors.blue,
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -190,6 +261,9 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
                       })
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
@@ -197,7 +271,9 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
                           return Row(
                             children: [
                               SizedBox(width: 100, child: Text(day, style: const TextStyle(fontWeight: FontWeight.bold))),
-                              ...periods.map((period) {
+                              ...timetableContrl.periods.map((period) {
+                                
+                          final isRed = timetable[day]![period]?.text=="";
                                 return Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.all(5),
@@ -207,13 +283,13 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
                                           controller: timetable[day]![period],
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(
-                                              borderSide: BorderSide(color: timetable[day]![period]?.text=='null'?Colors.red:primaryGreenColors),
+                                              borderSide: BorderSide(color: isRed?Colors.red:primaryGreenColors),
                                             ),
                                             enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: timetable[day]![period]?.text=='null'?Colors.red:primaryGreenColors),
+                                              borderSide: BorderSide(color: isRed?Colors.red:primaryGreenColors),
                                             ),
                                             focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: timetable[day]![period]?.text=='null'?Colors.red:primaryGreenColors),
+                                              borderSide: BorderSide(color: isRed?Colors.red:primaryGreenColors),
                                             ),
                                             hintText: "Subject",
                                           ),
@@ -223,22 +299,22 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
                                       DropdownSearch<String>(
                                         
                                         
-                       items: (filter, infiniteScrollProps) => teachers,
-                    selectedItem: selectedTeachers[day]![period],
-                      onChanged: (value) => setState(() {
-                               selectedTeachers[day]![period] = value;
-                         isChanged = true;
-                          }),
+                   items: (filter, infiniteScrollProps) => timetableContrl.teachers,
+  selectedItem: selectedTeachers[day]![period], // Make sure this is setting the value correctly
+  onChanged: (value) => setState(() {
+    selectedTeachers[day]![period] = value;
+    isChanged = true;
+  }),
                        decoratorProps:  DropDownDecoratorProps(
                          decoration: InputDecoration(
                              border: OutlineInputBorder(
-                                              borderSide: BorderSide(color: timetable[day]![period]?.text=='null'?Colors.red:primaryGreenColors),
+                                              borderSide: BorderSide(color: isRed?Colors.red:primaryGreenColors),
                                             ),
                                             enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: timetable[day]![period]?.text=='null'?Colors.red:primaryGreenColors),
+                                              borderSide: BorderSide(color: isRed?Colors.red:primaryGreenColors),
                                             ),
                                             focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(color: timetable[day]![period]?.text=='null'?Colors.red:primaryGreenColors),
+                                              borderSide: BorderSide(color: isRed?Colors.red:primaryGreenColors),
                                             ),
                   hintText: "Teacher",
                 ),

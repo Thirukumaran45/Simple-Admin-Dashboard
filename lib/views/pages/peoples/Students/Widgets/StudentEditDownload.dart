@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/StudentController.dart';
+import 'package:admin_pannel/controller/classControllers/StudentController.dart';
 import 'package:admin_pannel/modules/studentModels.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfStudent/PdfStudentDetails.dart';

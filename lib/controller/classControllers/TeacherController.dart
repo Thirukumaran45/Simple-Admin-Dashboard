@@ -36,7 +36,7 @@ void fetchTeacherData() async {
         'email': doc[teacherEmailfield] ?? '',
         'phone': doc[teacherPhoneNumberfield] ?? '',
       };
-    }).toList().cast<Map<String, dynamic>>(); ;
+    }).toList().cast<Map<String, dynamic>>();
   } catch (e) { 
     log('Error in fetching the data: $e');
   }
@@ -284,10 +284,24 @@ Future<bool> deleteTeacher({
   try {
   String autoId='';
   final teacherDoc = await collectionControler.teacherLoginCollection.doc(teacherId).get();
+
   if (teacherDoc.exists) {
+    // Reference to the assignments collection
+    final assignmentsCollection = collectionControler.teacherLoginCollection
+        .doc(teacherId)
+        .collection("assigments");
+
+    // Fetch all documents in the assignments collection
+    final assignmentsSnapshot = await assignmentsCollection.get();
+
+    // Delete each assignment document
+    for (var doc in assignmentsSnapshot.docs) {
+      await doc.reference.delete();
+    }
+
+    // Now delete the teacher document
     await collectionControler.teacherLoginCollection.doc(teacherId).delete();
   }
-  
   // Check if student photo exists in Storage before deleting
   final teacherPhotoRef = collectionControler.firebaseStorageRef.child("Teacher photo/$teacherId");
   if ((await teacherPhotoRef.listAll()).items.isNotEmpty) {

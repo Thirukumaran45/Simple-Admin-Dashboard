@@ -36,6 +36,7 @@ class StudentController extends GetxController {
   }).toList().cast<Map<String, dynamic>>(); 
 }   catch (e) {
   log('error in fetching the data $e');
+        update(); // Notify GetX listeners
 }
   }
 
@@ -49,12 +50,15 @@ Future<StudentdetailsModel?> studentDataRead({required String uid}) async {
     }
 
     final castedDoc = doc as DocumentSnapshot<Map<String, dynamic>>;
+        update(); // Notify GetX listeners
     
     return StudentdetailsModel.fromSnapshot(castedDoc);
+    
   }  catch (e) {
     log('Error fetching student data: $e');
     return null;
   }
+  
 }
 
 Future<bool> updateStudentDetails({
@@ -93,6 +97,7 @@ Future<bool> updateStudentDetails({
       feesStatusField:feesStatus,
       profilePhotfield: profilePhotoUrl, // Update photo URL
     });
+        update(); // Notify GetX listeners
 
     log("Student details updated successfully.");
     return true; // Return success
@@ -144,9 +149,10 @@ Future<String> updateStudentPhoto(String studentId,) async {
             await docRef.update({
                 profilePhotfield: downloadUrl,
             });
-
+        
         } else {
             log("No file selected.");
+        update(); // Notify GetX listeners
         }
     } catch (e) {
         log("Error updating student photo: $e");
@@ -159,6 +165,7 @@ Future<String?> getStudentPhotoUrl(String studentId) async {
   try {
     final ref =collectionControler.firebaseStorageRef.child("Student photo/$studentId");
     final doc = await ref.getDownloadURL();
+        update(); // Notify GetX listeners
     return doc;
   } catch (e) {
     log(
@@ -210,6 +217,7 @@ Future<void> registerUser({
     });
 
       await customSnackbar(context: context, text: "Registration succesfull");
+        update(); // Notify GetX listeners
 
   } catch (e) {
     log(e.toString());
@@ -233,6 +241,8 @@ Future<dynamic> addPhoto() async {
         return File(result.files.first.path!);
       }
     } 
+        update(); // Notify GetX listeners
+
   } catch (e) {
     log(e.toString());
   }
@@ -260,6 +270,8 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 
   // Get download URL
   downloadUrl = await snapshot.ref.getDownloadURL();
+        update(); // Notify GetX listeners
+
   return downloadUrl;
 }
 
@@ -281,6 +293,7 @@ else
     'numberOfPeople': 1,
   });
 }
+        update(); // Notify GetX listeners
 
 
 }
@@ -317,6 +330,7 @@ Future<bool> deleteStudent({
       await remainderRef.delete();
     }
    await updateNumberOfStudent(false);
+        update(); // Notify GetX listeners
 
   log("deleted the student data");
     return true;

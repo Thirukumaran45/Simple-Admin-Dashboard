@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/TeacherController.dart';
+import 'package:admin_pannel/controller/classControllers/TeacherController.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/pdfTeacher/pdfTotalTeacherDetails.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
