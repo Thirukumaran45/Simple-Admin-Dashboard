@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart'; 
+import 'package:firebase_storage/firebase_storage.dart' show UploadTask, TaskSnapshot;
+import 'package:flutter/foundation.dart' show Uint8List,kIsWeb;
+
 class Teachercontroller extends GetxController{
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
@@ -125,7 +126,7 @@ Future<String> updateTeacherPhoto(String teacherId,) async {
                 file = File(result.files.first.path!);
             }
 
-            final ref = collectionControler.firebaseStorageRef.child("Teacher photo/$teacherId");
+            final ref = collectionControler.firebaseStorageRef.child("Teacher Photo/$teacherId");
 
             // Upload file
             UploadTask uploadTask;
@@ -148,7 +149,7 @@ Future<String> updateTeacherPhoto(String teacherId,) async {
         }
          update(); // Notify GetX listeners
     } catch (e) {
-        log("Error updating teacher photo: $e");
+        log("Error updating teacher Photo: $e");
     }
     return downloadUrl;
 }
@@ -156,7 +157,7 @@ Future<String> updateTeacherPhoto(String teacherId,) async {
 
 Future<String?> getTeacherPhotoUrl(String teacherId) async {
   try {
-    final ref =collectionControler.firebaseStorageRef.child("Teacher photo/$teacherId");
+    final ref =collectionControler.firebaseStorageRef.child("Teacher Photo/$teacherId");
     final doc = await ref.getDownloadURL();
      update(); // Notify GetX listeners
     return doc;
@@ -233,7 +234,7 @@ Future<dynamic> addPhoto() async {
 Future<String> photoStorage({required String userId, required dynamic image}) async {
   String downloadUrl = '';
 
-  final ref = collectionControler.firebaseStorageRef.child("Teacher photo/$userId");
+  final ref = collectionControler.firebaseStorageRef.child("Teacher Photo/$userId");
 
   UploadTask uploadTask;
 
@@ -303,7 +304,7 @@ Future<bool> deleteTeacher({
     await collectionControler.teacherLoginCollection.doc(teacherId).delete();
   }
   // Check if student photo exists in Storage before deleting
-  final teacherPhotoRef = collectionControler.firebaseStorageRef.child("Teacher photo/$teacherId");
+  final teacherPhotoRef = collectionControler.firebaseStorageRef.child("Teacher Photo/$teacherId");
   if ((await teacherPhotoRef.listAll()).items.isNotEmpty) {
     await teacherPhotoRef.delete();
   }

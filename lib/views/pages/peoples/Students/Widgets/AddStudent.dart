@@ -1,5 +1,5 @@
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
-import 'package:admin_pannel/controller/classControllers/StudentController.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';

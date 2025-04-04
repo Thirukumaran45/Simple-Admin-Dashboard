@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/StudentController.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentController.dart';
 import 'package:admin_pannel/modules/studentModels.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfStudent/PdfStudentDetails.dart';
@@ -37,7 +37,6 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
   bool isEdited = false;
   StudentController controller = Get.find();
   String? assetImage;
-  String? updatePhotoUrl;
 
   @override
   void initState() {
@@ -257,7 +256,7 @@ Future<void> initializeFunction() async {
                      motherName:motherNameController.text.toString() ,
                      motherNumber: motherPhoneNumberController.text.toString(),
                      name: name,
-                     profilePhotoUrl: updatePhotoUrl??'',
+                     profilePhotoUrl: assetImage??'',
                      section: sectionController.text.toUpperCase(). toString(),
                      studentClass: studentClassController.text.toString(),
                      totalFee: totalFeesController.text.toString(),

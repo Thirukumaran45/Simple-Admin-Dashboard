@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
-import 'package:admin_pannel/controller/classControllers/TeacherController.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/TeacherController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog;

@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/HigherOfficialController.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import 'package:admin_pannel/modules/higherOfficialModels.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfOfficial/pdfOfficialDetails.dart';
@@ -26,7 +26,6 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
   late TextEditingController homeAddressController;
   late TextEditingController role;
  String? assetImage;
-  String? updatePhotoUrl;
   bool isEdited = false;
   Principaldetailmodel? teacherDetails;
   Higherofficialcontroller controller = Get.find();
@@ -104,8 +103,8 @@ Future<void> handlePhotoUpdate(String studentId) async {
                         height: 500,
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
-                          image: const DecorationImage(
-                            image: AssetImage("assets/images/profile.png"),
+                          image:  DecorationImage(
+                            image: NetworkImage(assetImage!),
                             fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.circular(8),
@@ -207,7 +206,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     principalAddress: homeAddressController.text.toString(),
                      principalEmail: emailController.text.toString(),
                      principalName: firstNameController.text.toUpperCase(),
-                     principalProfile: updatePhotoUrl??'',
+                     principalProfile: assetImage??'',
                     userId: widget.uid, 
                    principalRole: role.text,
                    principalPhoneNumber: phoneNumberController.text.toString(),

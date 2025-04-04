@@ -67,6 +67,7 @@ Future<void> saveTimetableToFirestore({
         "startTime": startTime,
         "endTime": endTime,
       }, SetOptions(merge: true)); 
+      update();
 }  catch (e) {
   log("erorr in add and update funtion $e");
 }

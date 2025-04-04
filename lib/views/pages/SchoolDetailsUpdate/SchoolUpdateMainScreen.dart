@@ -1,24 +1,33 @@
 
-import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'dart:developer' show log;
+import 'package:admin_pannel/controller/classControllers/schoolController/schooldetailsController.dart';
 import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/customfield.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SchoolUpdateMainScreen extends StatefulWidget {
   const SchoolUpdateMainScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SchoolGalleryPageState createState() => _SchoolGalleryPageState();
 }
 class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
   late TextEditingController schoolNameController ; 
-  late TextEditingController schoolCityController ;
+  late TextEditingController schoolChatBOtApi ;
   late TextEditingController studentPassKeyController ; 
   late TextEditingController teacherPassKeyController ;
   late TextEditingController staffPassKeyController ; 
   late TextEditingController officialPassKeyController ; 
+  
+   String? schoolName ;
+   String? chatbotAi ;
+   String? studentPasskey ;
+   String? teacherPasskey ;
+   String? staffPassKey;
+   String? higherOfficialPassKey;
   bool obscureStudentText = true;
   bool obscureTeacherText = true;
   bool obscureStaffText = true;
@@ -26,42 +35,70 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
   bool isEditingSchoolName = false;
   bool isEditingSchoolCity = false;
   bool isNameChanged = false;
-  bool isChatAi_api = false;
+  bool isChatAiapi = false;
   bool isTeacherKeyChanged = false;
   bool isStudentKeyChanged = false;
   bool isOfficialKeyChanged = false;
   bool isStaffKeyChanged = false;
   List<String> passkeys = ["Student Passkey", "Teacher Passkey", "Staff Passkey", "Higher Official Passkey"];
-  List<String> schoolPhotos = List.generate(12, (index) => "assets/images/profile.png");
+ 
+  SchooldetailsController detailsController = Get.find(); 
+@override
+void initState() {
+  super.initState();
+  schoolNameController = TextEditingController();
+  schoolChatBOtApi = TextEditingController();
+  studentPassKeyController = TextEditingController();
+  teacherPassKeyController = TextEditingController();
+  staffPassKeyController = TextEditingController();
+  officialPassKeyController = TextEditingController();
+  initializeSchoolDetails();
+}
 
-  @override
-  void initState() {
-    super.initState();
-    // Adding individual listeners for each passkey field
-       schoolNameController = TextEditingController(text: schoolName);
-   schoolCityController = TextEditingController(text: "axi12hdjhie83bjbr9823ubbdjb");
-   studentPassKeyController = TextEditingController(text: "Student");
-   teacherPassKeyController = TextEditingController(text: "Teacher");
-   staffPassKeyController = TextEditingController(text: "Staff");
-   officialPassKeyController = TextEditingController(text: "official");
+Future<void>getSchoolDetails()async{
+
+  final schoolDetails = await detailsController.getSchoolDetails();
+  setState(() {
+   schoolName = schoolDetails.schoolName;
+   chatbotAi = schoolDetails.chatbotApi;
+   studentPasskey = schoolDetails.studentPassKey;
+   teacherPasskey = schoolDetails.teacherPassKey;
+   staffPassKey = schoolDetails.staffPassKey;
+   higherOfficialPassKey = schoolDetails.higherOfficialPassKey;
+  });
+
+}
+
+Future<void>initializeSchoolDetails()async{
+await getSchoolDetails();
+setState(() {
+  schoolNameController.text = schoolName??" ";
+   schoolChatBOtApi.text = chatbotAi??" ";
+   studentPassKeyController.text = studentPasskey?? " ";
+   teacherPassKeyController.text =  teacherPasskey??" ";
+   staffPassKeyController.text =  staffPassKey??" ";
+   officialPassKeyController.text = higherOfficialPassKey??" ";  
+});
+ 
     studentPassKeyController.addListener(() {
       setState(() {
-        isStudentKeyChanged = studentPassKeyController.text != "Student";
+        isStudentKeyChanged = studentPassKeyController.text != studentPasskey;
       });
     });
     teacherPassKeyController.addListener(() {
       setState(() {
-        isTeacherKeyChanged = teacherPassKeyController.text != "Teacher";
+        isTeacherKeyChanged = teacherPassKeyController.text != teacherPasskey;
       });
     });
     staffPassKeyController.addListener(() {
       setState(() {
-        isStaffKeyChanged = staffPassKeyController.text != "Staff";
+        isStaffKeyChanged = staffPassKeyController.text != staffPassKey;
       });
     });
     officialPassKeyController.addListener(() {
+    
       setState(() {
-        isOfficialKeyChanged = officialPassKeyController.text != "official";
+        isOfficialKeyChanged = officialPassKeyController.text != higherOfficialPassKey;
       });
     });
 
@@ -71,12 +108,27 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
         isNameChanged = schoolNameController.text != schoolName;
       });
     });
-    schoolCityController.addListener(() {
+    schoolChatBOtApi.addListener(() {
       setState(() {
-        isChatAi_api = schoolCityController.text != "axi12hdjhie83bjbr9823ubbdjb";
+        isChatAiapi = schoolChatBOtApi.text != chatbotAi;
       });
     });
-  }
+}
+  
+Future<bool> addAndUpdateDetails()async{ 
+  
+   final isupdate = await detailsController.addAndUpdateSchoolDetails(
+    schoolName: schoolNameController.text,
+    chatbotApi: schoolChatBOtApi.text,
+    studentPassKey: studentPassKeyController.text,
+    teacherPassKey: teacherPassKeyController.text,
+    higherOfficialPassKey: officialPassKeyController.text,
+    staffPassKey: staffPassKeyController.text,
+  );
+
+
+  return isupdate;
+}  
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +144,7 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
               children: [
                 Expanded(child: _buildEditableTextField("School Name", schoolNameController, () => setState(() => isEditingSchoolName = true), isEditingSchoolName)),
                 const SizedBox(width: 16),
-                Expanded(child: _buildEditableTextField("Chat Ai API Key", schoolCityController, () => setState(() => isEditingSchoolCity = true), isEditingSchoolCity)),
+                Expanded(child: _buildEditableTextField("Chat Ai API Key", schoolChatBOtApi, () => setState(() => isEditingSchoolCity = true), isEditingSchoolCity)),
               ],
             ),
             const SizedBox(height: 22),
@@ -103,69 +155,8 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
             
             const SizedBox(height: 30),
             // School Gallery Title with Add Photo Button near it
-               Padding(padding: const EdgeInsets.all(20),
-              child: InkWell(
-                onTap: (){
-                  customNvigation(context, '/school-details-updation/viewPhoto?assetLink=assets/images/splash.png');
-                         
-                },
-                 child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: primaryYellowShadeColors,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: const  [
-                      BoxShadow(
-                        blurRadius: 10,
-                        color: Colors.grey
-                      )
-                    ]
-                  ),
-
-                  child: const Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        "Upload School Logo , Here",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 3,
-                          fontSize: 20
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward,size: 30, color: Colors.black,)
-                    ],
-                  ),
-                 ),
-              )
-              ),
-
-             const SizedBox(
-              height: 20,
-             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("School Gallery Photos", style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold ,color: Colors.black)),
-                ),
-                customIconTextButton(Colors.blue, onPressed: (){}, icon: Icons.upload, text: "Add Photo")
-              ],
-            ),
+               schoolDetailsGallery(context,detailsController),
             
-            // Grid Layout for School Photos (scrolls with the page)
-           Customfield(schoolPhotos: schoolPhotos,),
-            
-            // Load More Button
-            Padding(
-              padding: const EdgeInsets.all(25),
-              child: Center(
-                child: TextButton(onPressed: (){}, child: const Text("Load more ...", style: TextStyle(color: Colors.blue, fontSize: 20),)) ),
-            ),
           ],
         ),
       ),
@@ -194,24 +185,34 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
             style:   TextStyle(fontSize: 16, color: Colors.grey[850]),
           ),
           // Show Save button below TextField only when it's being edited and text is changed
-          if (isEditing && (label == "School Name" ? isNameChanged : isChatAi_api))
+          if (isEditing && (label == "School Name" ? isNameChanged : isChatAiapi))
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: SizedBox(
                 width: 120, // Reduced width for the Save button
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  onPressed: () {
-                    setState(() {
-                      if (label == "School Name") {
-                        isEditingSchoolName = false;
-                        isNameChanged = false;
-                      } else {
-                        isEditingSchoolCity = false;
-                        isChatAi_api = false;
-                      }
-                    });
-                  },
+                  onPressed: () async {
+  final isupdate = await detailsController.addAndUpdateSchoolDetails(
+    schoolName: schoolNameController.text,
+    chatbotApi: schoolChatBOtApi.text,
+    studentPassKey: studentPassKeyController.text,
+    teacherPassKey: teacherPassKeyController.text,
+    higherOfficialPassKey: officialPassKeyController.text,
+    staffPassKey: staffPassKeyController.text,
+  );
+  log(isupdate ? "Updated the function" : "Not updating");
+  setState(() {
+    if (label == "School Name") {
+      isEditingSchoolName = false;
+      isNameChanged = false;
+    } else {
+      isEditingSchoolCity = false;
+      isChatAiapi = false;
+    }
+  });
+},
+
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.min,
@@ -304,19 +305,31 @@ Widget _buildPasskeyRow(List<String> passkeys) {
                 width: 120, // Reduced width for the Save button
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  onPressed: () {
-                    setState(() {
-                      if (label == "Student PassKey") {
-                        isStudentKeyChanged = false;
-                      } else if (label == "Teacher PassKey") {
-                        isTeacherKeyChanged = false;
-                      } else if (label == "Staff PassKey") {
-                        isStaffKeyChanged = false;
-                      } else if (label == "Official PassKey") {
-                        isOfficialKeyChanged = false;
-                      }
-                    });
-                  },
+                onPressed: () async {
+final isupdate = await addAndUpdateDetails(); 
+  isupdate?showCustomDialog(context, "School Details Updated Succesfully"):
+  showCustomDialog(context, "Something went wrong, please check the details !");
+  setState(() {
+    if (label == "School Name") {
+      isEditingSchoolName = false;
+      isNameChanged = false;
+    } else {
+      isEditingSchoolCity = false;
+      isChatAiapi = false;
+    }
+    if (label == "Student PassKey") {
+      isStudentKeyChanged = false;
+    } else if (label == "Teacher PassKey") {
+      isTeacherKeyChanged = false;
+    } else if (label == "Staff PassKey") {
+      isStaffKeyChanged = false;
+    } else if (label == "Official PassKey") {
+      isOfficialKeyChanged = false;
+    }
+   
+  });
+},
+
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.min,

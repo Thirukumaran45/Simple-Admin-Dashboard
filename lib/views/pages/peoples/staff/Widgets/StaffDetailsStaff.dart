@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/StafffController.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StafffController.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfStaff/pdfTotalstaffDetails.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';

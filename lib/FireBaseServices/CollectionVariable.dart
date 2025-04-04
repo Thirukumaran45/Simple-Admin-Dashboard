@@ -18,7 +18,7 @@ const collegedegreefield = 'college_degree';
 const yearOfExperiencefield = 'year_of_experience';
 const teacherSubjectHandlingfield = 'subject_handling';
 const teacherIdFireld = 'id';
-const teacherPasskey = '';
+const teacherPasskeyField = 'teacherPasskey';
 const teacherrole = 'role';
 
 // principal variable
@@ -28,7 +28,7 @@ const principalPhoneNumberfield = 'phoneNo';
 const principalAddressfield = 'address';
 const principalProfilefield = 'profile_photo';
 const principalId = 'id';
-const principalPasskey = '';
+const principalPasskeyField = 'principalPassKey';
 const principalRoleField = 'role';
 
 
@@ -40,7 +40,7 @@ const staffAddressfield = 'address';
 const staffProfilefield = 'profile_photo';
 const stafflId = 'id';
 const staffroleField = 'role';
-const staffPassKey ='';
+const staffPassKeyField ='staffPassKey';
 
 
 //student variable
@@ -64,7 +64,7 @@ const attendancePercentageField = 'Attendance Percentage';
 const todayAttendanceStatusField = 'Today Attendance';
 const studentAdminssionNoField = 'Adminnsion Number';
 const totalFees = 'total Fess'; 
-const studentPasskeyField = '';
+const studentPasskeyField = 'studentPassKey';
 const totalAttendanceDays = 'totalAttendanceDays';
 
 var dueDate = '12-4-2024';
@@ -78,6 +78,7 @@ var totalfee = fee1amount + fee2amount + fee3amount;
 
 class FirebaseCollectionVariable extends GetxController {
   final Reference firebaseStorageRef = FirebaseStorage.instance.ref();
+  final firebaseStorageInstance = FirebaseStorage.instance;
   final schoolDetails =
       FirebaseFirestore.instance.collection('School').doc('school_details');
 

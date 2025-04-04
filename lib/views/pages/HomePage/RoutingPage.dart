@@ -1,3 +1,4 @@
+
 import 'package:admin_pannel/views/pages/Bonafied/Bonafied.dart';
 import 'package:admin_pannel/views/pages/Bonafied/widget/ClassWiseBonafied.dart';
 import 'package:admin_pannel/views/pages/Bonafied/widget/StudentBonafied.dart';
@@ -262,11 +263,10 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                  title: "School Details Updation",
                     type: BeamPageType.scaleTransition,key: ValueKey('School Updates')),
                      '/school-details-updation/viewPhoto': (context, state, data){  
-                    final assetLink = state.queryParameters['assetLink'] ?? '';
-                return    BeamPage(child:  Photoviewpage(assetLink: assetLink,),
-                 title: "Gallary Photo",
-                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Gallary photo'));},
-                
+                    
+                return  const    BeamPage(child:  Photoviewpage(),
+                 title: "School Icon Image",
+                    type: BeamPageType.slideLeftTransition,key:  ValueKey('Gallary photo'));},
                       //school-timeTable' bus updation
                       '/school-timeTable': (context, state, data){
 

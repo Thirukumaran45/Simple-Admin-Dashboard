@@ -1,6 +1,6 @@
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/TeacherController.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/TeacherController.dart';
 import 'package:admin_pannel/modules/teacherModels.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/pdfTeacher/pdfTeacherDetails.dart';
@@ -29,7 +29,6 @@ class _StudentEditDownloadState extends State<TeacherEditDownload> {
   late TextEditingController emplymentDateController;
   late TextEditingController experienceController;
   String? assetImage;
-  String? updatePhotoUrl;
   bool isEdited = false;
   Teacherdetailmodel? teacherDetails;
   Teachercontroller controller = Get.find();
@@ -225,7 +224,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     teacherSubjectHandling: subjectHandlingController.text.toString(),
                      teacherEmail: emailController.text.toString(),
                      teacherName: firstNameController.text.toUpperCase(),
-                     teacherProfile: updatePhotoUrl??'',
+                     teacherProfile: assetImage??'',
                     userId: widget.uid, 
                    collegedegree: degreeController.text.toString(),
                    dateofemployment: dateofEmploymentfield,
