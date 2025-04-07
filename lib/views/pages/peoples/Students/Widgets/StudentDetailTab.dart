@@ -20,7 +20,7 @@ class _StudentDetailsTabState extends State<StudentDetailsTab> {
   String? selectedClass = "All";
   String? selectedSection = "All";
   String rollNumber = '';
-  String name = '';
+  String name = ''; 
 
   final StudentController controler = Get.find();
  

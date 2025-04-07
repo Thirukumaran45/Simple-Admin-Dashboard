@@ -1,5 +1,5 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/controller/classControllers/TimetableController.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/TimetableController.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';

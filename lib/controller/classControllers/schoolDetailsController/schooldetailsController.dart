@@ -9,12 +9,19 @@ import 'package:flutter/foundation.dart' show Uint8List,kIsWeb;
 import 'package:get/get.dart';
 
 class SchooldetailsController extends GetxController{
-
+String? email;
 late FirebaseCollectionVariable collectionVariable;
 @override
   void onInit() {
     super.onInit();
     collectionVariable = Get.find();
+    initializeEmail();
+  }
+
+void initializeEmail()=>currrentUserEmail();
+  Future<void > currrentUserEmail ()async{
+    String adminEmail = await collectionVariable.getCurrentUserEmail();
+   email = adminEmail;
   }
 
 Future<bool> addAndUpdateSchoolDetails({
@@ -37,7 +44,8 @@ try {
   studentPasskeyField:studentPassKey,
   teacherPasskeyField:teacherPassKey,
   principalPasskeyField:higherOfficialPassKey,
-  staffPassKeyField:staffPassKey
+  staffPassKeyField:staffPassKey,
+  "admin_email":email
   });
   }
   else
@@ -48,7 +56,9 @@ try {
   studentPasskeyField:studentPassKey,
   teacherPasskeyField:teacherPassKey,
   principalPasskeyField:higherOfficialPassKey,
-  staffPassKeyField:staffPassKey
+  staffPassKeyField:staffPassKey,
+  "admin_email":email
+
   });
   update();
   }

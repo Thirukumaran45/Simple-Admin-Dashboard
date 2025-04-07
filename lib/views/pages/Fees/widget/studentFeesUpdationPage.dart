@@ -1,4 +1,4 @@
-import 'package:admin_pannel/controller/classControllers/FessController.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfSingleScript.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';

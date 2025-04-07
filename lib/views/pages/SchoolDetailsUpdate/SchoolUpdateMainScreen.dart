@@ -1,6 +1,6 @@
 
 import 'dart:developer' show log;
-import 'package:admin_pannel/controller/classControllers/schoolController/schooldetailsController.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/customfield.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';

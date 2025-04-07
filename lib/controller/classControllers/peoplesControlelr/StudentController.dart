@@ -21,7 +21,7 @@ class StudentController extends GetxController {
     collectionControler = Get.find<FirebaseCollectionVariable>();
     fetchStudentData();
   }
-
+ 
   void fetchStudentData() async {
     try {
   snapshot = await collectionControler.studentLoginCollection.get();

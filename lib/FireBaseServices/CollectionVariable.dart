@@ -139,4 +139,8 @@ class FirebaseCollectionVariable extends GetxController {
   Future<void> signOutAccount() async {
     await FirebaseAuth.instance.signOut();
   }
+  Future<String>getCurrentUserEmail()async{
+    final String currentUserEmail =  FirebaseAuth.instance.currentUser!.email!;
+  return currentUserEmail;
+  }
 }

@@ -1,6 +1,6 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentListBonafied.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentListBonafiedControlelr.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfBonafied.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
@@ -23,13 +23,22 @@ class _ClasswiseBonafiedState extends State<ClasswiseBonafied> {
 
   final StudentlistBonafiedController controler = Get.find();
 
-  List<Map<String, String>> filteredData = [];
+  List<Map<String, dynamic>> filteredData = [];
  
-  @override
-  void initState() {
-    super.initState();
-    filteredData = List.from(controler.studentData);
-  }
+ @override
+void initState() {
+  super.initState();
+   setState(() {
+      filteredData = List.from(controler.studentData);
+    });
+  ever(controler.studentData, (_) {
+    setState(() {
+      filteredData = List.from(controler.studentData);
+    });
+  });
+}
+
+
 
   void applyFilters() {
     setState(() {
@@ -246,13 +255,13 @@ Container(
                               height: 38,
                               width: 80,
                               decoration: BoxDecoration(
-                                color: student['feesStatus'] =="Paid" ? primaryGreenColors : Colors.red,
+                                color: student['feeStatus'] =="Paid" ? primaryGreenColors : Colors.red,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Center(
                                 
                                 child: Text(
-                                  "${student['feesStatus']}",
+                                  "${student['feeStatus']}",
                                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.normal,letterSpacing: 1),
                                 ),
                               ),

@@ -68,14 +68,12 @@ class _BodyState extends State<Body> {
 
   Future<bool> checkBackendEmail(String email) async {
   try {
-    // Reference to the schoolDetails document
-    final  docSnapshot = await collectioncontrolelr.schoolDetails.get();
+   final docSnapshot = await collectioncontrolelr.schoolDetails.get();
+if (docSnapshot.exists) {
+  String adminEmail = docSnapshot.get('admin_email');
+  return adminEmail == email;
+}
 
-    if (docSnapshot.exists) {
-      // Get the admin_email field from Firestore
-      String adminEmail = docSnapshot.get('admin_email');
-      return adminEmail == email;
-    }
   } catch (e) {
     log("Error checking backend email: $e");
   }

@@ -1,14 +1,14 @@
 
-import 'package:admin_pannel/controller/classControllers/AttendanceController.dart';
-import 'package:admin_pannel/controller/classControllers/FessController.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
 import 'package:admin_pannel/controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StafffController.dart';
 import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentController.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentListBonafied.dart';
+import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentListBonafiedControlelr.dart';
 import 'package:admin_pannel/controller/classControllers/peoplesControlelr/TeacherController.dart';
-import 'package:admin_pannel/controller/classControllers/TimetableController.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/TimetableController.dart';
 import 'package:admin_pannel/controller/classControllers/dashboardController.dart';
-import 'package:admin_pannel/controller/classControllers/schoolController/schooldetailsController.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:get/get.dart';
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 

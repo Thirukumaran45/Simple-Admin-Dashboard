@@ -1,13 +1,12 @@
 
 import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/AttendanceController.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfAttendance.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class AttendanceDownloadPage extends StatefulWidget {
   final String section;
@@ -20,52 +19,74 @@ class AttendanceDownloadPage extends StatefulWidget {
 
 class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   String? selectedDate;
-
   String? selectedMonth;
-
   String rollNumber = '';
-
   String name = '';
+  String teacherName='';
+  bool isLoading = true; 
 
   final AttendanceController controler = Get.find();
 
   Map<int, bool> showSaveButton = {}; 
  // Track changed attendance
-  List<Map<String, String>> filteredData = [];
-
+  List<Map<String, dynamic>> filteredData = [];
+  List<Map<String, dynamic>> studentData = [];
+  AttendanceController controller = Get.find();
+  List<String> month = [];
+  List<String>date=[];
   @override
-  void initState() {
+  void initState() { 
     super.initState();
-    DateTime now = DateTime.now();
-    selectedMonth = DateFormat('MMMM').format(now);
-    selectedDate = DateFormat('dd-MM-yyyy').format(now);
-    filteredData = List.from(controler.studentData);
-    applyFilters();
+    initializeList();
+    selectedMonth = controler.gettodaymonth();
+    selectedDate = controler.gettoadayDate();
+    
+ 
+   } 
+
+void initializeList() async {
+  List<String> monthVal = await controller.fetchUniqueMonthValuesAll();
+  List<String> dateVal = await controller.fetchUniqueDateValuesAll();
+  String name = await controler.getTeacherName(sec: widget.section,stuClass: widget.classNUmber);
+  setState(() {
+    date=dateVal;
+    teacherName=name;
+    month = monthVal;
+  });
+
+  final data = await controller.fetchStudentData();
+
+  // Ensure the class number and section exist before accessing them
+  if (data.containsKey(int.parse(widget.classNUmber)) &&
+      data[int.parse(widget.classNUmber)]!.containsKey(widget.section)) {
+    setState(() {
+      studentData = data[int.parse(widget.classNUmber)]![widget.section]!;
+      applyFilters();
+    });
+  } else {
+    setState(() {
+      studentData = [];
+      applyFilters();
+    });
   }
 
+  setState(() {
+    isLoading = false; // Stop loading after fetching data
+  });
+}
 
-  void applyFilters() {
+
+ void applyFilters() {
     setState(() {
-      filteredData = controler.studentData.where((student) {
+      filteredData = studentData.where((student) {
         final matchesDate = selectedDate == null || student['date'] == selectedDate;
         final matchesMonth = selectedMonth == null || student['month'] == selectedMonth;
-        final matchesRollNumber = rollNumber.isEmpty || student['rollNumber']!.contains(rollNumber);
         final matchesName = name.isEmpty || student['name']!.toLowerCase().contains(name.toLowerCase());
-        return matchesDate && matchesMonth && matchesRollNumber && matchesName;
+        return matchesDate && matchesMonth  && matchesName;
       }).toList();
     });
   }
 
- List<String> getAllDatesInMonth(String month) {
-    DateTime now = DateTime.now();
-    int daysInMonth = DateTime(now.year, now.month + 1, 0).day; // Get the number of days in the current month
-    List<String> dates = [];
-    for (int i = 1; i <= daysInMonth; i++) {
-      String formattedDate = DateFormat('dd-MM-yyy').format(DateTime(now.year, now.month, i));
-      dates.add(formattedDate);
-    }
-    return dates;
-  }
   void toggleAttendance(int index) {
     setState(() {
       filteredData[index]['attendanceStatus'] =
@@ -95,13 +116,13 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
             child: customIconNavigation(context, '/attendance/class?classNumber=${widget.classNUmber}')   ),
               const Text("Filter by Options :", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
              
-               _buildDropdown('Select Date', selectedDate, getAllDatesInMonth(selectedMonth!), (value) {
+               _buildDropdown('Select Date', selectedDate,date, (value) {
                 setState(() => selectedDate = value);
                 applyFilters();
               }),
              
                  // Month Dropdown
-              _buildDropdown('Select Month', selectedMonth, ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], (value) {
+              _buildDropdown('Select Month', selectedMonth, month, (value) {
                 setState(() => selectedMonth = value);
                 applyFilters();
               }),
@@ -130,20 +151,31 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
               customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
               customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:()async{
                   await customSnackbar(context: context, text: "Donloaded Succesfully");
-                await PdfAttendance.openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,studentClass: widget.classNUmber,students:filteredData,teacherName: "Kishore"  );
+                await PdfAttendance.openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,
+                studentClass: widget.classNUmber,students:filteredData,teacherName: teacherName  );
                 applyFilters();
               } , text: "Download"),
             ],
           ),
           const SizedBox(height: 30),
           Expanded(
-            child: SingleChildScrollView(
+           child: isLoading
+      ? const AlertDialog(         
+          content: Row(
+            children:  [
+              Text("Please wait a moment",style: TextStyle(color: Colors.black,fontSize: 20),),
+              SizedBox(width: 10),
+              CircularProgressIndicator(),
+            ],
+          ),
+        )
+      :  SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.all(5),
                 width: double.infinity,
                 child: DataTable(
                   columns: const [
-                    DataColumn(label: Text('Roll Number', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                    DataColumn(label: Text('Roll.Number', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
                     DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
                     DataColumn(label: Text('Attendance', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
                     DataColumn(label: Text('Edit', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
@@ -200,15 +232,19 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
                             ],
                           ),
                         ),
-                        DataCell(
-                                          Container(
+                        DataCell(Container(
                                             padding: const EdgeInsets.all(5),
                                             height: 50,width: 120
-                                            ,child:                                                 showSaveButton[index] == true?
+                                            ,child:showSaveButton[index] == true?
                                 SizedBox(
                                   width: 100,
                                   child: ElevatedButton(
-                                    onPressed: () => saveAttendance(index),
+                                    onPressed: () async{
+                                      saveAttendance(index);
+                                      await controler.updateAttendance(stuClass: widget.classNUmber
+                                      , sec: widget.section, status: 
+                                      filteredData[index]['attendanceStatus']);
+                                    },
                                     style: ElevatedButton.styleFrom(backgroundColor:const Color.fromARGB(255, 38, 153, 42)),
                                     child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.white)),
                                   ),

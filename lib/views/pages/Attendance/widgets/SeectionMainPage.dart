@@ -1,15 +1,16 @@
 
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'dart:math';
 
 class ClassPage extends StatefulWidget {
-  final String classNumber;
+  final String classNumber; 
 
   const ClassPage({
     required this.classNumber,
-    super.key,
+    super.key, 
   });
 
   @override
@@ -17,54 +18,115 @@ class ClassPage extends StatefulWidget {
 }
 
 class _ClassPageState extends State<ClassPage> {
+  final AttendanceController controler = Get.find();
+  late Future<Map<String, Map<String, String>>> futureAttendanceData;
+
+@override
+  void initState() {
+    super.initState();
+     // Fetch the attendance data using the Future provided by the controller.
+    futureAttendanceData = controler.getSectionWiseTotalPresentAndAbsent(stuClass: widget.classNumber);
+   
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: customIconNavigation(context, '/attendance')
-            ),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildAttendanceCard(context, {widget.classNumber :"A"},"Completed"),
-                const SizedBox(width: 20),
-
-                    _buildAttendanceCard(context, {widget.classNumber :"B"},"UnCompleted"),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildAttendanceCard(context, {widget.classNumber :"C"},"Completed"),
-                const SizedBox(width: 20),
-
-                    _buildAttendanceCard(context,{widget.classNumber :"D"},"UnCompleted"),
-                  ],
-                ),
-              ],
-            ),
-          ],
+      body: FutureBuilder(
+        future: futureAttendanceData,
+        builder: (context, snapshot) {
+         if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+        child: AlertDialog(         
+          content: Row(
+            children:  [
+              Text("Please wait a moment",style: TextStyle(color: Colors.black,fontSize: 20),),
+              SizedBox(width: 10),
+              CircularProgressIndicator(),
+            ],
+          ),
         ),
+      );
+    }else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final attendanceData = snapshot.data!;
+           
+        return SingleChildScrollView(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: customIconNavigation(context, '/attendance')
+              ),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildAttendanceCard(context, 
+                      numberOfPresnet:attendanceData['A']?["numberOfPresent"] ??'0',
+                      numberOfAbsent:attendanceData['A']?["numberOfAbsent"] ??'0' ,
+                       {widget.classNumber :"A"},
+                       attendanceData['A']?["status"] ??'Not Taken'),
+                  const SizedBox(width: 20),
+        
+                      _buildAttendanceCard(context,
+                       numberOfPresnet:attendanceData['B']?["numberOfPresent"] ??'0',
+                      numberOfAbsent:attendanceData['B']?["numberOfAbsent"] ??'0' ,
+                      
+                       {widget.classNumber :"B"},attendanceData['B']?["status"] ??'Not Taken'
+                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildAttendanceCard(context,
+                         numberOfPresnet:attendanceData['C']?["numberOfPresent"] ??'0',
+                      numberOfAbsent:attendanceData['C']?["numberOfAbsent"] ??'0' ,
+                      {widget.classNumber :"C"},
+                      attendanceData['C']?["status"] ??'Not Taken'),
+                  const SizedBox(width: 20),
+        
+                      _buildAttendanceCard(
+                           numberOfPresnet:attendanceData['D']?["numberOfPresent"] ??'0',
+                      numberOfAbsent:attendanceData['D']?["numberOfAbsent"] ??'0' ,
+                     
+                        context,{widget.classNumber :"D"},
+                      attendanceData['D']?["status"] ??'Not Taken'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+        } else {
+            return const Center(child: Text("No data found"));
+          }
+        },
       ),
     );
   }
 
-  Widget _buildAttendanceCard(BuildContext context, Map<String,String> title, String attendacneStatus) {
-    final random = Random();
-    double presentPercentage = random.nextDouble() * 100;
-    double absentPercentage = 100 - presentPercentage;
-    int totalPresent = (presentPercentage * 5).round();
-    int totalAbsent = (absentPercentage * 5).round();
-
+  Widget _buildAttendanceCard(BuildContext context, 
+  Map<String,String> title, String attendacneStatus,
+  {
+    required String numberOfPresnet,
+     required String numberOfAbsent,
+  }) {
+  
+   double presentPercentage =0.0;
+    int totalPresent = int.tryParse(numberOfPresnet) ?? 0;
+    int totalAbsent = int.tryParse(numberOfAbsent) ?? 0;
+    int total = totalPresent + totalAbsent;
+                  if (total > 0) {
+                    presentPercentage = totalPresent / total;
+                    }
     return InkWell(
       onTap: () {
         customNvigation(context, '/attendance/class/section?classNumber=${widget.classNumber}&sectionName=${title[widget.classNumber]}');
@@ -130,20 +192,25 @@ class _ClassPageState extends State<ClassPage> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
+                      color:attendacneStatus=="Taken"?Colors.green:Colors.red,
                       boxShadow: const [BoxShadow(
                         blurRadius: 4
                         ,color: Colors.blue
                       )],
                       borderRadius: BorderRadius.circular(18),
-                                               color:Colors.white,
+                                              
         
                     ),
                     child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           attendacneStatus,
-                          style:  TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: attendacneStatus=="Completed"? Colors.green: Colors.red),
-                        ),Icon(attendacneStatus=="Completed"?Icons.done_all:Icons.pending , color: attendacneStatus=="Completed"? Colors.green: Colors.red,size: 20,)
+                          style: const  TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(attendacneStatus=="Taken"?Icons.done_all:Icons.pending , color: Colors.white,size: 20,),
+                        )
                       ],
                     ),
                   ),
