@@ -15,6 +15,9 @@ class SectionWiseexamResutlPublish extends StatelessWidget {
           children: [
             Row(
               children: [customIconNavigation(context, '/exam-Details-updation'),
+
+              const SizedBox(width: 80) ,
+               Text(examName,style:  const TextStyle(color: Colors.black,fontSize: 20,fontWeight:FontWeight.bold ),) 
               
               ],
             ),

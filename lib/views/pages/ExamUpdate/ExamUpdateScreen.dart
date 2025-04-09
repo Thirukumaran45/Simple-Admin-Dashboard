@@ -36,7 +36,7 @@ class ExamUpdateScreen extends StatelessWidget {
                     child: _buildExamCard('Quarterly Exam', Colors.purple,context),
                   ),
                   Expanded(
-                    child: _buildExamCard('Half-Yearly Exam', Colors.red,context),
+                    child: _buildExamCard('Half yearly Exam', Colors.red,context),
                   ),
                   Expanded(
                     child: _buildExamCard('Annual Exam', Colors.teal,context),

@@ -13,7 +13,6 @@ import 'package:admin_pannel/views/pages/LoginPage/LoginScreen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
-  await initializeGetController();
 
   try {
     await Firebase.initializeApp(
@@ -32,6 +31,7 @@ void main() async {
     log("Error initializing Firebase: $e");
   }
 
+  await initializeGetController();
   runApp(const MyApp());
 }
 

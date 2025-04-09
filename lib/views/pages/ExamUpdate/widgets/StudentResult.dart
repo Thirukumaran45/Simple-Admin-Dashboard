@@ -1,20 +1,24 @@
  import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/ExamUpdationController.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StudentResult extends StatefulWidget {
   final String stuname;
   final String stuClass;
   final String stuSec;
   final String examName;
-
+ final String id;
+ final String singleSubjectMark;
   const StudentResult({
     super.key,
     required this.stuname,
     required this.examName,
     required this.stuClass,
-    required this.stuSec,
+    required this.stuSec, required this.id,
+    required this.singleSubjectMark
   });
 
   @override
@@ -25,7 +29,7 @@ class _StudentResultState extends State<StudentResult> {
   final Map<String, TextEditingController> _subjectControllers = {};
   final Map<String, TextEditingController> _marksControllers = {};
   bool _isEdited = false;
-
+  ExamUpdationController controller = Get.find();
   final List<String> subjects = [
     "Tamil",
     "Maths",
@@ -40,28 +44,63 @@ class _StudentResultState extends State<StudentResult> {
   @override
   void initState() {
     super.initState();
+
+    // Initialize all controllers with default values and add listeners.
     for (int i = 0; i < subjects.length; i++) {
-      _subjectControllers['sub${i + 1}'] = TextEditingController(text: subjects[i]);
-      _marksControllers['mark${i + 1}'] = TextEditingController(text: markPlaceholders[i]);
+      _subjectControllers['sub${i + 1}'] = 
+          TextEditingController(text: subjects[i]);
+      _marksControllers['mark${i + 1}'] = 
+          TextEditingController(text: markPlaceholders[i]);
+
       _subjectControllers['sub${i + 1}']!.addListener(_onFieldChanged);
       _marksControllers['mark${i + 1}']!.addListener(_onFieldChanged);
     }
+
+    // Fetch exam results and update controllers.
+    _fetchExamResult();
   }
 
-  void _onFieldChanged() {
-    setState(() {
-      _isEdited = true;
-    });
-  }
+  // This method calls the async getResult function,
+  // updates each subject and mark controller from the returned result,
+  // but intentionally leaves out assigning any grade fields.
+Future<void> _fetchExamResult() async {
+  final result = await controller.getResult(
+    studentId: widget.id,
+    examType: widget.examName,
+  );
 
-  @override
-  void dispose() {
-    for (int i = 0; i < subjects.length; i++) {
-      _subjectControllers['sub${i + 1}']!.dispose();
-      _marksControllers['mark${i + 1}']!.dispose();
+  if (!mounted) return; // Prevent calling setState on a disposed widget
+
+  setState(() {
+    for (int i = 1; i <= subjects.length; i++) {
+      _subjectControllers['sub$i']!.text =
+          result['sub$i'] ?? subjects[i - 1];
+      _marksControllers['mark$i']!.text =
+          result['sub${i}_mark'] ?? markPlaceholders[i - 1];
     }
-    super.dispose();
+  });
+}
+
+
+
+ void _onFieldChanged() {
+  if (!mounted) return;
+  setState(() {
+    _isEdited = true;
+  });
+}
+
+@override
+void dispose() {
+  for (int i = 0; i < subjects.length; i++) {
+    _subjectControllers['sub${i + 1}']?.removeListener(_onFieldChanged);
+    _marksControllers['mark${i + 1}']?.removeListener(_onFieldChanged);
+    _subjectControllers['sub${i + 1}']?.dispose();
+    _marksControllers['mark${i + 1}']?.dispose();
   }
+  super.dispose();
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -206,12 +245,48 @@ class _StudentResultState extends State<StudentResult> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          onPressed: () async{
-                            _isEdited?await showCustomDialog(context, "Student Exam Result Published "):null;
-                            setState(() {
-                              _isEdited = false;
-                            });
-                          },
+                         onPressed: () async {
+  if (_isEdited) {
+    // Calculate the total scored marks
+    int scoredMark = 0;
+    for (int i = 1; i <= subjects.length; i++) {
+      scoredMark += int.tryParse(_marksControllers['mark$i']!.text) ?? 0;
+    }
+
+   // Define the single subject mark (fixed across exams)
+int singleSubjectMark = int.tryParse(widget.singleSubjectMark)??0;
+
+// Create resultMark map
+Map<String, dynamic> resultMark = {};
+for (int i = 1; i <= subjects.length; i++) {
+  // Get subject marks
+  int subjectMark = int.tryParse(_marksControllers['mark$i']!.text) ?? 0;
+
+  // Calculate grade
+  String grade =  controller. getGrade(subjectMark, singleSubjectMark);
+
+  // Update resultMark map
+  resultMark['sub$i'] = _subjectControllers['sub$i']!.text;
+  resultMark['sub${i}_mark'] = subjectMark.toString();
+  resultMark['sub${i}_grade'] = grade;
+}
+
+    resultMark['scored_mark'] = scoredMark.toString();
+
+    // Show dialog and update the result
+    await showCustomDialog(context, "Student Exam Result Published ");
+    await controller.updateResult(
+      studentId: widget.id,
+      examType: widget.examName,
+      resultMark: resultMark,
+    );
+
+    setState(() {
+      _isEdited = false;
+    });
+  }
+}
+,
                           child: const Row(
                             children: [
                               Text(
@@ -224,7 +299,7 @@ class _StudentResultState extends State<StudentResult> {
                                   Icons.upload,
                                   color: Colors.white,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -234,6 +309,7 @@ class _StudentResultState extends State<StudentResult> {
                 ),
               ),
             ),
+                           const SizedBox(height: 20,)
           ],
         ),
       ),

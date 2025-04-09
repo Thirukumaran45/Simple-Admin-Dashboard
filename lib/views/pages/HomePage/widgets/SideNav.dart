@@ -1,9 +1,9 @@
 import 'dart:developer' show log;
+import 'package:admin_pannel/controller/classControllers/pageControllers/DashboardController.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:admin_pannel/controller/classControllers/dashboardController.dart';
 
 class SideNav extends StatefulWidget {
   final GlobalKey<BeamerState> beamer;

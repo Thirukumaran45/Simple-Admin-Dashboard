@@ -1,7 +1,9 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/ExamUpdationController.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StudentExamResultPublish extends StatefulWidget {
   const StudentExamResultPublish({super.key, required this.examName, required this.stuClass, required this.section});
@@ -14,40 +16,78 @@ final  String stuClass;
 }
 
 class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
-  TextEditingController searchNameController = TextEditingController();
-  TextEditingController searchRollController = TextEditingController();
-  TextEditingController totalSubjectMarkController = TextEditingController(text: '0.0');
-  TextEditingController singleSubjectMarkController = TextEditingController(text: '0.0');
+ late  TextEditingController searchNameController ;
+  late TextEditingController searchRollController ;
+  late TextEditingController totalSubjectMarkController ;
+  late TextEditingController singleSubjectMarkController ;
   bool showTotalSaveButton = false;
   bool showSingleSaveButton = false;
-  late List<Map<String, String>> students;
-  List<Map<String, String>> filteredStudents = [];
+  List<Map<String, dynamic>> students =[];
+  List<Map<String, dynamic>> filteredStudents = [];
+  ExamUpdationController controller = Get.find();
+  String? totalMark;
+  String? overallMark;
 
-  @override
-  void initState() {
-    super.initState();
-     students = [
-{'name': 'John Doe', 'roll': '1', 'class': widget.stuClass, 'section': widget.section},
-    {'name': 'Jane Smith', 'roll': '2', 'class': widget.stuClass, 'section': widget.section},
-    {'name': 'Sam Wilson', 'roll': '3', 'class': widget.stuClass, 'section': widget.section},
-  ];
-    filteredStudents = students;
-    totalSubjectMarkController.addListener(() => checkSaveButtonVisibility(true));
-    singleSubjectMarkController.addListener(() => checkSaveButtonVisibility(false));
-  }
+@override
+void initState() {
+  super.initState();
+  // Initialize all controllers before using them
+  searchNameController = TextEditingController();
+  searchRollController = TextEditingController();
+  totalSubjectMarkController = TextEditingController(text: totalMark ?? '0');
+  singleSubjectMarkController = TextEditingController(text: overallMark ?? '0');
+
+  // Now add the listeners
+  totalSubjectMarkController.addListener(() => checkSaveButtonVisibility(true));
+  singleSubjectMarkController.addListener(() => checkSaveButtonVisibility(false));
+
+  // Initialize students and fetch details
+  filteredStudents = students;
+  initStudent();
+  fetchDetails();
+}
+
+
+void initStudent() async {
+  List<Map<String, dynamic>> studentData = await controller.getFilteredStudents(
+    className: widget.stuClass,
+    section: widget.section,
+  );
+
+  setState(() {
+    students = studentData;
+     filteredStudents = studentData; 
+  });
+}
+
+Future<void> fetchDetails() async {
+  final data = await controller.getTotalAndIndividualSubjectMark(
+    className: widget.stuClass,
+    examType: widget.examName,
+    section: widget.section,
+  );
+
+  setState(() {
+    totalMark = data["total_mark"];
+    overallMark = data["outoff_mark"];
+    totalSubjectMarkController.text = totalMark ?? '0';
+    singleSubjectMarkController.text = overallMark ?? '0';
+  });
+}
 
   void checkSaveButtonVisibility(bool isTotal) {
     setState(() {
       if (isTotal) {
-        showTotalSaveButton = totalSubjectMarkController.text != '0.0';
+        showTotalSaveButton = totalSubjectMarkController.text != totalMark;
       } else {
-        showSingleSaveButton = singleSubjectMarkController.text != '0.0';
+        showSingleSaveButton = singleSubjectMarkController.text !=  overallMark;
       }
     }); 
   }
 
-  void searchStudents() {
-    String nameQuery = searchNameController.text.toLowerCase();
+void applyFilters()
+{
+      String nameQuery = searchNameController.text.toLowerCase();
     String rollQuery = searchRollController.text.toLowerCase();
 
     setState(() {
@@ -57,7 +97,20 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
         return matchesName && matchesRoll;
       }).toList();
     });
-  }
+}
+
+Future<void> addAndUpdateTotalandSingleMark()async{
+  
+}
+@override
+void dispose() {
+  searchNameController.dispose();
+  searchRollController.dispose();
+  totalSubjectMarkController.dispose();
+  singleSubjectMarkController.dispose();
+  super.dispose();
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,15 +132,15 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
                         fontSize: 15
                       ),),
                     Expanded(
-                      child: filterTextField(title: "Search by Name", control: searchNameController, )
+                      child: filterTextField(title: "Search by Name", control: searchNameController,  onChanged: (String? value) => applyFilters())
                     ),
                    
                     Expanded(
-                      child: filterTextField(title: "Search by Roll Number", control: searchRollController)
+                      child: filterTextField(title: "Search by Roll Number", control: searchRollController, onChanged: (String? value) => applyFilters())
                     ),
                     const SizedBox(width: 8),
                     customIconTextButton(Colors.blue,
-                    icon: Icons.search, onPressed: searchStudents, text: "Search"),
+                    icon: Icons.search, onPressed: applyFilters, text: "Search"),
                            
                     
                   ],
@@ -111,10 +164,18 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
                          markFied(control: totalSubjectMarkController),
                           if (showTotalSaveButton)
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: ()async {
+                                await controller.addUpdateTotalAndIndividualSubject(
+                                  className: widget.stuClass,
+                                  examType: widget.examName,
+                                  outOffMark: singleSubjectMarkController.text.toString(),
+                                  section: widget.section,
+                                  totalMark:totalSubjectMarkController.text.toString(), 
+                                );
                                 setState(() {
                                   showTotalSaveButton = false;
                                 });
+
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
@@ -145,16 +206,37 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
                 
                     Expanded(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                          markFied(control: singleSubjectMarkController),
                           if (showSingleSaveButton)
-                            ElevatedButton(
-                              onPressed: () {
+                             ElevatedButton(
+                              onPressed: ()async {
+                                await controller.addUpdateTotalAndIndividualSubject(
+                                  className: widget.stuClass,
+                                  examType: widget.examName,
+                                  outOffMark: singleSubjectMarkController.text.toString(),
+                                  section: widget.section,
+                                  totalMark:totalSubjectMarkController.text.toString(), 
+                                );
                                 setState(() {
                                   showSingleSaveButton = false;
                                 });
+
                               },
-                              child:  const Text('Save'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white
+                              ),
+                              child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.save, size: 16, color: Colors.white),
+                          SizedBox(width: 4),
+                          Text("Save", style: TextStyle(fontSize: 18, color: Colors.white)),
+                        ],
+                      ),
                             ),
                         ],
                       ),
@@ -191,8 +273,8 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
                         
                         DataCell(Text(student['roll']!,style:const TextStyle(color: Colors.black))),
                         DataCell(Text(student['name']!,style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(student['class']!,style:const TextStyle(color: Colors.black))),
-                        DataCell(Text(student['section']!,style:const TextStyle(color: Colors.black))),
+                        DataCell(Text(widget.stuClass,style:const TextStyle(color: Colors.black))),
+                        DataCell(Text(widget.section,style:const TextStyle(color: Colors.black))),
                          DataCell(SizedBox(width: 170,
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
@@ -209,7 +291,8 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
                                 ),
                               ),
                               onPressed: () {
-                                customNvigation(context, '/exam-Details-updation/sectionWiseResultPublishment/studentOverview/student?examName=${widget.examName}&class=${widget.stuClass}&section=${widget.section}&name=${student['name']!}');
+                                customNvigation(
+                                  context, '/exam-Details-updation/sectionWiseResultPublishment/studentOverview/student?examName=${widget.examName}&class=${widget.stuClass}&section=${widget.section}&name=${student['name']!}&id=${student["id"]}&singleSubjectMark=${singleSubjectMarkController.text.toString()}');
                                                   
                               },
                               child:const Row(
@@ -238,11 +321,12 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
     );
   }
 
-  Widget filterTextField(  {required title , required TextEditingController control  })
+  Widget filterTextField(  {required title , required TextEditingController control ,required ValueChanged<String?> onChanged })
   {
  return  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      onChanged:onChanged ,
                       controller: control,
                       decoration:  InputDecoration(
                   labelText: title,

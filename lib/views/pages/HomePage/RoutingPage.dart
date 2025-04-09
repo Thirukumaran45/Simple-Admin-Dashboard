@@ -158,7 +158,10 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                         final String stuClass = state.queryParameters['class']??'';
                       final String stuSection = state.queryParameters['section']??'';
                       final String name = state.queryParameters['name']??'';
-                       return   BeamPage(child: StudentResult(stuname: name, stuClass: stuClass,stuSec: stuSection,examName: examName ,) ,
+                      final String id = state.queryParameters['id']??'';
+                      final String singleSub = state.queryParameters['singleSubjectMark']??'';
+                       return   BeamPage(child: StudentResult(id:id ,stuname: name,
+                        stuClass: stuClass,stuSec: stuSection,examName: examName ,singleSubjectMark: singleSub,) ,
                        title: 'Upload the Exam Result',
                     type: BeamPageType.slideLeftTransition,key:const  ValueKey('publish student result'));
                   },
