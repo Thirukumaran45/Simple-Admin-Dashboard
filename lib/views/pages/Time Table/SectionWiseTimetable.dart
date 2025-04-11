@@ -24,7 +24,7 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
   Map<String, Map<String, TextEditingController>> timetable = {};
   Map<String, Map<String, String?>> selectedTeachers = {};
   bool isChanged = false;
-
+  bool _isLoading = true; // New state variable for loading indicator
 
   @override
   void initState() {
@@ -86,6 +86,10 @@ Future<void> loadTimetableFromFirestore() async {
     
     }
   }
+ if (!mounted) return; // Check before updating state
+  setState(() {
+    _isLoading = false;
+  });
 }
 
   Future<void> _selectTime(BuildContext context, String period, bool isStart) async {
@@ -105,22 +109,49 @@ Future<void> loadTimetableFromFirestore() async {
       },
     );
 
-    if (pickedTime != null) {
+    if (pickedTime != null &&mounted) {
       setState(() {
         if (isStart) {
           startTimes[period] = pickedTime;
         } else {
           endTimes[period] = pickedTime;
         }
+        isChanged = true;
       });
     }
   }
 
+
+@override
+void dispose() {
+  for (var day in days) {
+    for (var period in timetableContrl.periods) {
+      timetable[day]![period]?.dispose();
+    }
+  }
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
+     if (_isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Almost there please wait a second ... ", style: TextStyle(color: Colors.black,fontSize: 18),),
+              const SizedBox(width: 30,),
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(primaryGreenColors),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: Colors.white,
      
@@ -158,22 +189,30 @@ Future<void> loadTimetableFromFirestore() async {
               child: ElevatedButton(
               onPressed: () {
       if (isChanged) {
-        showCustomDialog(context, "Time Table has been Updated");
+        showLoadingDialogInSec(context, 7);
 
         // Print timetable details
-        for (var day in days) {
+       for (var period in timetableContrl.periods) {
+  String? startTime = startTimes[period]?.format(context) ?? '';
+  String? endTime = endTimes[period]?.format(context) ?? '';
 
-          for (var period in timetableContrl.periods) {
-             String? subject = timetable[day]![period]?.text??'';
-      String teacher = selectedTeachers[day]![period] ?? "";
-      String? startTime = startTimes[period]?.format(context)??'';
-          String? endTime = endTimes[period]?.format(context)??'';
-           timetableContrl.saveTimetableToFirestore(stuClaa: widget.stuClass,
-            stuSec: widget.stuSec, subject: subject, teacher: teacher, 
-            startTime: startTime, endTime: endTime, day: day, 
-            period: period) ;
-          }
-        }
+  for (var day in days) {
+    String? subject = timetable[day]![period]?.text ?? '';
+    String teacher = selectedTeachers[day]![period] ?? '';
+
+    timetableContrl.saveTimetableToFirestore(
+      stuClaa: widget.stuClass,
+      stuSec: widget.stuSec,
+      subject: subject,
+      teacher: teacher,
+      startTime: startTime,  // ✅ Same for all days per period
+      endTime: endTime,      // ✅ Same for all days per period
+      day: day,
+      period: period,
+    );
+  }
+}
+
       }
       setState(() {
       isChanged = false;

@@ -16,13 +16,16 @@ void showLoadingDialogInSec(BuildContext context, int seconds) {
 
       return  const  AlertDialog(
         backgroundColor: Colors.white,
-        content: Row(
-          mainAxisSize: MainAxisSize.min,
-          children:  [
-            CircularProgressIndicator(color: Colors.green),
-            SizedBox(width: 16),
-            Text("On deleteion progress, please wait a moment...",style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),),
-          ],
+        content: Padding(
+          padding: EdgeInsets.all(10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children:  [
+              CircularProgressIndicator(color: Colors.green),
+              SizedBox(width: 16),
+              Text("On progress, please wait a moment...",style: TextStyle(color: Colors.black,fontSize: 16),),
+            ],
+          ),
         ),
       );
     },

@@ -52,9 +52,7 @@ Future<void> saveTimetableToFirestore({
 }) async {
   String classSection = "$stuClaa$stuSec";
 
-  if (subject != null && subject.isNotEmpty && 
-      teacher != null && teacher.isNotEmpty && 
-      startTime != null && endTime != null) {
+
         
     try {
   await collectionControler.timetableCollection
@@ -71,7 +69,7 @@ Future<void> saveTimetableToFirestore({
 }  catch (e) {
   log("erorr in add and update funtion $e");
 }
-  }
+  
 
 }
 
