@@ -80,7 +80,7 @@ Widget build(BuildContext context) {
     ),
     body: Center(
       child: assetImage == null
-          ? const CircularProgressIndicator() // Show a loader until the image is loaded
+          ? const CircularProgressIndicator(color: Colors.green,) // Show a loader until the image is loaded
           : InteractiveViewer(
               child: Image.network(assetImage!,),
             ),

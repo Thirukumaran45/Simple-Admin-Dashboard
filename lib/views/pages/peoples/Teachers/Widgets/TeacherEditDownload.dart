@@ -87,7 +87,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
   @override
   Widget build(BuildContext context) {
      if (teacherDetails == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: Colors.green,));
     }
     return Scaffold(
       backgroundColor: Colors.white,

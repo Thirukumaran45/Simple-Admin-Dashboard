@@ -46,17 +46,24 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
 
 void initializeList() async {
   List<String> monthVal = await controller.fetchUniqueMonthValuesAll();
-  List<String> dateVal = await controller.fetchUniqueDateValuesAll();
-  String name = await controler.getTeacherName(sec: widget.section,stuClass: widget.classNUmber);
+  List<String> dateVal = await controller.getAttendanceDates();
+  String name = await controler.getTeacherName(sec: widget.section, stuClass: widget.classNUmber);
+
   setState(() {
-    date=dateVal;
-    teacherName=name;
-    month = monthVal;
+    month = monthVal.toSet().toList(); // Remove duplicates
+    date = dateVal.toSet().toList();
+    teacherName = name;
+
+    // Ensure default selection exists
+    if (month.contains(controler.gettodaymonth())) {
+      selectedMonth = controler.gettodaymonth();
+    }
+    if (date.contains(controler.gettoadayDate())) {
+      selectedDate = controler.gettoadayDate();
+    }
   });
 
   final data = await controller.fetchStudentData();
-
-  // Ensure the class number and section exist before accessing them
   if (data.containsKey(int.parse(widget.classNUmber)) &&
       data[int.parse(widget.classNUmber)]!.containsKey(widget.section)) {
     setState(() {
@@ -71,10 +78,9 @@ void initializeList() async {
   }
 
   setState(() {
-    isLoading = false; // Stop loading after fetching data
+    isLoading = false;
   });
 }
-
 
  void applyFilters() {
     setState(() {
@@ -165,7 +171,7 @@ void initializeList() async {
             children:  [
               Text("Please wait a moment",style: TextStyle(color: Colors.black,fontSize: 20),),
               SizedBox(width: 10),
-              CircularProgressIndicator(),
+              CircularProgressIndicator(color: Colors.green,),
             ],
           ),
         )
@@ -265,27 +271,31 @@ void initializeList() async {
   }
 
   
-  Widget _buildDropdown(String hint, String? value, List<String?> items, ValueChanged<String?> onChanged) {
-    return Container(
-      width: 150,
-      decoration: BoxDecoration(
-        border: Border.all(color: primaryGreenColors, width: 1),
-        borderRadius: BorderRadius.circular(5.0),
-        color: Colors.white,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownButton<String>(
-        borderRadius: BorderRadius.circular(20),
-        dropdownColor: Colors.white,
-        hint: Text(hint, style: const TextStyle(color: Colors.black)),
-        value: value,
-        items: items.where((e) => e != null).map((date) {
-                    return DropdownMenuItem(value: date, child: Text(date!));
-                  }).toList(),
-        onChanged: onChanged,
-      ),
-    );
-  }
+Widget _buildDropdown(String hint, String? value, List<String> items, ValueChanged<String?> onChanged) {
+  return Container(
+    width: 150,
+    decoration: BoxDecoration(
+      border: Border.all(color: primaryGreenColors, width: 1),
+      borderRadius: BorderRadius.circular(5.0),
+      color: Colors.white,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    child: DropdownButton<String>(
+      isExpanded: true,
+      borderRadius: BorderRadius.circular(20),
+      dropdownColor: Colors.white,
+      hint: Text(hint, style: const TextStyle(color: Colors.black)),
+      value: items.contains(value) ? value : null, // Prevent invalid selections
+      onChanged: onChanged,
+      items: items.toSet().toList().map((String item) {  // Remove duplicates
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(item),
+        );
+      }).toList(),
+    ),
+  );
+}
 
 }
 

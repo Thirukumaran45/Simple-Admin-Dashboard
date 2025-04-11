@@ -40,7 +40,7 @@ class _AttendanceMainScreenState extends State<AttendanceMainScreen> {
             children:  [
               Text("Please wait a moment",style: TextStyle(color: Colors.black,fontSize: 20),),
               SizedBox(width: 10),
-              CircularProgressIndicator(),
+              CircularProgressIndicator(color: Colors.green,),
             ],
           ),
         ),

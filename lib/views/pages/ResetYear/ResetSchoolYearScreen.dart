@@ -1,9 +1,41 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooResetController.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ResetSchoolYearScreen extends StatelessWidget {
+class ResetSchoolYearScreen extends StatefulWidget {
   const ResetSchoolYearScreen({super.key});
+
+  @override
+  State<ResetSchoolYearScreen> createState() => _ResetSchoolYearScreenState();
+}
+
+class _ResetSchoolYearScreenState extends State<ResetSchoolYearScreen> {
+
+late SchoolResetYearController controller;
+
+@override
+  void initState() {
+    super.initState();
+    controller = Get.find();
+  }
+
+Future<void> deleteAllData(BuildContext context,String stuClass) async {
+
+await controller.deleteAttendanceDataByClass(stuClass);
+await controller.deleteRemainderChatDataByClass(stuClass: stuClass);
+await controller.deleteExamDataByClass(stuClass: stuClass);
+await controller.deleteAssignmentByClass(stuClass: stuClass);
+await controller.deleteLeaveHistryByClass(stuClass: stuClass);
+await controller.deleteAssignmentByTeacherClass(stuClass: stuClass);
+await controller.deleteTimeTableDataByClass(stuClass: stuClass);
+await controller.deleteSchoolChatData();
+
+}
+
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +48,7 @@ class ResetSchoolYearScreen extends StatelessWidget {
           children: List.generate(12, (index) {
             return InkWell(
               onTap: (){
-                customNvigation(context, '/schoolYear-data-updation/sectionWiseResetHistry');
+                customNvigation(context, '/schoolYear-data-updation/sectionWiseResetHistry?class=${index + 1}');
               },
               child: Container(
                 margin: const EdgeInsets.only(bottom: 16),
@@ -51,8 +83,13 @@ class ResetSchoolYearScreen extends StatelessWidget {
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white
                           ),
-                          onPressed: (){
-                            showCustomDialog(context, "Data as been Reseted");
+                          onPressed: ()async{
+                           final bool val = await showCustomConfirmDialog(context: context, text: "Are you sure about to delete and reset ?");
+                            if(!context.mounted)return;
+                          if(val)showLoadingDialogInSec(context,15);
+                            await deleteAllData(context,'${index + 1}');
+                        
+
                           }, child: const Row(
                           children: [
                             Icon(Icons.restart_alt,color: Colors.white,size: 20,),
@@ -65,10 +102,10 @@ class ResetSchoolYearScreen extends StatelessWidget {
                     Row(
                       children: [
                        subtitle("Attendance Histry Reset"),
-                       subtitle("Remainder Chat Histry Reset"),
-                       subtitle("School Chat Histry Reset"),
+                       subtitle("Remainder and School Chat Histry Reset"),
                        subtitle("Exam Publish Histry Reset"),
                        subtitle("Assigment Histry Reset"),
+                       subtitle("TimeTable Reset"),
 
                       ],
                     ),

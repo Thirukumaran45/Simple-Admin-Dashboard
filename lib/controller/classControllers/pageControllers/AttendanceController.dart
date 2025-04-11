@@ -24,6 +24,29 @@ class AttendanceController extends GetxController {
     return DateFormat('MMMM yyyy').format(currentMonth);
   }
 
+Future<List<String>> getAttendanceDates() async {
+  try {
+    final overallDaysDoc = await collectionControler.attendanceCollection.get();
+
+    if (overallDaysDoc.exists) {
+      // Explicitly cast data to a Map<String, dynamic>
+      Map<String, dynamic>? data = overallDaysDoc.data() as Map<String, dynamic>?;
+
+      if (data != null && data.containsKey('attendance_dates')) {
+        List<dynamic> rawList = data['attendance_dates'];
+
+        // Convert dynamic list to List<String> safely
+        return List<String>.from(rawList);
+      }
+    }
+  } catch (e) {
+    log("Error fetching attendance dates: $e");
+  }
+
+  return [];
+}
+
+
 Future<List<String>> fetchUniqueMonthValuesAll() async {
   // Use a Set to avoid duplicates.
 final String date = gettoadayDate();
@@ -43,36 +66,6 @@ final String date = gettoadayDate();
           final data = doc.data() ;
           if (data.containsKey('month') && data['month'] != null) {
             monthValues.add(data['month']);
-          }
-        }
-      } catch (e) {
-        log('Error in fetching month values for class $i section $sec: $e');
-      }
-    }
-  }
-
-  return monthValues.toList();
-}
-
-Future<List<String>> fetchUniqueDateValuesAll() async {
-  // Use a Set to avoid duplicates.
-final String date = gettoadayDate();
-  Set<String> monthValues = {};
-  List<String> sections = ['A', 'B', 'C', 'D'];
-
-  for (int i = 1; i <= 12; i++) {
-    for (String sec in sections) {
-      try {
-        var snapshot = await collectionControler.attendanceCollection.collection(date)
-
-            .doc("${i.toString()}$sec")
-            .collection("presented_student")
-            .get();
-
-        for (var doc in snapshot.docs) {
-          final data = doc.data() ;
-          if (data.containsKey('date') && data['date'] != null) {
-            monthValues.add(data['date']);
           }
         }
       } catch (e) {

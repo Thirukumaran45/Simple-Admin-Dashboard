@@ -1,6 +1,35 @@
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
+void showLoadingDialogInSec(BuildContext context, int seconds) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      // Capture the context inside the builder
+      Future.delayed(Duration(seconds: seconds), () {
+        if(!context.mounted)return;
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+      });
+
+      return  const  AlertDialog(
+        backgroundColor: Colors.white,
+        content: Row(
+          mainAxisSize: MainAxisSize.min,
+          children:  [
+            CircularProgressIndicator(color: Colors.green),
+            SizedBox(width: 16),
+            Text("On deleteion progress, please wait a moment...",style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
 Future<void> showCustomDialog(BuildContext context, String text) async {
   return await showDialog(
     context: context,
@@ -35,7 +64,7 @@ Future<void> showCustomDialog(BuildContext context, String text) async {
                               SizedBox(
                                 height: 16,
                                 width: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(strokeWidth: 2,color: Colors.green,),
                               ),
                             ],
                           );// Show loader instead of text
@@ -122,7 +151,7 @@ Future<bool> showCustomConfirmDialog({
                               SizedBox(
                                 height: 16,
                                 width: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(strokeWidth: 2,color: Colors.green,),
                               ),
                             ],
                           ); // Show loader instead of text

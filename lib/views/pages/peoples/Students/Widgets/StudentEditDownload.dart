@@ -104,7 +104,7 @@ Future<void> initializeFunction() async {
   @override
   Widget build(BuildContext context) {
     if (studentDetails == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: Colors.green,));
     }
 
 

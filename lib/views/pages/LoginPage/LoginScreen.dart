@@ -1,9 +1,7 @@
 
-import 'dart:developer';
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 class LoginPage extends StatefulWidget {
@@ -58,6 +56,10 @@ class _BodyState extends State<Body> {
     return emailRegex.hasMatch(email);
   }
 
+  void loadingBar(){
+    
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,20 +68,7 @@ class _BodyState extends State<Body> {
     
   }
 
-  Future<bool> checkBackendEmail(String email) async {
-  try {
-   final docSnapshot = await collectioncontrolelr.schoolDetails.get();
-if (docSnapshot.exists) {
-  String adminEmail = docSnapshot.get('admin_email');
-  return adminEmail == email;
-}
 
-  } catch (e) {
-    log("Error checking backend email: $e");
-  }
-  
-  return false; // Return false if not found or an error occurs
-}
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -227,16 +216,8 @@ if (docSnapshot.exists) {
 
                     // Proceed if no errors
                     if (emailError == null && passwordError == null) {
-                     final currentUser =  await controller.signinUser(email: emailController.text,password: passwordController.text, context: context);
-                      bool isUser = await checkBackendEmail(emailController.text);
-                      if(currentUser !=null && isUser)
-                      {
-                        customNvigation(context, '/home');
-                      }
-                      else
-                      {
-                        await showCustomDialog(context, "UnAuthorized Credentials, check correct email and password");
-                      }
+                      await controller.signinUser(email: emailController.text,password: passwordController.text, context: context);
+                       customNvigation(context, '/home');
                     }
                   },
                   style: ElevatedButton.styleFrom(

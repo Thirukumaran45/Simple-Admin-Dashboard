@@ -43,7 +43,7 @@ class _ClassPageState extends State<ClassPage> {
             children:  [
               Text("Please wait a moment",style: TextStyle(color: Colors.black,fontSize: 20),),
               SizedBox(width: 10),
-              CircularProgressIndicator(),
+              CircularProgressIndicator(color: Colors.green,),
             ],
           ),
         ),

@@ -310,10 +310,11 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                     type: BeamPageType.scaleTransition,key: ValueKey('Live Bus')),
 
                     //schoolyear reset
-                    '/schoolYear-data-updation/sectionWiseResetHistry':(context,state,data)=>
-                     BeamPage(child: SectionWiseResetData(),
+                    '/schoolYear-data-updation/sectionWiseResetHistry':(context,state,data){ 
+                    final String stuClass = state.queryParameters['class']??'';
+                  return BeamPage(child: SectionWiseResetData(stuClass: stuClass,),
                     title: "Select Section Reset Histry",
-                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Section wise Reset')),
+                    type: BeamPageType.slideLeftTransition,key: const ValueKey('Section wise Reset'));},
                 
                       '/schoolYear-data-updation': (context, state, data){
                     return const  BeamPage(child:  ResetSchoolYearScreen(), title: "Reset School Data",

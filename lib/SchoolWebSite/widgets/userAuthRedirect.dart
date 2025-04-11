@@ -15,7 +15,7 @@ class AuthWrapper extends StatelessWidget {
     stream: FirebaseAuth.instance.authStateChanges(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator()); // Loading state
+        return const Center(child: CircularProgressIndicator(color: Colors.green,)); // Loading state
       }
       if (snapshot.hasData) {
         return const LandingPage(); // Authenticated user
@@ -41,7 +41,7 @@ class AuthWrapper extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator()); // Loading state
+          return const Center(child: CircularProgressIndicator(color: Colors.green,)); // Loading state
         }
 
         WidgetsBinding.instance.addPostFrameCallback((_) {

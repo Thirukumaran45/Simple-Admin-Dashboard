@@ -9,6 +9,7 @@ import 'package:admin_pannel/controller/classControllers/peoplesControlelr/Stude
 import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentListBonafiedControlelr.dart';
 import 'package:admin_pannel/controller/classControllers/peoplesControlelr/TeacherController.dart';
 import 'package:admin_pannel/controller/classControllers/pageControllers/TimetableController.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooResetController.dart';
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:get/get.dart';
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
@@ -26,4 +27,5 @@ Future<void> initializeGetController()async{
     Get.lazyPut(()=>FirebaseCollectionVariable());
     Get.lazyPut(()=>TimetableController());
     Get.lazyPut(()=>ExamUpdationController());
+    Get.lazyPut(()=>SchoolResetYearController());
 }
