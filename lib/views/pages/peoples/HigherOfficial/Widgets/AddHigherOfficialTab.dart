@@ -43,7 +43,7 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
 
 Future<void> profileFuntion() async {
   final pickedImage = await controller. addPhoto();
-  if (pickedImage != null) {
+  if (pickedImage != null && mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
     });
@@ -185,10 +185,6 @@ Future<void> profileFuntion() async {
      if(val)
      {
       customPopNavigation(context, '/manage-higher-official');
-     }
-     
-     else{
-      await showCustomDialog(context, "Higher official Profile picture is not uploaded !");
      }
      }
 }  catch (e) {

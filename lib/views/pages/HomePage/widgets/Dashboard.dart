@@ -1,6 +1,6 @@
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:admin_pannel/views/pages/HomePage/RoutingPage.dart';
 import 'package:admin_pannel/views/pages/HomePage/widgets/SideNav.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
@@ -18,43 +18,56 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   final _beamerKey = GlobalKey<BeamerState>();
   late FirebaseCollectionVariable collectionVar;
+
+  SchooldetailsController controller=Get.find();
  
 
   @override
   void initState() {
     super.initState();
     collectionVar = Get.find();
-   
-    
   }
 
+Future<String?> _fetchSchoolName() async {
+  final schoolDetails = await controller.getSchoolDetails();
+  return schoolDetails.schoolName;
+}
+
   Widget _buildHeader() {
+     return FutureBuilder<String?>(
+    future: _fetchSchoolName(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Text("Loading...");
+      }
+      if (snapshot.hasError) {
+        return const Text("Error loading school name");
+      }
     return Padding(
       padding: const EdgeInsets.only(top: 12, left: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(width: 30),
-          Row(
+           Row(
             children: [
-              const CircleAvatar(
-                radius: 35,
-                backgroundImage: AssetImage("assets/images/splash.png"),
-              ),
+             
               const SizedBox(width: 10),
               Text(
-                schoolName,
-                style: TextStyle(
-                  color: Colors.grey[950],
-                  fontSize: 18,
-                ),
-              ),
+  snapshot.data ?? "Loading School Name...",  // Show "Loading..." until data is fetched
+  style: const TextStyle(
+    letterSpacing: 1,
+    color: Colors.black,
+    fontSize: 18,
+  ),
+),
+
             ],
           ),
           const Spacer(),
-          Text(
-            " Welcome Back, Teacher",
-            style: TextStyle(color: Colors.grey[950], fontSize: 18),
+        const  Text(
+            " Sign out",
+            style: TextStyle(color: Colors.red, fontSize: 18,fontWeight: FontWeight.w800),
           ),
           const SizedBox(width: 20),
           IconButton(
@@ -72,7 +85,7 @@ class _LandingPageState extends State<LandingPage> {
             },
             icon: const Icon(
               Icons.logout,
-              color: Colors.green,
+              color: Colors.red,
               size: 30,
             ),
           ),
@@ -81,7 +94,8 @@ class _LandingPageState extends State<LandingPage> {
       ),
     );
   }
-
+     );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

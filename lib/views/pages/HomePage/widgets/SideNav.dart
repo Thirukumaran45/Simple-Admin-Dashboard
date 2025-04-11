@@ -1,5 +1,6 @@
 import 'dart:developer' show log;
 import 'package:admin_pannel/controller/classControllers/pageControllers/DashboardController.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +21,28 @@ class _sideNavState extends State<SideNav> {
  List<String> navItems =[];
    List<String> navs=[];
    List<IconData> navIcons =[];
-  
+  String? assetImage;
+  String defaultSchoolPhoto ="assets/images/splash.png";
+  SchooldetailsController controller=Get.find();
+
 @override
   void initState() {
     super.initState();
     navIcons = List.from( dashboardController.navIcons);
     navs = List.from(dashboardController.navs);
     navItems=List.from(dashboardController.navItems);
+    initializeFunction();
   }
+
+  Future<void> initializeFunction() async {
+   String? photoUrl = await controller.getSchoolPhotoUrl();
+
+   if (!mounted) return; // ✅ Check before updating UI
+   setState(() {
+     assetImage = photoUrl ?? defaultSchoolPhoto;
+       
+   });
+}
 @override
   Widget build(BuildContext context) {
     final path = (context.currentBeamLocation.state as BeamState).uri.path;
@@ -82,42 +97,18 @@ class _sideNavState extends State<SideNav> {
       padding: const EdgeInsets.all(0.0),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20,20,20,20),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                const CircleAvatar(
+           Padding(
+            padding:  const EdgeInsets.fromLTRB(20,20,20,20),
+            child: CircleAvatar(
                   radius: 60,
-                  backgroundImage: AssetImage("assets/images/profile.png"),
+                  backgroundImage: assetImage==null? AssetImage(defaultSchoolPhoto): NetworkImage(assetImage!),
                 ),
-                Positioned(
-                  right: 5,
-                  bottom: 0,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.redAccent,
-                      ),
-                      onPressed: () {
-                        // Define the action when the edit icon is pressed
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(navItems.length, (index) {
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 0),
+                duration: const Duration(milliseconds: 100),
                 key: ValueKey(navItems[index]),
                 decoration: BoxDecoration(
                   color: selected == index ? Colors.white :primaryGreenColors, 
@@ -147,7 +138,7 @@ class _sideNavState extends State<SideNav> {
                           Padding(
                             padding: const EdgeInsets.only(left: 22),
                             child: Icon(
-                              size: 18,
+                              size: 19,
                               navIcons[index],
                               color: selected == index ? Colors.black : Colors.white,
                             ),
@@ -156,7 +147,7 @@ class _sideNavState extends State<SideNav> {
                           Text(
                             navItems[index],
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 15,
                               color: selected == index ? Colors.black : Colors.white,
                               fontWeight:selected == index ? FontWeight.bold :FontWeight.normal
                             ),
@@ -169,7 +160,9 @@ class _sideNavState extends State<SideNav> {
               );
             }),
           ),
+          const SizedBox(height: 30,)
         ],
+        
       ),
     ),);
   }

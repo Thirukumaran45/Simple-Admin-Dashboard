@@ -50,7 +50,7 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
   }
 Future<void> profileFuntion() async {
   final pickedImage = await controller. addPhoto();
-  if (pickedImage != null) {
+  if (pickedImage != null&&mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
     });
