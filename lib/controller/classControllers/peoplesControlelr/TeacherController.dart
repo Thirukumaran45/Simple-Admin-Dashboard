@@ -200,7 +200,8 @@ Future<void> registerTeacher({
     });
 if(!context.mounted)return;
       await customSnackbar(context: context, text: "Registration succesfull");
-
+      fetchTeacherData();
+     update();
   } catch (e) {
     log(e.toString());
 if(!context.mounted)return;
@@ -364,6 +365,8 @@ Future<bool> deleteTeacher({
   }
   }
   await updateNumberOfTeacher(false);
+   teacherData .removeWhere((staff) => staff['id'] == teacherId);
+
    update(); // Notify GetX listeners
   log("deleted the teacher data");
   return true;

@@ -191,6 +191,7 @@ required String  staffrole,
     });
 
       await customSnackbar(context: context, text: "Registration succesfull");
+         fetchStaffData();
         update(); // Notify GetX listeners
 
   } catch (e) {
@@ -293,7 +294,9 @@ Future<bool> deleteStaffs({
     await announcementRef.delete();
   }
   
-  await updateNumberOfStaffs(false);
+   await updateNumberOfStaffs(false);
+    // Remove the deleted staff from the observable list
+    staffData.removeWhere((staff) => staff['id'] == staffId);
         update(); // Notify GetX listeners
   
   log("deleted the Staffs data");

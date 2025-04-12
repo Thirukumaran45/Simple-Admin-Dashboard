@@ -98,12 +98,27 @@ class _sideNavState extends State<SideNav> {
       child: Column(
         children: [
            Padding(
-            padding:  const EdgeInsets.fromLTRB(20,20,20,20),
-            child: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: assetImage==null? AssetImage(defaultSchoolPhoto): NetworkImage(assetImage!),
-                ),
-          ),
+  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+  child: Container(
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.white.withAlpha(80), // subtle white glow
+          spreadRadius: 2,
+          blurRadius: 5,
+        ),
+      ],
+    ),
+    child: CircleAvatar(
+      radius: 70,
+      backgroundImage: assetImage == null
+          ? AssetImage(defaultSchoolPhoto) as ImageProvider
+          : NetworkImage(assetImage!),
+    ),
+  ),
+),
+
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(navItems.length, (index) {

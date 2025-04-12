@@ -34,16 +34,15 @@ Widget _buildChartContainer({required String title, required Widget chart}) {
   );
 }
 
-Widget buildPieChartData(double teacherAvg, double studentAvg, double workerAvg,
+Widget buildPieChartData(double teacherAvg, double studentAvg, double workerAvg,double officialAvg,
     {required teacherVal,
+    required officialval,
     required studentVal,
-    required workerVal,
-    required double feeAmtVal}) {
+    required workerVal,}) {
   return  Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
-      const SizedBox(height: 8),
       _buildDataOverviewRow(
         '',
         color: Colors.redAccent,
@@ -67,15 +66,15 @@ Widget buildPieChartData(double teacherAvg, double studentAvg, double workerAvg,
         valAvg: workerAvg,
         isIcon: false,
         '',
+      ),_buildDataOverviewRow(
+        color: Colors.green,
+        text: "Higher Official",
+        val: officialval,
+        valAvg: officialAvg,
+        isIcon: false,
+        '',
       ),
-      _buildDataOverviewRow(
-        color: Colors.blue,
-        text: "Fee Amount ",
-        val: feeAmtVal,
-        valAvg: workerAvg,
-        isIcon: true,
-        Icons.show_chart_outlined,
-      ),
+      
     ],
   );
 }
@@ -117,7 +116,9 @@ Widget _buildDataOverviewRow(
     ),
   );
 }
-Widget buildPieChart(double teacherAvg, double studentAvg, double workerAvg, double lastAmtVal,  {required teacherVal,
+Widget buildPieChart(double teacherAvg, double studentAvg, double workerAvg, double officialAvg,  
+{required teacherVal,
+required officialval,
     required studentVal,
     required workerVal,}) {
   return _buildChartContainer(
@@ -162,6 +163,15 @@ Widget buildPieChart(double teacherAvg, double studentAvg, double workerAvg, dou
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
+                  ), PieChartSectionData(
+                    value: officialAvg,
+                    color: Colors.green,
+                    title: "${officialAvg.toStringAsFixed(1)}%",
+                    titleStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -172,13 +182,14 @@ Widget buildPieChart(double teacherAvg, double studentAvg, double workerAvg, dou
         Expanded(
           flex: 4,
           child: buildPieChartData(
+            officialAvg,
             teacherAvg,
             studentAvg,
             workerAvg,
+            officialval: officialval,
             studentVal: studentVal,
             teacherVal: teacherVal,
             workerVal: workerVal,
-            feeAmtVal: lastAmtVal,
           ),
         ),
       ],

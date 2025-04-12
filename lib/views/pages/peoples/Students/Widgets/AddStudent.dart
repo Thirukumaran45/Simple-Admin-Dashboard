@@ -2,7 +2,7 @@ import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentController.dart';
 import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
+import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog, showLoadingDialogInSec;
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -272,6 +272,11 @@ Future<void> profileFuntion() async {
  
    if(updatePhotoUrl.isNotEmpty)
    {
+    bool val = await showCustomConfirmDialog(context: context, text: 'Are you sure about to add the student');
+   if(val)
+   {
+     showLoadingDialogInSec(context, 10);
+
      final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
    String userId = user!.id;
    final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
@@ -294,14 +299,9 @@ await  controller.registerUser(
   
    );
    await controller.updateNumberOfStudent(true);
-   bool val = await showCustomConfirmDialog(context: context, text: 'Student registered Succesfully');
-   if(val)
-   {
+   
     customPopNavigation(context, '/manage-student');
    }
-   }
-   else{
-    await showCustomDialog(context, "Student Profile picture is not uploaded !");
    }
 
   

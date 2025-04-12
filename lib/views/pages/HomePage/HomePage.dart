@@ -37,7 +37,6 @@ class _HomepageState extends State<Homepage> {
       }
     }
 
-    print("Fetched Data: $numberOfPeopleMap"); // Debugging purpose
   }
 
   @override
@@ -56,19 +55,20 @@ class _HomepageState extends State<Homepage> {
       12500000, // ₹125L
       13000000, // ₹130L
     ];
-    double lastAmtVal = monthFeesAmt[monthFeesAmt.length - 1];
   // Parse numberOfPeople values to double, ensuring they are not null or empty
   double teacherPercentage = double.tryParse(numberOfPeopleMap["teachers"] ?? "0") ?? 0;
   double studentPercentage = double.tryParse(numberOfPeopleMap["students"] ?? "0") ?? 0;
   double workerPercentage = double.tryParse(numberOfPeopleMap["staffs"] ?? "0") ?? 0;
+  double officialsPercentage = double.tryParse(numberOfPeopleMap["officials"] ?? "0") ?? 0;
   
   // Calculate the total
-  double total = teacherPercentage + studentPercentage + workerPercentage;
+  double total = teacherPercentage + studentPercentage + workerPercentage + officialsPercentage;
 
   // Prevent division by zero error
   double teacherAvg = total > 0 ? (teacherPercentage / total) * 100 : 0;
   double studentAvg = total > 0 ? (studentPercentage / total) * 100 : 0;
   double workerAvg = total > 0 ? (workerPercentage / total) * 100 : 0;
+  double officialAvg = total > 0 ? (officialsPercentage / total) * 100 : 0;
 
 
     return SingleChildScrollView(
@@ -87,7 +87,8 @@ class _HomepageState extends State<Homepage> {
                 Expanded(
                     flex: 1,
                     child: buildPieChart(teacherAvg, studentAvg, workerAvg,
-                        lastAmtVal,
+                    officialval:officialsPercentage,
+                    officialAvg,
                         teacherVal: teacherPercentage,
                         studentVal: studentPercentage,
                         workerVal: workerPercentage)),

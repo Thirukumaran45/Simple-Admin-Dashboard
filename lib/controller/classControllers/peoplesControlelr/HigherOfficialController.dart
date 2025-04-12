@@ -189,6 +189,9 @@ required  String  principalRole ,
     });
 
       await customSnackbar(context: context, text: "Registration succesfull");
+      fetchOfficialData();
+        update(); // Notify GetX listeners
+
 
   } catch (e) {
     log(e.toString());
@@ -303,6 +306,8 @@ Future<bool> deleteOfficials({
   }
   }
   await updateNumberOfOfficials(false);
+    officialData .removeWhere((staff) => staff['id'] == officialId);
+
         update(); // Notify GetX listeners
   
   log("deleted the officials data");

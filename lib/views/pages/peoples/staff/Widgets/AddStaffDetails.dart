@@ -5,7 +5,7 @@ import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog;
+import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog, showLoadingDialogInSec;
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -165,6 +165,10 @@ Future<void> profileFuntion() async {
        
      if(updatePhotoUrl.isNotEmpty)
      {
+       bool val = await showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
+     if(val)
+     {
+      showLoadingDialogInSec(context, 10);
         final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
      String userId = user!.id;
      final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
@@ -181,14 +185,9 @@ Future<void> profileFuntion() async {
 
      );
      await controller.updateNumberOfStaffs(true);
-     bool val = await showCustomConfirmDialog(context: context, text: 'Staff registered Succesfully');
-     if(val)
-     {
+      
       customPopNavigation(context, '/manage-working-staff');
      }
-     }
-     else{
-      await showCustomDialog(context, "Staff Profile picture is not uploaded !");
      }
 }  catch (e) {
   await showCustomDialog(context, "Please pick profile photo for the person !");

@@ -218,6 +218,8 @@ Future<void> registerUser({
     });
 
       await customSnackbar(context: context, text: "Registration succesfull");
+         fetchStudentData();
+
         update(); // Notify GetX listeners
 
   } catch (e) {
@@ -331,6 +333,8 @@ Future<bool> deleteStudent({
       await remainderRef.delete();
     }
    await updateNumberOfStudent(false);
+   studentData .removeWhere((staff) => staff['id'] == studentId);
+
         update(); // Notify GetX listeners
 
   log("deleted the student data");

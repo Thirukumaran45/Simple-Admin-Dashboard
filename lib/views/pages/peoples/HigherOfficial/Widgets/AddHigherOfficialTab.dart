@@ -7,7 +7,7 @@ import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog;
+import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog,showLoadingDialogInSec;
 
 class AddHigherOfficialTab extends StatefulWidget {
   const AddHigherOfficialTab({super.key});
@@ -165,7 +165,11 @@ Future<void> profileFuntion() async {
        
      if(updatePhotoUrl.isNotEmpty)
      {
-        final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+       bool val = await showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
+     if(val)
+     {
+     showLoadingDialogInSec(context, 10);
+      final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
      String userId = user!.id;
      final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
      String name = '${firstNameController.text} ${lastNameController.text}';
@@ -181,10 +185,7 @@ Future<void> profileFuntion() async {
 
      );
      await controller.updateNumberOfOfficials(true);
-     bool val = await showCustomConfirmDialog(context: context, text: 'Higher official registered Succesfully');
-     if(val)
-     {
-      customPopNavigation(context, '/manage-higher-official');
+     customPopNavigation(context, '/manage-higher-official');
      }
      }
 }  catch (e) {
