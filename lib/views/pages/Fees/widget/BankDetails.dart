@@ -1,7 +1,9 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' show  Get, Inst;
 
 class BankAccountDetails extends StatefulWidget {
   const BankAccountDetails({super.key});
@@ -11,33 +13,45 @@ class BankAccountDetails extends StatefulWidget {
 }
 
 class _BankAccountDetailsState extends State<BankAccountDetails> {
-  final List<Map<String, String>> bankDetails = [
-    {'bankName': 'Bank A', 'apiKey': '12345ABCDE', 'classRange': 'Class 1 to 3'},
-    {'bankName': 'Bank B', 'apiKey': '67890FGHIJ', 'classRange': 'Class 4 to 6'},
-    {'bankName': 'Bank C', 'apiKey': '13579KLMNO', 'classRange': 'Class 7 to 8'},
-    {'bankName': 'Bank D', 'apiKey': '24680PQRST', 'classRange': 'Class 9 to 10'},
-    {'bankName': 'Bank E', 'apiKey': '11223UVWXY', 'classRange': 'Class 11 to 12'},
-  ];
+   List<Map<String, String>> bankDetails = [];
 
   late List<TextEditingController> bankControllers;
   late List<TextEditingController> apiControllers;
   late List<bool> obscureTextList;
+  late FeesController controller;
   bool isChanged = false;
 
-  @override
-  void initState() {
-    super.initState();
+@override
+void initState() {
+  super.initState();
+  controller = Get.find();
+  loadAllBankData();
+}
+
+
+void loadAllBankData() async {
+  final list = await controller.fetchAllBankDetails();
+  setState(() {
+    isChanged = false;
+    bankDetails = list;
+
+    // Initialize controllers after getting bank details
     bankControllers = bankDetails.map((e) => TextEditingController(text: e['bankName'])).toList();
     apiControllers = bankDetails.map((e) => TextEditingController(text: e['apiKey'])).toList();
     obscureTextList = List.generate(bankDetails.length, (index) => true);
 
+    // Add listeners after initialization
     for (var controller in [...bankControllers, ...apiControllers]) {
       controller.addListener(() => checkIfChanged());
     }
-  }
+  });
+
+}
+
+
 
   void checkIfChanged() {
-    for (int i = 0; i < bankDetails.length; i++) {
+    for (int i = 0; i < 5; i++) {
       if (bankControllers[i].text != bankDetails[i]['bankName'] ||
           apiControllers[i].text != bankDetails[i]['apiKey']) {
         setState(() => isChanged = true);
@@ -51,10 +65,12 @@ class _BankAccountDetailsState extends State<BankAccountDetails> {
     setState(() => obscureTextList[index] = !obscureTextList[index]);
   }
 
-  void saveChanges() {
-    for (int i = 0; i < bankDetails.length; i++) {
-      print("Bank: ${bankControllers[i].text}, API Key: ${apiControllers[i].text}");
-    }
+  void saveChanges()async {
+    
+    await controller.addAndUpdateBankDetailsToFirestore(
+      apiControllers: apiControllers,
+      bankControllers: bankControllers,
+    );
     setState(() => isChanged = false);
   }
 
@@ -62,7 +78,9 @@ class _BankAccountDetailsState extends State<BankAccountDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+      body: bankDetails.isEmpty
+        ? const Center(child: CircularProgressIndicator(color: Colors.green,)) // Loading state
+        : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -113,7 +131,7 @@ class _BankAccountDetailsState extends State<BankAccountDetails> {
             const SizedBox(height: 20),
 
             Column(
-              children: List.generate(bankDetails.length, (index) {
+              children: List.generate(5, (index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: Row(
