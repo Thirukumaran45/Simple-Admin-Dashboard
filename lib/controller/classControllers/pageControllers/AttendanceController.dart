@@ -48,11 +48,12 @@ Future<List<String>> getAttendanceDates() async {
 
 
 Future<List<String>> fetchUniqueMonthValuesAll() async {
-  // Use a Set to avoid duplicates.
-final String date = gettoadayDate();
+  
+final List<String> listDate = await getAttendanceDates();
   Set<String> monthValues = {};
   List<String> sections = ['A', 'B', 'C', 'D'];
 
+for( String date in listDate){
   for (int i = 1; i <= 12; i++) {
     for (String sec in sections) {
       try {
@@ -73,6 +74,7 @@ final String date = gettoadayDate();
       }
     }
   }
+}
 
   return monthValues.toList();
 }

@@ -20,31 +20,53 @@ class Feestransactionhistry extends StatefulWidget {
 class _FeesDetailsPageState extends State<Feestransactionhistry> {
   TextEditingController searchNameController = TextEditingController();
 
-  String? selectedDate = "All";
-  String? selectedMonth = "All";
+  String? selectedDate ;
+  String? selectedMonth;
   String name = '';
   final FeesController controller = Get.find();
-  List<Map<String, String>> filteredData = [];
+  List<Map<String, dynamic>> filteredData = [];
+  List<String> month = [];
+  List<String>date=[];bool isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    filteredData = List.from(controller.feesData);
-    applyFilters();
-  }
+ @override
+void initState() {
+  super.initState();
+  initializeList(); // applyFilters is called after fetching
+}
 
   void applyFilters() {
     String nameQuery = searchNameController.text.toLowerCase();
 
     setState(() {
       filteredData = controller.feesData.where((fees) {
-        final matchesDate = selectedDate == "All" || fees['paymentDate'] == selectedDate;
-        final matchesMonth = selectedMonth == "All" || fees['paymentMonth'] == selectedMonth;
+        final matchesDate = selectedDate == null || fees['paymentDate'] == selectedDate;
+        final matchesMonth = selectedMonth == null || fees['paymentMonth'] == selectedMonth;
         final matchesName = name.isEmpty || fees['studentName']!.toLowerCase().contains(nameQuery);
         return matchesDate && matchesMonth && matchesName;
       }).toList();
     });
   }
+
+void initializeList() async {
+  List<String> monthVal = await controller.fetchUniqueMonthValuesAll();
+  List<String> dateVal = await controller.fetchUniqueDateValuesAll();
+
+  setState(() {
+    month = monthVal.toSet().toList();
+    date = dateVal.toSet().toList();
+
+    if (month.contains(controller.gettodaymonth())) {
+      selectedMonth = controller.gettodaymonth();
+    }
+    if (date.contains(controller.gettoadayDate())) {
+      selectedDate = controller.gettoadayDate();
+    }
+
+    filteredData = List.from(controller.feesData);
+    isLoading = false; 
+    applyFilters();
+  });
+}
 
   List<String> getAllDatesInMonth(String month) {
     DateTime now = DateTime.now();
@@ -63,7 +85,7 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Row(
+          Row( 
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
@@ -71,11 +93,11 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
                 child: customIconNavigation(context, '/fees-updation'),
               ),
               const Text("Filter by Options :", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              _buildDropdown('Select Date', selectedDate, getAllDatesInMonth(selectedMonth!), (value) {
+              _buildDropdown('Select Date', selectedDate, date, (value) {
                 setState(() => selectedDate = value);
                 applyFilters();
               }),
-              _buildDropdown('Select Month', selectedMonth, ["All", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], (value) {
+              _buildDropdown('Select Month', selectedMonth, month, (value) {
                 setState(() => selectedMonth = value);
                 applyFilters();
               }),
@@ -105,13 +127,22 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
           ),
           const SizedBox(height: 30),
           Expanded(
-            child: filteredData.isEmpty
-                ? Center(
-                    child: Text(
-                      'No Transaction History as Found yet !',
-                      style: TextStyle(fontSize: 18, color: Colors.grey[850]),
-                    ),
-                  )
+            child: isLoading
+    ? const Center(child: CircularProgressIndicator(color: Colors.green,))
+    : filteredData.isEmpty
+        ? const Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
+                  child: Text("Please wait a moment...", style: TextStyle(fontSize: 18),),
+                ),
+                CircularProgressIndicator( color: Colors.green,),
+              ],
+            ),
+          )
+
                 : ListView.builder(
                     padding: const EdgeInsets.all(8.0),
                     itemCount: filteredData.length,
@@ -164,27 +195,33 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
     );
   }
 
-  Widget _buildDropdown(String hint, String? value, List<String?> items, ValueChanged<String?> onChanged) {
-    return Container(
-      width: 150,
-      decoration: BoxDecoration(
-        border: Border.all(color: primaryGreenColors, width: 1),
-        borderRadius: BorderRadius.circular(5.0),
-        color: Colors.white,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownButton<String>(
-        borderRadius: BorderRadius.circular(20),
-        dropdownColor: Colors.white,
-        hint: Text(hint, style: const TextStyle(color: Colors.black)),
-        value: value,
-        items: items.where((e) => e != null).map((date) {
-                    return DropdownMenuItem(value: date, child: Text(date!));
-                  }).toList(),
-        onChanged: onChanged,
-      ),
-    );
-  }
+  
+Widget _buildDropdown(String hint, String? value, List<String> items, ValueChanged<String?> onChanged) {
+  return Container(
+    width: 150,
+    decoration: BoxDecoration(
+      border: Border.all(color: primaryGreenColors, width: 1),
+      borderRadius: BorderRadius.circular(5.0),
+      color: Colors.white,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    child: DropdownButton<String>(
+      isExpanded: true,
+      borderRadius: BorderRadius.circular(20),
+      dropdownColor: Colors.white,
+      hint: Text(hint, style: const TextStyle(color: Colors.black)),
+      value: items.contains(value) ? value : null, // Prevent invalid selections
+      onChanged: onChanged,
+      items: items.toSet().toList().map((String item) {  // Remove duplicates
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(item),
+        );
+      }).toList(),
+    ),
+  );
+}
+
 
   Widget _buildFeesRow(String title, String value , Color color1) {
     return Padding(

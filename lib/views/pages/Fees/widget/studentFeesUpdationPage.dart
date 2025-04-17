@@ -1,3 +1,5 @@
+
+
 import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
 import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfSingleScript.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
@@ -11,9 +13,9 @@ class StudentFeesUpdationpage extends StatefulWidget {
     super.key,
     required this.stuName,
     required this.stuClass,
-    required this.stuSec,
+    required this.stuSec, required this.id,
   });
-
+ final String id;
   final String stuName;
   final String stuClass;
   final String stuSec;
@@ -25,30 +27,59 @@ class StudentFeesUpdationpage extends StatefulWidget {
 class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
   List<TextEditingController> feeNameControllers = [];
   List<TextEditingController> feeAmountControllers = [];
+  late TextEditingController allocatedFeeController;
   bool isSaveButtonVisible = false;
   final FeesController controller = Get.find();
   List<Map<String, String>> filteredData = [];
+late Future<List<Map<String, dynamic>>> matchedFeesFuture;
 
 
-  @override
-  void initState() {
-    super.initState();
-    
-    filteredData = List.from(controller.feesData);
-    List<String> defaultFeeNames = [
-      "Tution Fee",
-      "Exam Fee",
-      "Exam Fee",
-      "Other Fee 1",
-      "Other Fee 2",
-      "Other Fee 3"
-    ];
+@override
+void initState() {
+  super.initState();
 
-    for (int i = 0; i < 6; i++) {
-      feeNameControllers.add(TextEditingController(text: defaultFeeNames[i]));
-      feeAmountControllers.add(TextEditingController(text: "${i + 1}"));
-    }
+  List<String> defaultFeeNames = [
+    "Tution Fee",
+    "Exam Fee",
+    "Other Fee 1",
+    "Other Fee 2",
+    "Other Fee 3",
+    "Other Fee 4",
+    "Other Fee 5",
+    "Other Fee 6"
+  ];
+  allocatedFeeController = TextEditingController();
+
+  for (int i = 0; i < 8; i++) {
+    feeNameControllers.add(TextEditingController(text: defaultFeeNames[i]));
+    feeAmountControllers.add(TextEditingController(text: "${i*0}"));
   }
+
+  // Fetch existing data
+  fetchStudentFees();
+  matchedFeesFuture = getMatchedFees();
+}
+
+void fetchStudentFees() async {
+  final data = await controller.getStudentFeesDetails(id: widget.id);
+
+  allocatedFeeController.text = data['allocatedAmount'];
+
+  List<TextEditingController> nameCtrls = data['feeNameControllers'];
+  List<TextEditingController> amountCtrls = data['feeAmountControllers'];
+
+  for (int i = 0; i < nameCtrls.length && i < 8; i++) {
+    feeNameControllers[i].text = nameCtrls[i].text;
+    feeAmountControllers[i].text = amountCtrls[i].text;
+  }
+}
+
+
+ Future<List<Map<String, dynamic>>> getMatchedFees() async {
+  await Future.delayed(const Duration(seconds: 15));
+  final filteredData = List<Map<String, dynamic>>.from(controller.feesData);
+  return filteredData.where((fees) => fees['studentId'] == widget.id).toList();
+}
 
   void checkForChanges() {
     setState(() {
@@ -56,12 +87,19 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
     });
   }
 
-  void saveFees() {
-    // Implement saving logic here
-    setState(() {
-      isSaveButtonVisible = false;
-    });
-  }
+void saveFees() async {
+  await controller.addAndUpdateStudentFeesDetails(
+    id: widget.id,
+    allocateddAmount: allocatedFeeController.text,
+    feeNameControllers: feeNameControllers,
+    feeAmountControllers: feeAmountControllers,
+  );
+
+  setState(() {
+    isSaveButtonVisible = false;
+  });
+}
+
 
   @override
   void dispose() {
@@ -71,6 +109,7 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
     for (var controller in feeAmountControllers) {
       controller.dispose();
     }
+    allocatedFeeController.dispose();
     super.dispose();
   }
 
@@ -88,6 +127,7 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
   }
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -97,148 +137,210 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
             // Left Side
             Expanded(
               flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      customIconNavigation(context,
-                          '/fees-updation/sectionWiseFeesUpdation/studentFeesList?classNumber=${widget.stuClass}&sectionName=${widget.stuSec}'),
-                      Row(
-                        children: [
-                          Text(
-                            widget.stuName,
-                            style: const TextStyle(
-                              letterSpacing: 1,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Container(
-                              height: 20,
-                              width: 2,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            "${widget.stuClass} - ${widget.stuSec}",
-                            style: const TextStyle(
-                              letterSpacing: 1,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      
-                      ElevatedButton(
-                        onPressed: ()
-                      async  {
-                        
-                       isSaveButtonVisible? await showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
-                          saveFees();
-                        },
-                       style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor:
-                                  isSaveButtonVisible?Colors.blue:Colors.grey, // Button background color
-                              elevation: 10, // Elevation for shadow effect
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(20), // Rounded corners
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        customIconNavigation(context,
+                            '/fees-updation/sectionWiseFeesUpdation/studentFeesList?classNumber=${widget.stuClass}&sectionName=${widget.stuSec}'),
+                        Row(
+                          children: [
+                            Text(
+                              widget.stuName,
+                              style: const TextStyle(
+                                letterSpacing: 1,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
                             ),
-                        child: const Padding(
-                    padding:  EdgeInsets.symmetric(vertical:  8.0),
-                    child:  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.upload_sharp , color: Colors.white,size: 20,),
-                         SizedBox(width: 5,),
-                         Text("Save", style: TextStyle(color: Colors.white, fontSize: 17,)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Container(
+                                height: 20,
+                                width: 2,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              "${widget.stuClass} - ${widget.stuSec}",
+                              style: const TextStyle(
+                                letterSpacing: 1,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 20,),
+                         Expanded(
+                              child: TextField(
+                                 style:const  TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16
+                                        ),
+                                controller: allocatedFeeController,
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.currency_rupee),
+                                  hintText: "Enter total allocated Fees",
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: allocatedFeeController.text.isEmpty?Colors.red: primaryGreenColors),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
+                                ),
+                                onChanged: (value) => checkForChanges(),
+                              ),
+                            ),
+                        const SizedBox(width: 20,),
+                        
+                        ElevatedButton(
+                          onPressed: ()
+                        async  {
+                          
+                         isSaveButtonVisible? await showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
+                            saveFees();
+                          },
+                         style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    isSaveButtonVisible?Colors.blue:Colors.grey, // Button background color
+                                elevation: 10, // Elevation for shadow effect
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12), // Button padding
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(20), // Rounded corners
+                                ),
+                              ),
+                          child: const Padding(
+                      padding:  EdgeInsets.symmetric(vertical:  8.0),
+                      child:  Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.upload_sharp , color: Colors.white,size: 20,),
+                           SizedBox(width: 5,),
+                           Text("Save", style: TextStyle(color: Colors.white, fontSize: 17,)),
+                        ],
+                      ),
+                    ),
+                          
+                        ),
+                       
+                     
                       ],
                     ),
-                  ),
-                        
-                      ),
-                     
-                   
-                    ],
-                  ),
-                  const SizedBox(height: 60),
-                  for (int i = 0; i < 6; i++)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: Row(
-                        children: [
-                          // Fees Name TextField (Removed Label)
-                          Expanded(
-                            child: TextField(
-                              controller: feeNameControllers[i],
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primaryGreenColors),
+                    const SizedBox(height: 60),
+                    for (int i = 0; i < 8; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Row(
+                          children: [
+                            // Fees Name TextField (Removed Label)
+                            Expanded(
+                              child: TextField(  
+                                style:const  TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16
+                                        ),
+                                controller: feeNameControllers[i],
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primaryGreenColors),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primaryGreenColors),
-                                ),
+                                onChanged: (value) => checkForChanges(),
                               ),
-                              onChanged: (value) => checkForChanges(),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          // Fees Amount TextField
-                          Expanded(
-                            child: TextField(
-                              controller: feeAmountControllers[i],
-                              decoration: InputDecoration(
-                                labelText: 'Fees Amount',
-                                labelStyle: const TextStyle(color: Colors.black),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primaryGreenColors),
+                            const SizedBox(width: 10),
+                            // Fees Amount TextField
+                            Expanded(
+                              child: TextField(  
+                                style:const  TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16
+                                        ),
+                                controller: feeAmountControllers[i],
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.currency_rupee),
+                                  labelText: 'Fees Amount',
+                                  labelStyle: const TextStyle(color: Colors.black),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: primaryGreenColors),
+                                  ),
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primaryGreenColors),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: primaryGreenColors),
-                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) => checkForChanges(),
                               ),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) => checkForChanges(),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
          
              Expanded( 
               flex: 1,
-            child: filteredData.isEmpty
-                ? Center(
-                    child: Text(
-                      'No Transaction History as Found yet !',
-                      style: TextStyle(fontSize: 18, color: Colors.grey[850]),
-                    ),
-                  )
-                : ListView.builder(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+        future: matchedFeesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
+                  child: Text("Please wait a moment...", style: TextStyle(fontSize: 18),),
+                ),
+                CircularProgressIndicator( color: Colors.green,),
+              ],
+            ),
+          );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading data: ${snapshot.error}'));
+          } else {
+            final matchedFees = snapshot.data ?? [];
+
+            if (matchedFees.isEmpty) {
+              return Center(
+                child: Text(
+                  'No Transaction History Found!',
+                  style: TextStyle(fontSize: 18, color: Colors.grey[850]),
+                ),
+              );
+            }
+
+               return ListView.builder(
                     padding: const EdgeInsets.all(8.0),
-                    itemCount: filteredData.length,
+                    itemCount: matchedFees.length,
                     itemBuilder: (context, index) {
-                      final fees = filteredData[index];
+                    final fees = matchedFees[index];
+              
                       return Card(
                         color: Colors.white,
                         elevation: 4,
@@ -277,7 +379,10 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
                         ),
                       );
                     },
-                  ),
+                  );
+          }
+        }
+        )
           ),
           ],
         ),

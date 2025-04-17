@@ -1,41 +1,61 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 class StudentFeesList extends StatefulWidget {
   const StudentFeesList({super.key, required this.stuClass, required this.section});
 
   final String stuClass;
   final String section;
 
-  @override
+  @override 
   State<StudentFeesList> createState() => _StudentFeesListState();
 }
 
 class _StudentFeesListState extends State<StudentFeesList> {
   TextEditingController searchNameController = TextEditingController();
   TextEditingController searchRollController = TextEditingController();
-
-  late List<Map<String, String>> students;
-  List<Map<String, String>> filteredStudents = [];
-
+late Worker studentDataWorker;
+  List<Map<String, dynamic>> filteredStudents = [];
+  late FeesController controller;
   @override
   void initState() {
     super.initState();
-    students = [
-      {'name': 'John Doe', 'roll': '1', 'pendingFees': '500', 'totalFees': '2000', 'paidFees': '1500'},
-      {'name': 'Jane Smith', 'roll': '2', 'pendingFees': '300', 'totalFees': '2000', 'paidFees': '1700'},
-      {'name': 'Sam Wilson', 'roll': '3', 'pendingFees': '0', 'totalFees': '2000', 'paidFees': '2000'},
-    ];
-    filteredStudents = students;
+    controller=Get.find();
+   initializeData();
   }
 
+void initializeData() async {
+  await controller.fetchStudentData(stuClass: widget.stuClass, stuSec: widget.section);
+  
+  if (mounted) {
+    setState(() {
+      filteredStudents = List.from(controller.studentData);
+    });
+  }
+
+  studentDataWorker  = ever(controller.studentData, (_) {
+    if (mounted) {
+      setState(() {
+        filteredStudents = List.from(controller.studentData);
+      });
+    }
+  });
+}
+
+@override
+void dispose() {
+  studentDataWorker.dispose(); // dispose your `ever` listener
+  super.dispose();
+}
   void searchStudents() {
     String nameQuery = searchNameController.text.toLowerCase();
     String rollQuery = searchRollController.text.toLowerCase();
 
     setState(() {
-      filteredStudents = students.where((student) {
+      filteredStudents = controller.studentData.where((student) {
         bool matchesName = nameQuery.isEmpty || student['name']!.toLowerCase().contains(nameQuery);
         bool matchesRoll = rollQuery.isEmpty || student['roll']!.toLowerCase().contains(rollQuery);
         return matchesName && matchesRoll;
@@ -56,8 +76,8 @@ class _StudentFeesListState extends State<StudentFeesList> {
                 customIconNavigation(context, '/fees-updation/sectionWiseFeesUpdation'),
                 const SizedBox(width: 20),
                 const Text("Filter Student by :", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15)),
-                Expanded(child: filterTextField(title: "Search by Name", control: searchNameController)),
-                Expanded(child: filterTextField(title: "Search by Roll Number", control: searchRollController)),
+                Expanded(child: filterTextField(title: "Search by Name", control: searchNameController, onChanged: (val ) =>searchStudents())),
+                Expanded(child: filterTextField(title: "Search by Roll Number", control: searchRollController,onChanged: (val ) =>searchStudents())),
                 const SizedBox(width: 8),
                 customIconTextButton(Colors.blue, icon: Icons.search, onPressed: searchStudents, text: "Search"),
               ],
@@ -79,7 +99,7 @@ class _StudentFeesListState extends State<StudentFeesList> {
                       DataColumn(label: Text('Action', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
                     ],
                     rows: filteredStudents.map((student) {
-                      bool isPaid = student['pendingFees'] == '0';
+                      bool isPaid = student['status'] == 'Paid';
 
                       return DataRow(
                         cells: [
@@ -115,7 +135,7 @@ class _StudentFeesListState extends State<StudentFeesList> {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               ),
                               onPressed: () {
-                                customNvigation(context, '/fees-updation/sectionWiseFeesUpdation/studentFeesList/studentFeesUpdation?classNumber=${widget.stuClass}&sectionName=${widget.section}&name=${student['name']!}');
+                                customNvigation(context, '/fees-updation/sectionWiseFeesUpdation/studentFeesList/studentFeesUpdation?classNumber=${widget.stuClass}&sectionName=${widget.section}&name=${student['name']}&id=${student['id']}');
                               },
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -142,11 +162,12 @@ class _StudentFeesListState extends State<StudentFeesList> {
     );
   }
 
-  Widget filterTextField({required String title, required TextEditingController control}) {
+  Widget filterTextField({required String title, required TextEditingController control, required Function(String)?  onChanged}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         controller: control,
+        onChanged: onChanged,
         decoration: InputDecoration(
           labelText: title,
           labelStyle: const TextStyle(color: Colors.black),

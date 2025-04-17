@@ -119,7 +119,8 @@ Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
                 final String stuName = state.queryParameters['name']??'';
                  final classNumber = state.queryParameters['classNumber'] ?? '';
                  final sectionName = state.queryParameters['sectionName'] ?? '';
-                return   BeamPage(child:  StudentFeesUpdationpage( stuName: stuName,stuClass:  classNumber,stuSec: sectionName),
+                 final id = state.queryParameters['id']??'';
+                return   BeamPage(child:  StudentFeesUpdationpage( stuName: stuName,stuClass:  classNumber,stuSec: sectionName, id: id,),
                  title: 'Student Fees Detials Updation',
                     type: BeamPageType.slideLeftTransition,key:const ValueKey('Student Fees Updation'));},
                    

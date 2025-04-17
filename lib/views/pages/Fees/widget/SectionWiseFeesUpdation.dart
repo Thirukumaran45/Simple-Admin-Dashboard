@@ -1,53 +1,114 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
+import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
-class SectionWiseFeesUpdation extends StatelessWidget {
+class SectionWiseFeesUpdation extends StatefulWidget {
   const SectionWiseFeesUpdation({super.key,});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              children: [customIconNavigation(context, '/fees-updation'),
-              
-              ],
-            ), 
-            Column(
-              children: List.generate(12, (index) => classRow(index + 1,context)),
-            )
-          ],
-        ),
-      ),
-    );
+  State<SectionWiseFeesUpdation> createState() => _SectionWiseFeesUpdationState();
+}
+
+class _SectionWiseFeesUpdationState extends State<SectionWiseFeesUpdation> {
+  late FeesController controller;
+    Map<String, Map<String, Map<String, String>>> feesSummaryData = {};
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = FeesController();
+    preloadAllFeesSummary();
   }
 
-  Widget numberOfPaidUnpaidRow(String text, String values)
-  {
+  Future<void> preloadAllFeesSummary() async {
+    Map<String, Map<String, Map<String, String>>> summary = {};
+
+    for (int classIndex = 1; classIndex <= 12; classIndex++) {
+      String className = classIndex.toString();
+      summary[className] = {};
+
+      for (String section in ['A', 'B', 'C', 'D']) {
+        final result = await controller.getFeesSummary(
+            sectedClass: className, section: section);
+        summary[className]![section] = result;
+      }
+    }
+
+    setState(() {
+      feesSummaryData = summary;
+      isLoading = false;
+    });
+  }
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.white,
+    body: isLoading
+        ? const Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
+                  child: Text("Please wait a moment...", style: TextStyle(fontSize: 18),),
+                ),
+                CircularProgressIndicator( color: Colors.green,),
+              ],
+            ),
+          )
+        : Column(
+            children: [
+              Row(
+                children: [
+                  customIconNavigation(context, '/fees-updation'),
+                ],
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 12,
+                  itemBuilder: (context, index) =>
+                      classRow(index + 1, context),
+                ),
+              ),
+            ],
+          ),
+  );
+}
+
+  Widget numberOfPaidUnpaidRow(String text, {
+    required String className,
+    required String sectionName,
+  }) {
+    String displayValue = '...';
+    if (feesSummaryData.containsKey(className) &&
+        feesSummaryData[className]!.containsKey(sectionName)) {
+      displayValue = text == 'Paid'
+          ? feesSummaryData[className]![sectionName]!['paid'] ?? '0'
+          : feesSummaryData[className]![sectionName]!['unpaid'] ?? '0';
+    }
+
     return Container(
-      margin:const  EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-            Text('Fee $text Student', style:const TextStyle(
-              fontSize: 16,
-                      color: Colors.black
-                    ),), 
-                     const Icon(Icons.arrow_forward),
-
-                    Text(values, style: TextStyle(
-                      fontSize: 20,
-                      color: text=='Paid'? primaryGreenColors:Colors.red
-                    ),),
-                    
+          Text('Fee $text Student',
+              style: const TextStyle(fontSize: 16, color: Colors.black)),
+          const Icon(Icons.arrow_forward),
+          Text(
+            displayValue,
+            style: TextStyle(
+              fontSize: 20,
+              color: text == 'Paid' ? primaryGreenColors : Colors.red,
+            ),
+          ),
         ],
       ),
     );
   }
+
 
   Widget classRow(int index , BuildContext context) {
     return Padding(
@@ -128,8 +189,9 @@ class SectionWiseFeesUpdation extends StatelessWidget {
           child:  Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-           numberOfPaidUnpaidRow("Paid",'49'),
-           numberOfPaidUnpaidRow("UnPaid",'30'),
+           numberOfPaidUnpaidRow("Paid", className: stuClass, sectionName: sections[index]),
+           numberOfPaidUnpaidRow("UnPaid", className: stuClass, sectionName: sections[index]),
+
           
              Padding(
                padding: const EdgeInsets.all(10),
