@@ -16,9 +16,9 @@ class HigherOfficialMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(false,title: "View Officials Details", assetLink: "assets/images/officials.jpg", onpresee: ()=> customNvigation(context, '/manage-higher-official/viewHigherOfficailDetails')), 
+                customProfileCard(false,title: "View Officials Details", assetLink: "assets/images/official.svg", onpresee: ()=> customNvigation(context, '/manage-higher-official/viewHigherOfficailDetails')), 
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "Add Higher Officials", assetLink: "assets/images/addUser.png", onpresee: () => customNvigation(context, '/manage-higher-official/addOfficial') ),
+                customProfileCard(false,title: "Add Higher Officials", assetLink: "assets/images/adduser.svg", onpresee: () => customNvigation(context, '/manage-higher-official/addOfficial') ),
               ],
             ),
           ],

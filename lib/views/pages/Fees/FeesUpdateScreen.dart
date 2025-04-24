@@ -15,12 +15,12 @@ class FeesUpdateScreen extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
-              children: [ customProfileCard(true,title: "Bank account Data", assetLink: "assets/images/bank.jpg", onpresee: ()  => customNvigation(context, '/fees-updation/bankDetails')), 
+              children: [ customProfileCard(true,title: "Bank account Data", assetLink: "assets/images/bank.svg", onpresee: ()  => customNvigation(context, '/fees-updation/bankDetails')), 
                const SizedBox(width: 50), // Space between the cards
              
-                customProfileCard(false,title: "Fees Transaction Histry", assetLink:"assets/images/feeUpdate.jpg", onpresee: () => customNvigation(context, '/fees-updation/feesTransactionHistry') ),
+                customProfileCard(false,title: "Fees Transaction Histry", assetLink:"assets/images/transactionHistry.svg", onpresee: () => customNvigation(context, '/fees-updation/feesTransactionHistry') ),
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "Student Fees Updation", assetLink: "assets/images/feeHistry.jpg", onpresee: () => customNvigation(context, '/fees-updation/sectionWiseFeesUpdation')),
+                customProfileCard(false,title: "Student Fees Updation", assetLink: "assets/images/studentFees.svg", onpresee: () => customNvigation(context, '/fees-updation/sectionWiseFeesUpdation')),
               ],
             ),
           ],

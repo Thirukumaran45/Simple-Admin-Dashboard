@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart' show SvgPicture;
 
 class BusUpdateMainScreen extends StatelessWidget {
   const BusUpdateMainScreen({super.key});
@@ -11,8 +12,8 @@ class BusUpdateMainScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/images/location.jpg', // Replace with your image path
+            SvgPicture.asset(
+              'assets/images/bus.svg', // Replace with your image path
               width: 350, // Adjust size as needed
               height: 350,
               fit: BoxFit.contain,

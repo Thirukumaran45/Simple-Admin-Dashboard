@@ -26,15 +26,15 @@ final RxList<Map<String, dynamic>> feesData = <Map<String, dynamic>>[].obs;
   studentData.value = snapshot.docs.map((doc) {
   final data = doc.data() as Map<String, dynamic>;
 
-  int allocated = int.tryParse("${data['allocatedFees'] ?? '0'}") ?? 0;
+  int allocated = int.tryParse("${data['allocatedAmount'] ?? '0'}") ?? 0;
   int pending = int.tryParse("${data[totalFees] ?? '0'}") ?? 0;
   int paid = allocated - pending;
 
   return {
     'roll': '${data[rollNofield] ?? ''}',
     'name': '${data[studentNamefield] ?? ''}',
-    'pendingFees': pending.toString(),
-    'totalFees': allocated.toString(),
+    'pendingFees': '${data[totalFees] ?? '0'}',
+    'totalFees': '${data['allocatedAmount']?? '0'}',
     'paidFees': paid.toString(),
     'status': '${data[feesStatusField] ?? 'Unpaid'}',
     'id':'${data[studentIdField] ?? ''}'
@@ -132,14 +132,14 @@ Future<void> fetchTransactionHistry() async {
           'studentName': '${data['studentName'] ?? ''}',
           'class': '${data['class'] ?? ''}',
           'section': '${data['section'] ?? ''}',
-          'paidAmounts': '${data['paidAmount'] ?? ''}',
-          'paidFor': '${data['paidFor']}',
+          'paidAmount': '${data['paidAmount'] ?? ''}',
           'balanceAmount': '${data['balanceAmount'] ?? ''}',
           'totalAmount': '${data['totalAmount'] ?? ''}',
           'paymentDate': onlyDate,
           'paymentMonth': '${data['paymentMonth'] ?? ''}',
           'transactionId': '${data['transactionId'] ?? ''}',
           'studentId': '${data['studentId'] ?? ''}',
+          
           
         };
       }).toList();

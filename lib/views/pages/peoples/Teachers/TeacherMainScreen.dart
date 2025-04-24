@@ -18,11 +18,11 @@ class TeacherMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard( true,title: "Class Incharger Details", assetLink: "assets/images/teacher.jpg", onpresee: () => customNvigation(context, '/manage-teacher/classInchargerDetails')), 
+                customProfileCard( true,title: "Class Incharger Details", assetLink: "assets/images/classIncharger.svg", onpresee: () => customNvigation(context, '/manage-teacher/classInchargerDetails')), 
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "View  Teachers Details", assetLink: "assets/images/teacherpic.jpg", onpresee: () => customNvigation(context, '/manage-teacher/viewTeacherDetails')),
+                customProfileCard(false,title: "View  Teachers Details", assetLink: "assets/images/teacher.svg", onpresee: () => customNvigation(context, '/manage-teacher/viewTeacherDetails')),
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "Add Teacher", assetLink: "assets/images/addUser.png", onpresee: ()=> customNvigation(context, '/manage-teacher/addTeacher')), 
+                customProfileCard(false,title: "Add Teacher", assetLink: "assets/images/adduser.svg", onpresee: ()=> customNvigation(context, '/manage-teacher/addTeacher')), 
               ],
             ),
           ],

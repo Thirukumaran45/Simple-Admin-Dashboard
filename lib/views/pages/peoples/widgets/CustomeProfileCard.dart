@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
 
 
 Widget customProfileCard(bool needSpace, {required String title ,required String assetLink,required VoidCallback onpresee}) {
@@ -22,20 +23,20 @@ Widget customProfileCard(bool needSpace, {required String title ,required String
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-                   Container(
-                   height: 300,
-                   width: 300,  
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        image:  DecorationImage(
-                          image: AssetImage(assetLink),
-                          fit: needSpace?BoxFit.contain: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                    
-                    ),
+                 Container(
+  height: 300,
+  width: 300,
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(8),
+    border: Border.all(color: Colors.white, width: 2),
+  ),
+  child: SvgPicture.asset(
+    assetLink,
+    fit: needSpace ? BoxFit.contain : BoxFit.cover,
+  ),
+),
+
            
                 
           Padding(

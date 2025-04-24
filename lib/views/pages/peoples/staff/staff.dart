@@ -18,9 +18,9 @@ class StaffMainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(false,title: "View Staff Details", assetLink: "assets/images/staff.jpg", onpresee: ()=> customNvigation(context, '/manage-working-staff/viewStaffDetails')), 
+                customProfileCard(false,title: "View Staff Details", assetLink: "assets/images/staff.svg", onpresee: ()=> customNvigation(context, '/manage-working-staff/viewStaffDetails')), 
                const SizedBox(width: 50), // Space between the cards
-                customProfileCard(false,title: "Add Working Staff", assetLink: "assets/images/addUser.png", onpresee: ()=>customNvigation(context, '/manage-working-staff/addWorkingStaff')), 
+                customProfileCard(false,title: "Add Working Staff", assetLink: "assets/images/adduser.svg", onpresee: ()=>customNvigation(context, '/manage-working-staff/addWorkingStaff')), 
               ],
             ),
           ],

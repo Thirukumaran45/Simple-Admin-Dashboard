@@ -16,7 +16,7 @@ class Photoviewpage extends StatefulWidget {
 class _PhotoviewpageState extends State<Photoviewpage> {
 
   String? assetImage;
-  String defaultSchoolPhoto ="assets/images/splash.png";
+  String defaultSchoolPhoto ="assets/images/splash.svg";
   SchooldetailsController controller=Get.find();
 @override
   void initState() {

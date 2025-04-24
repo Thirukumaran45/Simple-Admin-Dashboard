@@ -22,7 +22,7 @@ class _sideNavState extends State<SideNav> {
    List<String> navs=[];
    List<IconData> navIcons =[];
   String? assetImage;
-  String defaultSchoolPhoto ="assets/images/splash.png";
+  String defaultSchoolPhoto ="assets/images/splash.svg";
   SchooldetailsController controller=Get.find();
 
 @override

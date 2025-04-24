@@ -94,6 +94,7 @@ void saveFees() async {
     feeNameControllers: feeNameControllers,
     feeAmountControllers: feeAmountControllers,
   );
+  await controller.fetchStudentData(stuClass: widget.stuClass, stuSec: widget.stuSec);
 
   setState(() {
     isSaveButtonVisible = false;

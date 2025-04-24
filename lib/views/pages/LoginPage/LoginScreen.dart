@@ -4,6 +4,7 @@ import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart' show SvgPicture;
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -115,16 +116,16 @@ class _BodyState extends State<Body> {
                 const SizedBox(
                   height: 10,
                 ),
-                Image.asset(
-                  'images/illustration-2.png',
+                SvgPicture.asset(
+                  'images/admin1.svg',
                   width: 300,
                 ),
               ],
             ),
           ),
         ),
-        Image.asset(
-          'images/illustration-1.png',
+        SvgPicture.asset(
+          'images/admin2.svg',
           width: 300,
         ),
         Padding(

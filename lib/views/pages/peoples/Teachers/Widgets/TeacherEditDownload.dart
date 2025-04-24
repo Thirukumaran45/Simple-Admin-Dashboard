@@ -175,7 +175,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           image: const DecorationImage(
-                            image: AssetImage("assets/images/splash.png"),
+                            image: AssetImage("assets/images/splash.svg"),
                             fit: BoxFit.cover,
                             opacity: 0.1,
                           ),
