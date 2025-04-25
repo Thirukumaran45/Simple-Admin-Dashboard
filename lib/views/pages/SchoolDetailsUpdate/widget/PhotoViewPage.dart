@@ -4,6 +4,7 @@ import 'package:admin_pannel/controller/classControllers/schoolDetailsController
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:get/get.dart';
 
 class Photoviewpage extends StatefulWidget {
@@ -79,12 +80,14 @@ Widget build(BuildContext context) {
       ),
     ),
     body: Center(
-      child: assetImage == null
-          ? const CircularProgressIndicator(color: Colors.green,) // Show a loader until the image is loaded
-          : InteractiveViewer(
-              child: Image.network(assetImage!,),
-            ),
-    ),
+    child: assetImage == null
+        ? const CircularProgressIndicator(color: Colors.green)
+        : assetImage!.endsWith(".svg")
+            ? SvgPicture.asset(assetImage!) // for local assets
+            : InteractiveViewer(
+                child: Image.network(assetImage!), // for network images
+              ),
+  )
   );
 }
 }

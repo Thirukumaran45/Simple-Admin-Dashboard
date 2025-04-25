@@ -353,6 +353,20 @@ void saveFees() async {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildFeesRow("Paid Amount:", "₹${fees['paidAmount']}", primaryGreenColors),
+                              // Added rows for feeamount and fee_amount lists
+                                 if (fees['fee_amount'] != null &&
+    fees['feeAmount'] != null &&
+    fees['fee_amount'] is List &&
+    fees['feeAmount'] is List)
+  ...List.generate((fees['fee_amount'] as List).length, (index) {
+    final fee1 = (fees['fee_amount'] as List)[index];
+    final fee2 = index < (fees['feeAmount'] as List).length
+        ? (fees['feeAmount'] as List)[index]
+        : '';
+    return _buildFeesRow("Subject of payment Amount ","$fee1 - ₹$fee2", primaryGreenColors);
+  })
+else
+  _buildFeesRow("Subject of payment to ", "N/A", primaryGreenColors),
                               _buildFeesRow("Student ID:", fees['studentId'] ?? "N/A", Colors.black),
                               _buildFeesRow("Balance Amount:", "₹${fees['balanceAmount']}", Colors.red),
                               _buildFeesRow("Total Allocated Amount:", "₹${fees['totalAmount']}", Colors.blue),
@@ -367,7 +381,7 @@ void saveFees() async {
        const   Text("Download Fees Recipt", style:  TextStyle(fontSize: 15, color: Colors.black)),
           TextButton(onPressed: (){
 
-             PdfSinglescript.openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A",);
+             PdfSinglescript.openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A", fees: fees,);
 
           }, child: Row(
             children: [Icon(Icons.download, color: primaryGreenColors,size: 25,), Text(" Download", style:  TextStyle(fontSize: 16, color:primaryGreenColors, fontWeight: FontWeight.bold) ,)],

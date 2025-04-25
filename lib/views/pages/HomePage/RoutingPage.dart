@@ -4,10 +4,11 @@ import 'package:admin_pannel/views/pages/Bonafied/widget/ClassWiseBonafied.dart'
 import 'package:admin_pannel/views/pages/Bonafied/widget/StudentBonafied.dart';
 import 'package:admin_pannel/views/pages/Bus/BusUpdateMainScreen.dart';
 import 'package:admin_pannel/views/pages/ExamUpdate/widgets/StudentResult.dart';
+import 'package:admin_pannel/views/pages/Fees/FeesUpdateScreen.dart';
+import 'package:admin_pannel/views/pages/Fees/widget/BankDetails.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/FeesTransactionHistry.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/SectionWiseFeesUpdation.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/StudentFeesList.dart';
-import 'package:admin_pannel/views/pages/Fees/widget/BankDetails.dart';
 import 'package:admin_pannel/views/pages/Fees/widget/studentFeesUpdationPage.dart';
 import 'package:admin_pannel/views/pages/HomePage/HomePage.dart';
 import 'package:admin_pannel/views/pages/Time%20Table/SectionWiseTimetable.dart';
@@ -41,7 +42,6 @@ import 'package:admin_pannel/views/pages/Attendance/widgets/SeectionMainPage.dar
 import 'package:admin_pannel/views/pages/ExamUpdate/ExamUpdateScreen.dart';
 import 'package:admin_pannel/views/pages/ExamUpdate/widgets/StudentExamResultPublish.dart';
 import 'package:admin_pannel/views/pages/ExamUpdate/widgets/sectionWiseExamResutlPublish.dart';
-import 'package:admin_pannel/views/pages/Fees/FeesUpdateScreen.dart';
 
 Widget routingNameUri({required GlobalKey<BeamerState> beamerKey})
 {

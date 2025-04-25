@@ -105,9 +105,9 @@ void dispose() {
                         cells: [
                           DataCell(Text(student['roll']!, style: const TextStyle(color:  Colors.black ,))),
                           DataCell(Text(student['name']!, style: const TextStyle(color:  Colors.black ))),
-                          DataCell(Text(student['pendingFees']!, style: const TextStyle(fontSize: 16,color: Colors.red, fontWeight: FontWeight.bold))),
-                          DataCell(Text(student['totalFees']!, style: const TextStyle(fontSize: 16,color: Colors.blue, fontWeight: FontWeight.bold))),
-                          DataCell(Text(student['paidFees']!, style:  TextStyle(fontSize: 16,color: primaryGreenColors, fontWeight: FontWeight.bold))),
+                          DataCell(Text("₹${student['pendingFees']!}", style: const TextStyle(fontSize: 16,color: Colors.red, fontWeight: FontWeight.bold))),
+                          DataCell(Text("₹${student['totalFees']!}", style: const TextStyle(fontSize: 16,color: Colors.blue, fontWeight: FontWeight.bold))),
+                          DataCell(Text("₹${student['paidFees']!}", style:  TextStyle(fontSize: 16,color: primaryGreenColors, fontWeight: FontWeight.bold))),
                           DataCell(
                             Container(
                               height: 38,

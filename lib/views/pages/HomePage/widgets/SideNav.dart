@@ -4,6 +4,7 @@ import 'package:admin_pannel/controller/classControllers/schoolDetailsController
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:get/get.dart';
 
 class SideNav extends StatefulWidget {
@@ -39,7 +40,7 @@ class _sideNavState extends State<SideNav> {
 
    if (!mounted) return; // ✅ Check before updating UI
    setState(() {
-     assetImage = photoUrl ?? defaultSchoolPhoto;
+     assetImage = photoUrl ;
        
    });
 }
@@ -97,24 +98,38 @@ class _sideNavState extends State<SideNav> {
       padding: const EdgeInsets.all(0.0),
       child: Column(
         children: [
-           Padding(
+
+Padding(
   padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
   child: Container(
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       boxShadow: [
         BoxShadow(
-          color: Colors.white.withAlpha(80), // subtle white glow
-          spreadRadius: 2,
+          color: Colors.green.withAlpha(80), // subtle white glow
+          spreadRadius: 5,
           blurRadius: 5,
         ),
       ],
     ),
-    child: CircleAvatar(
-      radius: 70,
-      backgroundImage: assetImage == null
-          ? AssetImage(defaultSchoolPhoto) as ImageProvider
-          : NetworkImage(assetImage!),
+    child: ClipOval(
+      child: SizedBox(
+        height: 130,
+        width: 130,
+        child: assetImage == null
+            ? SvgPicture.asset(
+                defaultSchoolPhoto,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              )
+            : Image.network(
+                assetImage!,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
+      ),
     ),
   ),
 ),

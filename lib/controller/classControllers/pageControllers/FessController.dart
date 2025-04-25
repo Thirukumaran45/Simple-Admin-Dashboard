@@ -118,17 +118,19 @@ Future<void> addAndUpdateBankDetailsToFirestore(
 
 
 Future<void> fetchTransactionHistry() async {
-  List<Map<String, String>> tempList = [];
+  List<Map<String, dynamic>> tempList = [];
 
   for (int i = 1; i < 13; i++) {
     for (String sec in ['A', 'B', 'C', 'D']) {
       final snapshot = await collectionVariable.feesDocCollection.collection('$i$sec').get();
-
+     
       final currentList = snapshot.docs.map((doc) {
         final data = doc.data();
         String paymentDate = data['paymentDate'];
         String onlyDate = paymentDate.split(' ')[0];
+        
         return {
+
           'studentName': '${data['studentName'] ?? ''}',
           'class': '${data['class'] ?? ''}',
           'section': '${data['section'] ?? ''}',
@@ -138,12 +140,13 @@ Future<void> fetchTransactionHistry() async {
           'paymentDate': onlyDate,
           'paymentMonth': '${data['paymentMonth'] ?? ''}',
           'transactionId': '${data['transactionId'] ?? ''}',
-          'studentId': '${data['studentId'] ?? ''}',
-          
-          
+          'studentId': '${data['studentId'] ?? ''}',         
+           'fee_amount': data['fee_amount'] ?? [],
+           'feeAmount': data['feeAmount'] ?? [],
+
+
         };
       }).toList();
-
       tempList.addAll(currentList);
     }
   }

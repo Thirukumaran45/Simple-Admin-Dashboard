@@ -10,6 +10,7 @@ class PdfSinglescript {
     required String section,
     required String studentId,
     required String paidAmount,
+    required Map<String, dynamic> fees,
     required String balanceAmount,
     required String totalAllocatedAmount,
     required String paymentDate,
@@ -50,6 +51,18 @@ class PdfSinglescript {
                   pw.SizedBox(height: 5),
                   pw.Text("Paid Amount:", style: pw.TextStyle(font: font1, fontSize: 12)),
                   pw.SizedBox(height: 5),
+                 ...List.generate((fees['fee_amount'] as List).length, (index) {
+  return pw.Column(
+    children: [
+      pw.Text(
+    "Subject of Payment Amount:",
+    style: pw.TextStyle(font: font1, fontSize: 12),
+  ),
+    pw.SizedBox(height: 5),
+    ]
+  );
+}),
+
                   pw.Text("Balance Amount:", style: pw.TextStyle(font: font1, fontSize: 12)),
                   pw.SizedBox(height: 5),
                   pw.Text("Total Allocated Amount:", style: pw.TextStyle(font: font1, fontSize: 12)),
@@ -72,6 +85,22 @@ class PdfSinglescript {
                   pw.SizedBox(height: 5),
                   pw.Text(paidAmount, style: pw.TextStyle(font: font2, fontSize: 12)),
                   pw.SizedBox(height: 5),
+                    if (fees['fee_amount'] != null &&
+    fees['feeAmount'] != null &&
+    fees['fee_amount'] is List &&
+    fees['feeAmount'] is List)
+  ...List.generate((fees['fee_amount'] as List).length, (index) {
+    final fee1 = (fees['fee_amount'] as List)[index];
+    final fee2 = index < (fees['feeAmount'] as List).length
+        ? (fees['feeAmount'] as List)[index]
+        : '';
+    return  pw.Column(
+      children: [pw.Text("$fee1 - ₹$fee2", style: pw.TextStyle(font: font2, fontSize: 12)),  pw.SizedBox(height: 5),]
+    );
+  })
+  else ...[
+                pw.Text('N/A', style: pw.TextStyle(font: font2, fontSize: 12)),
+                  pw.SizedBox(height: 5),],
                   pw.Text(balanceAmount, style: pw.TextStyle(font: font2, fontSize: 12)),
                   pw.SizedBox(height: 5),
                   pw.Text(totalAllocatedAmount, style: pw.TextStyle(font: font2, fontSize: 12)),
@@ -82,7 +111,7 @@ class PdfSinglescript {
                   pw.SizedBox(height: 5),
                   pw.Text(transactionId, style: pw.TextStyle(font: font2, fontSize: 12)),
                    pw.SizedBox(height: 180),
-                  pw.Text("School Seal Stamp to Verify", style: pw.TextStyle(font: font1, fontSize: 14)),
+                  pw.Text("School Stamp to Verify", style: pw.TextStyle(font: font1, fontSize: 14)),
                 
                 ],
               ),
@@ -97,6 +126,7 @@ class PdfSinglescript {
 
   static Future<void> openPdf({
     required String studentName,
+    required  Map<String, dynamic> fees,
     required String studentClass,
     required String section,
     required String studentId,
@@ -111,6 +141,7 @@ class PdfSinglescript {
       studentName: studentName,
       studentClass: studentClass,
       section: section,
+      fees: fees,
       studentId: studentId,
       paidAmount: paidAmount,
       balanceAmount: balanceAmount,

@@ -4,34 +4,53 @@ import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart' show SvgPicture;
 Widget buildProfilePicker({required dynamic image, required VoidCallback onPress}) {
-  return Center(
-    child: Stack(
-      children: [
-        CircleAvatar(
-          radius: 80,
-          backgroundImage: image == null
-              ? const AssetImage('assets/images/profile.png') as ImageProvider
-              : (kIsWeb
-                  ? MemoryImage(image) // For Web
-                  : FileImage(File(image))), // For Mobile
-          backgroundColor: Colors.grey.shade300,
-        ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: Container(
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: Colors.white),
-            child: IconButton(
-              icon: const Icon(Icons.camera_alt, color: Colors.red),
-              onPressed: onPress, // Correct function call
+
+return Center(
+  child: Stack(
+    children: [
+      image == null
+          ? Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.blue
+                ),
+                shape: BoxShape.circle,
+              ),
+              child: ClipOval(
+                child: SvgPicture.asset(
+                  'assets/images/profile.svg', // your SVG asset path
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          : CircleAvatar(
+              radius: 80,
+              backgroundImage: kIsWeb
+                  ? MemoryImage(image)
+                  : FileImage(File(image)) as ImageProvider,
+              backgroundColor: Colors.grey.shade300,
             ),
+      Positioned(
+        bottom: 0,
+        right: 0,
+        child: Container(
+          decoration: const BoxDecoration(
+              shape: BoxShape.circle, color: Colors.white),
+          child: IconButton(
+            icon: const Icon(Icons.camera_alt, color: Colors.red),
+            onPressed: onPress,
           ),
         ),
-      ],
-    ),
-  );
+      ),
+    ],
+  ),
+);
+
+
 }
 
 
