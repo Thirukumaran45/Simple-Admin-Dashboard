@@ -80,6 +80,9 @@ Future<void> handlePhotoUpdate(String studentId) async {
 
   @override
   Widget build(BuildContext context) {
+     if (teacherDetails == null) {
+      return const Center(child: CircularProgressIndicator(color: Colors.green,));
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -91,10 +94,9 @@ Future<void> handlePhotoUpdate(String studentId) async {
                 customIconNavigation(context, '/manage-higher-official/viewHigherOfficailDetails'),
             
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
+
               children: [
-                 const SizedBox(height: 30),
-                // Profile Photo
                 Center(
                   child: Stack(
                     children: [
@@ -121,17 +123,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                     width: 300,
-                padding: const EdgeInsets.all(20),
-               
-                  child:  Text(teacherDetails!.principalName, overflow:TextOverflow.visible ,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
-               const SizedBox(
-                height: 150,
-               )
+                
               ],
             ),
            ],
@@ -165,11 +157,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          image: const DecorationImage(
-                            image: AssetImage("assets/images/splash.svg"),
-                            fit: BoxFit.cover,
-                            opacity: 0.1,
-                          ),
+                          
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,7 +222,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             child: ElevatedButton(
                               onPressed: ()async {
                                  await  customSnackbar(context: context, text: "Downloaded Succesfully");
-                                   await PdfOfficialsDetails.openPdf(fileName: firstNameController.text, nameController: firstNameController,
+                                   await PdfOfficialsDetails().openPdf(fileName: firstNameController.text, nameController: firstNameController,
                                   phoneNumberController: phoneNumberController, 
                                      emailController: emailController,
                                     homeAddressController: homeAddressController, roleController: role, assetImage: assetImage);

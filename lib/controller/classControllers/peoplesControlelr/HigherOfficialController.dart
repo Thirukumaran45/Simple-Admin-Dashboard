@@ -12,21 +12,21 @@ import 'package:flutter/foundation.dart' show Uint8List,kIsWeb;
 
 
 class Higherofficialcontroller extends GetxController {
- late FirebaseCollectionVariable collectionControler;
-late dynamic snapshot;
- 
 final RxList<Map<String, dynamic>> officialData = <Map<String, dynamic>>[].obs;
+late FirebaseCollectionVariable collectionControler;
+DocumentSnapshot? lastDocument;  // NEW: Track last document
+bool isFetching = false; // NEW: Prevent multiple fetches
+final int pageSize = 10; // NEW: Load 10 at a time
 
-  @override
-  void onInit() {
-    super.onInit();
-    collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchOfficialData();
-  }
-
+@override
+void onInit() {
+  super.onInit();
+  collectionControler = Get.find<FirebaseCollectionVariable>();
+  fetchOfficialData();
+}
 void fetchOfficialData() async {
   try {
-    snapshot = await collectionControler.officialLoginCollection.get();
+   final snapshot = await collectionControler.officialLoginCollection.get();
     officialData.value = snapshot.docs.asMap().entries.map((entry) {
       int index = entry.key + 1; // Auto-generate serial number starting from 1
       var doc = entry.value;
@@ -46,8 +46,7 @@ void fetchOfficialData() async {
     log('Error in fetching the data: $e');
   }
 }
- 
-
+   
 Future<Principaldetailmodel?> officialDataRead({required String uid}) async {
   try {
     final doc = await collectionControler.officialLoginCollection.doc(uid).get();

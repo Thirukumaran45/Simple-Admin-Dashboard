@@ -268,9 +268,8 @@ Future<void> profileFuntion() async {
                                onPressed: ()async {
   if (_formKey.currentState?.validate() ?? false) {
        
-   try {
  
-   if(updatePhotoUrl.isNotEmpty)
+   if(updatePhotoUrl!=null)
    {
     bool val = await showCustomConfirmDialog(context: context, text: 'Are you sure about to add the student');
    if(val)
@@ -303,11 +302,14 @@ await  controller.registerUser(
     customPopNavigation(context, '/manage-student');
    }
    }
+ else
+     {
 
-  
-}  catch (e) {
-   await showCustomDialog(context, "Please pick profile photo for the person !");
-}
+  if(!context.mounted) return;
+  await showCustomDialog(context, "Please pick profile photo for the person !");
+     }
+
+
 
   }
 },

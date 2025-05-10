@@ -67,9 +67,20 @@ Future<void> handlePhotoUpdate(String studentId) async {
   }
 
 
-
+@override
+void dispose() {
+  firstNameController.dispose();
+  phoneNumberController.dispose();
+  emailController.dispose();
+  homeAddressController.dispose();
+  role.dispose();
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
+     if (teacherDetails == null) {
+      return const Center(child: CircularProgressIndicator(color: Colors.green,));
+    }
     return SingleChildScrollView(
       child: Row(
         children: [
@@ -112,13 +123,6 @@ Future<void> handlePhotoUpdate(String studentId) async {
                        ),
                       ),
               
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      width: 300,
-                      padding: const EdgeInsets.all(20),
-                      child:  Text(teacherDetails!.staffName,overflow:TextOverflow.visible , style: const TextStyle(fontSize: 25,fontWeight: FontWeight.normal,color: Colors.black),)),
                    
                     ],
                     
@@ -151,11 +155,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      image: const DecorationImage(
-                        image: AssetImage("assets/images/splash.svg"),
-                        fit: BoxFit.cover,
-                        opacity: 0.1,
-                      ),
+                     
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +218,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                         child: ElevatedButton(
                           onPressed: ()async {
                          await customSnackbar(context: context, text: "Downloaded Succesfully");
-                         await PdfStaffDetails.openPdf(fileName: firstNameController.text, 
+                         await PdfStaffDetails().openPdf(fileName: firstNameController.text, 
                          nameController: firstNameController, phoneNumberController: phoneNumberController, emailController: emailController,
                           homeAddressController: homeAddressController,assetImage: assetImage, role: role);
                           },

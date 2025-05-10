@@ -160,10 +160,10 @@ Future<void> profileFuntion() async {
                         child: ElevatedButton(
                           onPressed: () async{
                             if (_formKey.currentState?.validate() ?? false) {
-                              try {
+                             
  
        
-     if(updatePhotoUrl.isNotEmpty)
+     if(updatePhotoUrl!=null)
      {
        bool val = await showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
      if(val)
@@ -189,9 +189,13 @@ Future<void> profileFuntion() async {
       customPopNavigation(context, '/manage-working-staff');
      }
      }
-}  catch (e) {
+     else 
+     {
+
+  if(!context.mounted) return;
   await showCustomDialog(context, "Please pick profile photo for the person !");
-}
+     }
+
 
                             }
                           },

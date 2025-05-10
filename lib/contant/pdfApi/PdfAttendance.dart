@@ -2,11 +2,14 @@ import 'dart:typed_data';
 import 'package:admin_pannel/contant/constant.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import 'package:get/get.dart' show Get, Inst;
 
 class PdfAttendance {
+  SchooldetailsController controller = Get.find<SchooldetailsController>();
   
 
-  static Future<Uint8List> generateAttendanceSheet({
+   Future<Uint8List> generateAttendanceSheet({
     required String date,
     required String studentClass,
     required String section,
@@ -18,17 +21,37 @@ class PdfAttendance {
     final font1 = await fontBold();
     final font2 = await fontMedium();
     final pdf = pw.Document();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
 
     pdf.addPage(
       pw.MultiPage(
         build: (context) => <pw.Widget>[
-          pw.Center(
-            child:pw.Header(
-              child:  pw.Text(
-              "Attendance Sheet - $date",
-              style: pw.TextStyle(font: font1, fontSize: 24),
-            ),
-            )
+          pw.Stack(
+            children: [
+              if (watermarkImage != null)
+                pw.Positioned.fill(
+                  child: pw.Center(
+                    child: pw.Opacity(
+                      opacity: 0.2,
+                      child: pw.Image(
+                        watermarkImage,
+                        width: 300,
+                        height: 300,
+                        fit: pw.BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              pw.Center(
+                child: pw.Header(
+                  child: pw.Text(
+                    "Attendance Sheet - $date",
+                    style: pw.TextStyle(font: font1, fontSize: 24),
+                  ),
+                ),
+              ),
+            ],
           ),
           pw.SizedBox(height: 15),
           pw.Container(
@@ -107,7 +130,7 @@ class PdfAttendance {
     return pdf.save();
   }
 
-  static Future<void> openPdf({
+   Future<void> openPdf({
     required String date,
     required String studentClass,
     required String section,

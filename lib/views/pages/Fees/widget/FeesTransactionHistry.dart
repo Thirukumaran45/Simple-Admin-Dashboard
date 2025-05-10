@@ -52,8 +52,8 @@ void initializeList() async {
   List<String> dateVal = await controller.fetchUniqueDateValuesAll();
 
   setState(() {
-    month = monthVal.toSet().toList();
-    date = dateVal.toSet().toList();
+    month = monthVal.map((e) => e.toString()).toSet().toList();
+    date = dateVal.map((e) => e.toString()).toSet().toList();
 
     if (month.contains(controller.gettodaymonth())) {
       selectedMonth = controller.gettodaymonth();
@@ -67,6 +67,7 @@ void initializeList() async {
     applyFilters();
   });
 }
+
 
   List<String> getAllDatesInMonth(String month) {
     DateTime now = DateTime.now();
@@ -120,7 +121,7 @@ void initializeList() async {
               ),
               customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
               customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:(){
-               PdfTotalFeesScript.openPdf(fileName: 'Transaction Histry $selectedDate',transactions: filteredData);
+               PdfTotalFeesScript().openPdf(fileName: 'Transaction Histry $selectedDate',transactions: filteredData);
                applyFilters();
               } , text: "Download"),
             ],
@@ -202,7 +203,7 @@ else
        const   Text("Download Fees Recipt", style:  TextStyle(fontSize: 15, color: Colors.black)),
           TextButton(onPressed: (){
             
-           PdfSinglescript.openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A", fees: fees,);
+           PdfSinglescript().openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A", fees: fees,);
 
           }, child: Row(
             children: [Icon(Icons.download, color: primaryGreenColors,size: 25,), Text(" Download", style:  TextStyle(fontSize: 16, color:primaryGreenColors, fontWeight: FontWeight.bold) ,)],

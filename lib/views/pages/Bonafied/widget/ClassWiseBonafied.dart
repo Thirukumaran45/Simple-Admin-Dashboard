@@ -283,7 +283,7 @@ Container(
                             ),
                             onPressed: () async{
                             await customSnackbar(context: context, text: "Donloaded Succesfully");
-                           await PdfApi.openPdf(academicYear:'2024',fileName:student['name']!, studentName: student['name']!,parentName:'Raman.K', studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', academicType:selectedTypevalue! );
+                           await PdfApi().openPdf(academicYear:'2024',fileName:student['name']!, studentName: student['name']!,parentName:'Raman.K', studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', academicType:selectedTypevalue! );
                            
 
                             },

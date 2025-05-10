@@ -2,9 +2,13 @@ import 'dart:typed_data';
 import 'package:admin_pannel/contant/constant.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import 'package:get/get.dart' show Get, Inst; 
 
 class PdfTotalTeacherDetails {
-  static Future<Uint8List> generateStudentDetailsSheet({
+  SchooldetailsController controller = Get.find<SchooldetailsController>();
+
+   Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
     required List<Map<String, dynamic>> teacher,
   }) async {
@@ -12,18 +16,39 @@ class PdfTotalTeacherDetails {
     final font2 = await fontMedium();
     final pdf = pw.Document();
 
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
+
     pdf.addPage(
       pw.MultiPage(
         build: (context) => <pw.Widget>[
-          pw.Center(
-            child: pw.Header(
-              child: pw.Center(
-                child: pw.Text(
-                  "Teacher Details",
-                  style: pw.TextStyle(font: font1, fontSize: 24),
+          pw.Stack(
+            children: [
+              if (watermarkImage != null)
+                pw.Positioned.fill(
+                  child: pw.Center(
+                    child: pw.Opacity(
+                      opacity: 0.2, // Adjust the opacity as needed
+                      child: pw.Image(
+                        watermarkImage,
+                        width: 300,
+                        height: 300,
+                        fit: pw.BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              pw.Center(
+                child: pw.Header(
+                  child: pw.Center(
+                    child: pw.Text(
+                      "Teacher Details",
+                      style: pw.TextStyle(font: font1, fontSize: 24),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           pw.SizedBox(height: 15),
           pw.TableHelper.fromTextArray(
@@ -68,7 +93,7 @@ class PdfTotalTeacherDetails {
     return pdf.save();
   }
 
-  static Future<void> openPdf({
+   Future<void> openPdf({
     required String fileName,
     required List<Map<String, dynamic>> teacher,
   }) async {

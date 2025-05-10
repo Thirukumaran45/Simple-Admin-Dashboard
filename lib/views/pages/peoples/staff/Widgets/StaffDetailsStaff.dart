@@ -95,7 +95,7 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
                   icon: Icons.download_sharp,
                   onPressed:() async{
                     await customSnackbar(context: context, text: "Downloaded Succesfully");
-                    await PdfTotalStaffDetails.openPdf(fileName: "Working Staff Details $todayDateTime",staff: filteredData);
+                    await PdfTotalStaffDetails().openPdf(fileName: "Working Staff Details $todayDateTime",staff: filteredData);
                     applyFilters();},
                   text: "Download"),
             ],
@@ -138,7 +138,7 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
                             ),
                           ),
                             onPressed: () {
-                              customNvigation(context, '/manage-working-staff/viewStaffDetails/editWorkingStaffDetails');
+                              customNvigation(context, '/manage-working-staff/viewStaffDetails/editWorkingStaffDetails?uid=${staff['id']!}');
                               },
                             child: const Text('View More',style: TextStyle(fontSize: 14),),
                           ),

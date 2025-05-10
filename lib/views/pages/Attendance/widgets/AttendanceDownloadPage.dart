@@ -157,7 +157,7 @@ void initializeList() async {
               customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
               customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:()async{
                   await customSnackbar(context: context, text: "Donloaded Succesfully");
-                await PdfAttendance.openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,
+                await PdfAttendance().openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,
                 studentClass: widget.classNUmber,students:filteredData,teacherName: teacherName  );
                 applyFilters();
               } , text: "Download"),

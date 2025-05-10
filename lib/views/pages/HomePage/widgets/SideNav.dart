@@ -33,7 +33,7 @@ class _sideNavState extends State<SideNav> {
     navs = List.from(dashboardController.navs);
     navItems=List.from(dashboardController.navItems);
     initializeFunction();
-  }
+  } 
 
   Future<void> initializeFunction() async {
    String? photoUrl = await controller.getSchoolPhotoUrl();

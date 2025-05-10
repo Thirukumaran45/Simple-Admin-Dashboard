@@ -98,7 +98,7 @@ Teachercontroller controller = Get.find();
                     applyFilters();
                    await  customSnackbar(context: context, text: "Donloaded Succesfully");
 
-                   await  PdfTotalTeacherDetails.openPdf(fileName: "Teacher Details - $todayDateTime",teacher: filteredData);
+                   await  PdfTotalTeacherDetails().openPdf(fileName: "Teacher Details - $todayDateTime",teacher: filteredData);
                     
                     
                     },

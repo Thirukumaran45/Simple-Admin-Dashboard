@@ -120,6 +120,8 @@ Future<void> initializeFunction() async {
                 customIconNavigation(context,'/manage-student/viewStudentDetails'),
               
                 Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+
                   children: [
                     const SizedBox(height: 30,),
                     Center(
@@ -194,11 +196,7 @@ Future<void> initializeFunction() async {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          image: const DecorationImage(
-                            image: AssetImage("assets/images/splash.svg"),
-                            fit: BoxFit.cover,
-                            opacity: 0.1,
-                          ),
+                          
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,7 +283,7 @@ Future<void> initializeFunction() async {
                             child: ElevatedButton(
                               onPressed: ()async {
                               await   customSnackbar(context: context, text: "Donloaded Succesfully");
-                               await  PdfStudentDetails.openPdf(fileName: studentNameController.text, nameController: studentNameController, 
+                               await  PdfStudentDetails().openPdf(fileName: studentNameController.text, nameController: studentNameController, 
                                classController: studentClassController, sectionController: sectionController, 
                                fatherNameController: fatherNameController, fatherPhoneController: fatherPhoneNumberController, motherNameController: motherNameController,
                                 motherPhoneController: motherPhoneNumberController, dateOfBirthController: dobController, emailController: emailController, homeAddressController: homeAddressController,

@@ -101,9 +101,9 @@ Future<void> handlePhotoUpdate(String studentId) async {
             
       
             Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                children: [
-                const SizedBox(height: 30),
-                // Profile Photo
+              
                 Center(
                   child: Stack(
                     children: [
@@ -130,17 +130,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: 300,
-                  padding: const EdgeInsets.all(20),
-                  child:  Text(firstNameController.text, overflow: TextOverflow.visible,style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
                
-                   const  SizedBox(
-                        height:150,
-                      ), 
                     ],)
               ],
             ),
@@ -174,11 +164,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          image: const DecorationImage(
-                            image: AssetImage("assets/images/splash.svg"),
-                            fit: BoxFit.cover,
-                            opacity: 0.1,
-                          ),
+                        
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,7 +242,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             child: ElevatedButton(
                               onPressed: ()async {
                             await     customSnackbar(context: context, text: "Donloaded Succesfully");
-                                 await PdfTeacherDetails.openPdf(fileName:  firstNameController.text.toString(), nameController: firstNameController, 
+                                 await PdfTeacherDetails().openPdf(fileName:  firstNameController.text.toString(), nameController: firstNameController, 
                                  employmentDate: emplymentDateController, degreeController: degreeController,assetImage: assetImage,
                                  phoneNumberController: phoneNumberController, dateOfBirthController: subjectHandlingController, 
                                  emailController: emailController, homeAddressController: homeAddressController, yearofExperience: experienceController, subjectHandling: subjectHandlingController);

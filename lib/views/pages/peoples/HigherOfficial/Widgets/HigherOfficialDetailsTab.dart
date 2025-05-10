@@ -97,7 +97,7 @@ Higherofficialcontroller controller = Get.find();
                   icon: Icons.download_sharp,
                   onPressed:() async{
                  await   customSnackbar(context: context, text: "Downloaded Succesfullly");
-                   await  PdfTotalOfficialDetails.openPdf(fileName: "Higher Official Details $todayDateTime",officials:filteredData );
+                   await  PdfTotalOfficialDetails().openPdf(fileName: "Higher Official Details $todayDateTime",officials:filteredData );
                     applyFilters();},
                   text: "Download"),
             ],

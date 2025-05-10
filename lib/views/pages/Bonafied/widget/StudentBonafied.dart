@@ -81,7 +81,7 @@ class _StudentBonafiedState extends State<StudentBonafied> {
                          if (_formKey.currentState!.validate()) {
                         await customSnackbar(context: context, text: "Donloaded Succesfully");
                               }
-                          await PdfApi.openPdf(academicYear:yearController.text,fileName: nameController.text, studentName: nameController.text,parentName: parentNameController.text, studentClass: classController.text, dob: dobController.text, academicType:selectedOption );
+                          await PdfApi().openPdf(academicYear:yearController.text,fileName: nameController.text, studentName: nameController.text,parentName: parentNameController.text, studentClass: classController.text, dob: dobController.text, academicType:selectedOption );
 
                             
                        }, icon: Icons.generating_tokens, text: "Generate Certificate")
