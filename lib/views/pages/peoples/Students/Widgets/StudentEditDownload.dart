@@ -146,23 +146,14 @@ Future<void> initializeFunction() async {
   
   await handlePhotoUpdate(studentDetails!.stdentId);
   }, icon: Icons.edit, text: "Change")
-                        ),
+                        ), 
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      width: 300,
-                      padding: const EdgeInsets.all(20),
-                      child:  Text(overflow:TextOverflow.visible ,studentDetails?.studentName ?? '', style:const  TextStyle(fontSize: 25,fontWeight: FontWeight.bold,color: Colors.black),)),
-                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text(" ${studentDetails?.studentClass ?? ''} - ${studentDetails?.studentSection ?? ''} ",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25,color: Colors.black)),],
-                    ),
-                      const  SizedBox(
-                      height:150,
+                   
+                        SizedBox(
+                      height:MediaQuery.sizeOf(context).height*0.5,
+
                     ), 
                   ],
                 ),

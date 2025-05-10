@@ -32,6 +32,8 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   List<Map<String, dynamic>> filteredData = [];
   List<Map<String, dynamic>> studentData = [];
   AttendanceController controller = Get.find();
+  final ScrollController _scrollController = ScrollController();
+
   List<String> month = [];
   List<String>date=[];
   @override
@@ -41,9 +43,28 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
     selectedMonth = controler.gettodaymonth();
     selectedDate = controler.gettoadayDate();
     
- 
+  _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 20) {
+        _loadMoreStudents();
+      }
+    });
    } 
+ Future<void> _loadMoreStudents() async {
+    final more = await controller.fetchPagedStudents(
+      stuClass: widget.classNUmber,
+      stuSec: widget.section,
+      reset: false,
+    );
+    if (more.isNotEmpty) {
+      setState(() {
+        studentData.addAll(more);
+        applyFilters();
+      });
+    }
+  }
 
+ 
 void initializeList() async {
   List<String> monthVal = await controller.fetchUniqueMonthValuesAll();
   List<String> dateVal = await controller.getAttendanceDates();
@@ -62,24 +83,18 @@ void initializeList() async {
       selectedDate = controler.gettoadayDate();
     }
   });
+final data = await controller.fetchPagedStudents(stuClass: widget.classNUmber, stuSec: widget.section);
 
-  final data = await controller.fetchStudentData();
-  if (data.containsKey(int.parse(widget.classNUmber)) &&
-      data[int.parse(widget.classNUmber)]!.containsKey(widget.section)) {
-    setState(() {
-      studentData = data[int.parse(widget.classNUmber)]![widget.section]!;
-      applyFilters();
-    });
-  } else {
-    setState(() {
-      studentData = [];
-      applyFilters();
-    });
-  }
+setState(() {
+  // Assuming the data is a List<Map<String, dynamic>>, you can directly assign it to studentData
+  studentData = data;  // Assign the fetched data directly without checking for containsKey
+  applyFilters();
+});
 
-  setState(() {
-    isLoading = false;
-  });
+setState(() {
+  isLoading = false;
+});
+
 }
 
  void applyFilters() {
@@ -107,7 +122,11 @@ void initializeList() async {
       showSaveButton[index] = false; // Hide save button after saving
     });
   }
-
+ @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,16 +195,20 @@ void initializeList() async {
           ),
         )
       :  SingleChildScrollView(
+        controller: _scrollController, 
               child: Container(
                 padding: const EdgeInsets.all(5),
                 width: double.infinity,
                 child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('Roll.Number', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
-                    DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
-                    DataColumn(label: Text('Attendance', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
-                    DataColumn(label: Text('Edit', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
-                    DataColumn(label: Text('Status',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                  columns:  [
+                    DataColumn(label: SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.08,
+                      
+                      child: const Text('Roll.Number', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),overflow: TextOverflow.ellipsis,))),
+                    const DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                    const DataColumn(label: Text('Attendance', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                    const DataColumn(label: Text('Edit', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                    const DataColumn(label: Text('Status',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
       
                   ],
                   rows: List.generate(filteredData.length, (index) {
@@ -207,31 +230,27 @@ void initializeList() async {
                         DataCell(
                           Row(
                             children: [
-                              SizedBox(
-                                height: 38,
-                                width: 170,
-                                child: ElevatedButton(
-                                  onPressed: () => toggleAttendance(index),
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 10, // Elevation for shadow effect
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12), // Button padding
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(20), // Rounded corners
-                            ),
-                                    backgroundColor: Colors.red
-                                  ),
-                                  child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      
-                                    children: [
-                                      Icon(Icons.swap_horiz_sharp,size: 27,color: Colors.white,),
-                                      Text('Change',style: TextStyle(
-                                        fontSize: 15 , color: Colors.white
-                                      ),),
-                                    ],
-                                  ),
+                              ElevatedButton(
+                                onPressed: () => toggleAttendance(index),
+                                style: ElevatedButton.styleFrom(
+                                    elevation: 10, // Elevation for shadow effect
+                                                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12), // Button padding
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                BorderRadius.circular(20), // Rounded corners
+                                                          ),
+                                  backgroundColor: Colors.red
+                                ),
+                                child: const Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    
+                                  children: [
+                                    Icon(Icons.swap_horiz_sharp,size: 27,color: Colors.white,),
+                                    Text('Change',style: TextStyle(
+                                      fontSize: 15 , color: Colors.white
+                                    ),),
+                                  ],
                                 ),
                               ),
       

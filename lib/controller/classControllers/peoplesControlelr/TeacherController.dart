@@ -92,7 +92,8 @@ Future<bool> updateTeacherDetails({
       teacherIdFireld:userId,
       teacherrole:role
     });
-    update(); // Notify GetX listeners
+    fetchTeacherData();
+        update(); 
     log("teacher details updated successfully.");
     return true; // Return success
   } catch (e) {

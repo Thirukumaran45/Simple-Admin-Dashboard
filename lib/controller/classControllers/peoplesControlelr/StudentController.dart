@@ -98,7 +98,8 @@ Future<bool> updateStudentDetails({
       feesStatusField:feesStatus,
       profilePhotfield: profilePhotoUrl, // Update photo URL
     });
-        update(); // Notify GetX listeners
+       fetchStudentData();
+        update(); 
 
     log("Student details updated successfully.");
     return true; // Return success

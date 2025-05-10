@@ -22,7 +22,7 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
   String name = '';
   String phoneNumber = '';
   String emailAddress = '';
-
+final ScrollController _scrollController = ScrollController();
   StaffController controller = Get.find();
   List<Map<String, dynamic>> filteredData = [];
 
@@ -33,10 +33,22 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
       filteredData = List.from(controller.staffData);
     });
   ever(controller.staffData, (_) {
-    setState(() {
+    if(mounted)
+    {
+   setState(() {
       filteredData = List.from(controller.staffData);
     });
+    }
+    
   });
+
+  _scrollController.addListener(() {
+  if (_scrollController.position.pixels ==
+      _scrollController.position.maxScrollExtent) {
+    controller.fetchStaffData();
+  }
+});
+
   }
 
 
@@ -56,6 +68,12 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
     });
   }
 
+@override
+void dispose() {        // Properly dispose of the GetX Worker
+  filteredData.clear();
+   _scrollController.dispose();          // Clear the filtered list
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +121,7 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
           const SizedBox(height: 30),
           Expanded(
             child: SingleChildScrollView(
+                controller: _scrollController, 
               child: Container(
                 padding: const EdgeInsets.all(5),
                 width: double.infinity,
@@ -119,60 +138,60 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
                     return DataRow(
                       cells: [
                         DataCell(Text(staff['sNo']!, style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(staff['name']!, style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(staff['email']!, style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(staff['phone']!, style: const TextStyle(color: Colors.black))),
                         DataCell(SizedBox(
-                          width: 150,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                            foregroundColor:Colors.white,
-                            backgroundColor:
-                              primaryGreenColors, // Button background color
-                            elevation: 10, // Elevation for shadow effect
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12), // Button padding
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(20), // Rounded corners
-                            ),
-                          ),
-                            onPressed: () {
-                              customNvigation(context, '/manage-working-staff/viewStaffDetails/editWorkingStaffDetails?uid=${staff['id']!}');
-                              },
-                            child: const Text('View More',style: TextStyle(fontSize: 14),),
-                          ),
-                        )),
-                        DataCell(SizedBox(
-                          width: 150,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor:
-                                Colors.red, // Button background color
-                            elevation: 10, // Elevation for shadow effect
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12), // Button padding
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(20), // Rounded corners
-                            ),
-                          ),
-                            onPressed: ()async {
-  bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
-  if (val) {
-    await controller.deleteStaffs(staffId: staff['id']!,);
-   ever(controller.staffData, (_) {
-    setState(() {
-      filteredData = List.from(controller.staffData);
-    });
-  });
-  }
+                          width: MediaQuery.sizeOf(context).width*0.07,
 
+                          child: Text(staff['name']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.14,
+
+                          child: Text(staff['email']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
+                        DataCell(Text(staff['phone']!, style: const TextStyle(color: Colors.black))),
+                        DataCell(ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                          foregroundColor:Colors.white,
+                          backgroundColor:
+                            primaryGreenColors, // Button background color
+                          elevation: 10, // Elevation for shadow effect
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12), // Button padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20), // Rounded corners
+                          ),
+                        ),
+                          onPressed: () {
+                            customNvigation(context, '/manage-working-staff/viewStaffDetails/editWorkingStaffDetails?uid=${staff['id']!}');
                             },
-                            child: const Row(
-                              children: [Icon(Icons.delete_sharp, color: Colors.white), Text(' Delete',style: TextStyle(fontSize: 14),)],
-                            ),
+                          child: const Text('View More',style: TextStyle(fontSize: 14),),
+                        )),
+                        DataCell(ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor:
+                              Colors.red, // Button background color
+                          elevation: 10, // Elevation for shadow effect
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12), // Button padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(20), // Rounded corners
+                          ),
+                        ),
+                          onPressed: ()async {
+                          bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+                          if (val) {
+                            await controller.deleteStaffs(staffId: staff['id']!,);
+                           ever(controller.staffData, (_) {
+                            setState(() {
+                              filteredData = List.from(controller.staffData);
+                            });
+                          });
+                          }
+                        
+                          },
+                          child: const Row(
+                            children: [Icon(Icons.delete_sharp, color: Colors.white), Text(' Delete',style: TextStyle(fontSize: 14),)],
                           ),
                         )),
                       ],

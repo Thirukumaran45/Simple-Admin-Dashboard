@@ -2,7 +2,7 @@ import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/modules/staffModels.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
@@ -26,14 +26,28 @@ late dynamic snapshot;
     fetchStaffData();
   }
 
-void fetchStaffData() async {
-  try {
-    snapshot = await collectionControler.staffLoginCollection.get();
-    staffData.value = snapshot.docs.asMap().entries.map((entry) {
-      int index = entry.key + 1; // Auto-generate serial number starting from 1
-      var doc = entry.value;
+final int _limit = 15;
+DocumentSnapshot? _lastDocument;
+bool _isFetchingMore = false;
 
-      return {
+void fetchStaffData() async {
+  if (_isFetchingMore) return;
+
+  _isFetchingMore = true;
+  try {
+    Query query = collectionControler.staffLoginCollection.limit(_limit);
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+    final snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      _lastDocument = snapshot.docs.last;
+
+      final newEntries = snapshot.docs.asMap().entries.map((entry) {
+        int index = staffData.length + entry.key + 1;
+        var doc = entry.value;
+          return {
         'sNo': index.toString(),
         'name': doc[staffNamefield] ?? '',
         'id': doc[stafflId] ?? '',
@@ -41,13 +55,40 @@ void fetchStaffData() async {
         'email': doc[staffEmailfield] ?? '',
         'address': doc[staffAddressfield] ?? '',
       };
-    }).toList().cast<Map<String, dynamic>>(); 
-        update(); // Notify GetX listeners
+      }).toList();
 
-  } catch (e) { 
-    log('Error in fetching the data: $e');
+      staffData.addAll(newEntries);
+      update();
+    }
+  } catch (e) {
+    log('Error while fetching more officials: $e');
+  } finally {
+    _isFetchingMore = false;
   }
 }
+
+// void fetchStaffData() async {
+//   try {
+//     snapshot = await collectionControler.staffLoginCollection.get();
+//     staffData.value = snapshot.docs.asMap().entries.map((entry) {
+//       int index = entry.key + 1; // Auto-generate serial number starting from 1
+//       var doc = entry.value;
+
+//       return {
+//         'sNo': index.toString(),
+//         'name': doc[staffNamefield] ?? '',
+//         'id': doc[stafflId] ?? '',
+//         'phone': doc[staffPhoneNumberfield] ?? '',
+//         'email': doc[staffEmailfield] ?? '',
+//         'address': doc[staffAddressfield] ?? '',
+//       };
+//     }).toList().cast<Map<String, dynamic>>(); 
+//         update(); // Notify GetX listeners
+
+//   } catch (e) { 
+//     log('Error in fetching the data: $e');
+//   }
+// }
  
 
 Future<Stafffdetailsmodel?> staffDataRead({required String uid}) async {
@@ -89,7 +130,8 @@ required String  staffrole,
       stafflId :userId,
       staffroleField :staffrole
     });
-        update(); // Notify GetX listeners
+       fetchStaffData();
+        update();  // Notify GetX listeners
 
     log("Staffs details updated successfully.");
     return true; // Return success

@@ -97,6 +97,8 @@ Future<void> handlePhotoUpdate(String studentId) async {
               mainAxisAlignment: MainAxisAlignment.start,
 
               children: [
+                    const SizedBox(height: 30,),
+
                 Center(
                   child: Stack(
                     children: [
@@ -123,7 +125,10 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     ],
                   ),
                 ),
-                
+                 SizedBox(
+                      height:MediaQuery.sizeOf(context).height*0.1,
+
+                    ), 
               ],
             ),
            ],

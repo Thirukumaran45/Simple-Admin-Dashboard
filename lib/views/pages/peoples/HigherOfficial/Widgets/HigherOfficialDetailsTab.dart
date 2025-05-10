@@ -34,9 +34,11 @@ Higherofficialcontroller controller = Get.find();
       filteredData = List.from(controller.officialData);
     });
   ever(controller.officialData, (_) {
-    setState(() {
-      filteredData = List.from(controller.officialData);
-    });
+    if (mounted) {
+  setState(() {
+    filteredData = List.from(controller.officialData);
+  });
+}
   });
   }
 
@@ -55,16 +57,18 @@ Higherofficialcontroller controller = Get.find();
       }).toList();
     });
   }
-
+@override
+void dispose() {        // Properly dispose of the GetX Worker
+  filteredData.clear();          // Clear the filtered list
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const SizedBox(
-            height: 30,
-          ),
+          
           Row(
             crossAxisAlignment: CrossAxisAlignment.center, 
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -145,60 +149,62 @@ Higherofficialcontroller controller = Get.find();
                         DataCell(Text(
                           teacher['sNo']!,
                         )),
-                        DataCell(Text(teacher['name']!, style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(teacher['email']!, style: const TextStyle(color: Colors.black))),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.14,
+                          
+                        child: Text(teacher['name']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.14,
+
+                          child: Text(teacher['email']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
                         DataCell(Text(teacher['role']!, style: const TextStyle(color: Colors.black))),
-                         DataCell(SizedBox(width: 150,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                              backgroundColor:
-                                 primaryGreenColors, // Button background color
-                              elevation: 10, // Elevation for shadow effect
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(20), // Rounded corners
-                              ),
+                         DataCell(ElevatedButton(
+                             style: ElevatedButton.styleFrom(
+                               foregroundColor: Colors.white,
+                             backgroundColor:
+                                primaryGreenColors, // Button background color
+                             elevation: 10, // Elevation for shadow effect
+                             padding: const EdgeInsets.symmetric(
+                                 horizontal: 16, vertical: 12), // Button padding
+                             shape: RoundedRectangleBorder(
+                               borderRadius:
+                                   BorderRadius.circular(20), // Rounded corners
+                             ),
+                           ),
+                           onPressed: () {
+                             customNvigation(context, '/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails?uid=${teacher['id']!}');
+                            
+                               
+                           },
+                           child: const Text('View More',style: TextStyle(fontSize: 14),),
+                         )),
+                        DataCell(ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                Colors.red, // Button background color
+                            elevation: 10, // Elevation for shadow effect
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12), // Button padding
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(20), // Rounded corners
                             ),
-                            onPressed: () {
-                              customNvigation(context, '/manage-higher-official/viewHigherOfficailDetails/editHigherOfficialDetails?uid=${teacher['id']!}');
-                             
-      
-                            },
-                            child: const Text('View More',style: TextStyle(fontSize: 14),),
                           ),
-                        )),
-                        DataCell(SizedBox(width:150 ,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor:
-                                  Colors.red, // Button background color
-                              elevation: 10, // Elevation for shadow effect
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(20), // Rounded corners
-                              ),
-                            ),
-                            onPressed: ()async {           bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
-  if (val) {
-    await controller.deleteOfficials(officialId: teacher['id']!,);
-   ever(controller.officialData, (_) {
-    setState(() {
-      filteredData = List.from(controller.officialData);
-    });
-  });
-  }
-                            },
-                            child: const Row(
-                              children: [ Icon(Icons.delete_sharp , color: Colors.white,),
-                                 Text(' Delete',style: TextStyle(fontSize: 14),),
-                              ],
-                            ),
+                          onPressed: ()async {           bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+                          if (val) {
+                            await controller.deleteOfficials(officialId: teacher['id']!,);
+                           ever(controller.officialData, (_) {
+                            setState(() {
+                              filteredData = List.from(controller.officialData);
+                            });
+                          });
+                          }
+                          },
+                          child: const Row(
+                            children: [ Icon(Icons.delete_sharp , color: Colors.white,),
+                               Text(' Delete',style: TextStyle(fontSize: 14),),
+                            ],
                           ),
                         )),
                       ],

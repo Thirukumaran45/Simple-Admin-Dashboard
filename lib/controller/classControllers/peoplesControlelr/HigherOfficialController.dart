@@ -86,7 +86,8 @@ required  String  principalRole ,
      principalId : userId,
      principalRoleField : principalRole,
     });
-        update(); // Notify GetX listeners
+       fetchOfficialData();
+        update(); 
 
     log("Officials details updated successfully.");
     return true; // Return success

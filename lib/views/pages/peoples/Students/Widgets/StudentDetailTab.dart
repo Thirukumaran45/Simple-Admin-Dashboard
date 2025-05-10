@@ -32,9 +32,11 @@ void initState() {
       filteredData = List.from(controler.studentData);
     });
   ever(controler.studentData, (_) {
-    setState(() {
-      filteredData = List.from(controler.studentData);
-    });
+    if (mounted) {
+  setState(() {
+    filteredData = List.from(controler.studentData);
+  });
+}
   });
 }
 
@@ -59,7 +61,11 @@ void initState() {
   }
 
  
-
+@override
+void dispose() {        // Properly dispose of the GetX Worker
+  filteredData.clear();          // Clear the filtered list
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -208,12 +214,19 @@ void initState() {
                         label: Text('Delete',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16))),
-                  ],
+                  ], 
                   rows: filteredData.map((student) {
                     return DataRow(
                       cells: [
-                        DataCell(Text(student['rollNumber']!, style: const TextStyle(color: Colors.black),)),
-                        DataCell(Text(student['name']!,style: const TextStyle(color: Colors.black),)),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.06,
+                        
+                          child: Text(student['rollNumber']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.14,
+                          child: Text(student['name']!,style: const TextStyle(color: Colors.black),
+                              overflow: TextOverflow.ellipsis,),
+                        )),
                         DataCell(Text(student['class']!,style: const TextStyle(color: Colors.black),)),
                         DataCell(Text(student['section']!,style: const TextStyle(color: Colors.black),)),
                         DataCell(Text(student['parentMobile']!,style: const TextStyle(color: Colors.black),)),

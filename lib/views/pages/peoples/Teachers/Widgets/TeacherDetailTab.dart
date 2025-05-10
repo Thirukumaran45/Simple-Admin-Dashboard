@@ -33,9 +33,11 @@ Teachercontroller controller = Get.find();
       filteredData = List.from(controller.teacherData);
     });
   ever(controller.teacherData, (_) {
-    setState(() {
-      filteredData = List.from(controller.teacherData);
-    });
+    if (mounted) {
+  setState(() {
+    filteredData = List.from(controller.teacherData);
+  });
+}
   });
   }
 
@@ -55,7 +57,11 @@ Teachercontroller controller = Get.find();
     });
   }
 
-
+@override
+void dispose() {        // Properly dispose of the GetX Worker
+  filteredData.clear();          // Clear the filtered list
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -146,59 +152,59 @@ Teachercontroller controller = Get.find();
                         DataCell(Text(
                           teacher['sNo']!,
                         )),
-                        DataCell(Text(teacher['name']!, style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(teacher['email']!, style: const TextStyle(color: Colors.black))),
-                        DataCell(Text(teacher['phone']!, style: const TextStyle(color: Colors.black))),
-                         DataCell(SizedBox(width: 150,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryGreenColors,
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.10,
+                          child: Text(teacher['name']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.14,
+                          child: Text(teacher['email']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
+                        DataCell(Text(teacher['phone']!, style: const TextStyle(color: Colors.black),)),
+                         DataCell(ElevatedButton(
+                             style: ElevatedButton.styleFrom(
+                           backgroundColor: primaryGreenColors,
+                           foregroundColor: Colors.white,
+                            elevation: 10, // Elevation for shadow effect
+                           padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12), // Button padding
+                           shape: RoundedRectangleBorder(
+                             borderRadius:
+                                 BorderRadius.circular(20), // Rounded corners
+                           ),
+                         ),
+                           onPressed: () {
+                             customNvigation(context, '/manage-teacher/viewTeacherDetails/editTeacherDetails?uid=${teacher['id']!}');
+                           },
+                           child: const Text('View More',style: TextStyle(fontSize: 14),),
+                         )),
+                        DataCell(ElevatedButton(
+                          style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
-                             elevation: 10, // Elevation for shadow effect
+                            backgroundColor:
+                                Colors.red, // Button background color
+                            elevation: 10, // Elevation for shadow effect
                             padding: const EdgeInsets.symmetric(
-                                 horizontal: 16, vertical: 12), // Button padding
+                                horizontal: 16, vertical: 12), // Button padding
                             shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.circular(20), // Rounded corners
                             ),
                           ),
-                            onPressed: () {
-                              customNvigation(context, '/manage-teacher/viewTeacherDetails/editTeacherDetails?uid=${teacher['id']!}');
-                            },
-                            child: const Text('View More',style: TextStyle(fontSize: 14),),
-                          ),
-                        )),
-                        DataCell(SizedBox(width:150 ,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor:
-                                  Colors.red, // Button background color
-                              elevation: 10, // Elevation for shadow effect
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(20), // Rounded corners
-                              ),
-                            ),
-                            onPressed: ()async {
-                              // Implement view more functionality
-                             bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
-  if (val) {
-    await controller.deleteTeacher(teacherId: teacher['id']!,);
-   ever(controller.teacherData, (_) {
-    setState(() {
-      filteredData = List.from(controller.teacherData);
-    });
-  });
-  }
-                            },
-                            child: const Row(
-                              children: [ Icon(Icons.delete_sharp , color: Colors.white,),
-                                 Text(' Delete',style :TextStyle(fontSize: 14)),
-                              ],
-                            ),
+                          onPressed: ()async {
+                            // Implement view more functionality
+                           bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+                          if (val) {
+                            await controller.deleteTeacher(teacherId: teacher['id']!,);
+                           ever(controller.teacherData, (_) {
+                            setState(() {
+                              filteredData = List.from(controller.teacherData);
+                            });
+                          });
+                          }
+                          },
+                          child: const Row(
+                            children: [ Icon(Icons.delete_sharp , color: Colors.white,),
+                               Text(' Delete',style :TextStyle(fontSize: 14)),
+                            ],
                           ),
                         )),
                       ],

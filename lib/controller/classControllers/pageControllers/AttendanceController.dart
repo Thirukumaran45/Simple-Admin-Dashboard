@@ -1,5 +1,6 @@
 import 'dart:developer' show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
 import 'package:get/get.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
@@ -7,11 +8,13 @@ class AttendanceController extends GetxController {
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
 
+final int _pageSize = 15;
+DocumentSnapshot? _lastStudentDoc;
+bool _isFetchingMoreStudents = false;
   @override
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchStudentData();
   }
 
   String gettoadayDate() {
@@ -121,64 +124,60 @@ Future<String> getTeacherName({required String stuClass, required String sec}) a
 }
 
 
-  Future<Map<int, Map<String, List<Map<String, dynamic>>>>> fetchStudentData() async {
-  final String date = gettoadayDate();
+// Replace your one‐shot fetchStudentData with:
+Future<List<Map<String, dynamic>>> fetchPagedStudents({
+  required String stuClass,
+  required String stuSec,
+  bool reset = false,
+}) async {
+  if (_isFetchingMoreStudents) return [];
 
-  Map<int, Map<String, List<Map<String, dynamic>>>> classSectionData = {};
-
-  try {
-    for (int i = 1; i <= 12; i++) {
-      // Initialize inner map for this class.
-      classSectionData[i] = {};
-
-      for (String sec in ['A', 'B', 'C', 'D']) {
-        // Fetch snapshot for the particular class and section.
-        var snapshot = await collectionControler.attendanceCollection
-            .collection(date)
-            .doc("${i.toString()}$sec")
-            .collection("presented_student")
-            .get();
-
-        List<Map<String, dynamic>> docs;
-        if (snapshot.docs.isNotEmpty) {
-          // Map each document to a Map<String, dynamic> containing desired fields.
-          docs = snapshot.docs.map((doc) {
-            final data = doc.data();
-            return {
-              'rollNumber': data['rollNo'] ?? '',
-              'name': data["studentName"] ?? '',
-              'id': data["studentId"] ?? '',
-              'date': data['date'] ?? '',
-              'month': data['month'] ?? '',
-              'attendanceStatus': data["status"] ?? 'Absent',
-              'percentage':data['percentage']??''
-            };
-          }).toList();
-        } else {
-          // If no documents exist, assign a temporary value.
-          docs = [
-            {
-              'rollNumber': 'N/A',
-              'name': 'Temporary Value',
-              'id': 'N/A',
-              'date': '',
-              'month': '',
-              'attendanceStatus': 'Absent',
-              'percentage':"0",
-            }
-          ];
-        }
-
-        // Store the list in the inner map for that section.
-        classSectionData[i]![sec] = docs;
-      }
-    }
-  } catch (e) {
-    log('Error in fetching the data: $e');
+  // On reset, clear pagination state:
+  if (reset) {
+    _lastStudentDoc = null;
   }
-  return classSectionData;
-}
 
+  _isFetchingMoreStudents = true;
+  final String date = gettoadayDate();
+  try {
+    Query query = collectionControler.attendanceCollection
+        .collection(date)
+        .doc("$stuClass$stuSec")
+        .collection("presented_student")
+        .limit(_pageSize);
+
+    if (_lastStudentDoc != null) {
+      query = query.startAfterDocument(_lastStudentDoc!);
+    }
+
+    final snapshot = await query.get();
+    if (snapshot.docs.isEmpty) {
+      return [];
+    }
+
+    // Remember last document to paginate next time
+    _lastStudentDoc = snapshot.docs.last;
+
+    // Map docs to your model
+    return snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String,dynamic>;
+      return {
+        'rollNumber': data['rollNo'] ?? '',
+        'name': data["studentName"] ?? '',
+        'id': data["studentId"] ?? '',
+        'date': data['date'] ?? '',
+        'month': data['month'] ?? '',
+        'attendanceStatus': data["status"] ?? 'Absent',
+        'percentage': data['percentage'] ?? ''
+      };
+    }).toList();
+  } catch (e) {
+    log('Error paginating students: $e');
+    return [];
+  } finally {
+    _isFetchingMoreStudents = false;
+  }
+}
 
 
  
