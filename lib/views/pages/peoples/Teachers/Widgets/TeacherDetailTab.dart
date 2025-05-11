@@ -22,13 +22,20 @@ class _TeacherDetailsTabState extends State<TeacherDetailsTab> {
   String phoneNumber = '';
   String emailAddress = '';
 
-  
+   final ScrollController _scrollController = ScrollController();
 Teachercontroller controller = Get.find();
   List<Map<String, dynamic>> filteredData = [];
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+  if (_scrollController.position.pixels ==
+      _scrollController.position.maxScrollExtent) {
+    controller.fetchTeacherData();
+  }
+});
+
      setState(() {
       filteredData = List.from(controller.teacherData);
     });
@@ -58,7 +65,8 @@ Teachercontroller controller = Get.find();
   }
 
 @override
-void dispose() {        // Properly dispose of the GetX Worker
+void dispose() {      
+  _scrollController.dispose();  // Properly dispose of the GetX Worker
   filteredData.clear();          // Clear the filtered list
   super.dispose();
 }
@@ -114,6 +122,7 @@ void dispose() {        // Properly dispose of the GetX Worker
           const SizedBox(height: 30),
           Expanded(
             child: SingleChildScrollView(
+               controller: _scrollController,
               child: Container(
                 padding: const EdgeInsets.all(5),
                 width: double.infinity,

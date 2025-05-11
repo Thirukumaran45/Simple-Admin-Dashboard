@@ -159,9 +159,9 @@ class _ClassPageState extends State<ClassPage> {
                 animationDuration: 1000,
                 radius: 100,
                 lineWidth: 30,
-                percent: presentPercentage / 100,
+                percent: presentPercentage ,
                 center: Text(
-                  "${presentPercentage.toStringAsFixed(1)}%",
+                  "${(presentPercentage * 100).toStringAsFixed(1)}%",
                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 progressColor: Colors.green,

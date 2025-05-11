@@ -2,7 +2,7 @@ import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/modules/studentModels.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
@@ -14,6 +14,9 @@ class StudentController extends GetxController {
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
+final int _limit = 18;
+DocumentSnapshot? _lastDocument;
+bool _isFetchingMore = false;
 
   @override
   void onInit() {
@@ -23,8 +26,16 @@ class StudentController extends GetxController {
   }
  
   void fetchStudentData() async {
+     if (_isFetchingMore) return;
+
+  _isFetchingMore = true;
     try {
-  snapshot = await collectionControler.studentLoginCollection.get();
+       Query query = collectionControler.studentLoginCollection.limit(_limit);
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+  snapshot = await query.get();
+     _lastDocument = snapshot.docs.last;
   studentData.value = snapshot.docs.map((doc) {
     return {
       'rollNumber': doc[rollNofield] ?? '',
@@ -38,7 +49,9 @@ class StudentController extends GetxController {
 }   catch (e) {
   log('error in fetching the data $e');
         update(); // Notify GetX listeners
-}
+}finally {
+    _isFetchingMore = false;
+  }
   }
 
 Future<StudentdetailsModel?> studentDataRead({required String uid}) async {

@@ -41,7 +41,9 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
   bool isOfficialKeyChanged = false;
   bool isStaffKeyChanged = false;
   List<String> passkeys = ["Student Passkey", "Teacher Passkey", "Staff Passkey", "Higher Official Passkey"];
- 
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey<CustomfieldState> customfieldKey = GlobalKey<CustomfieldState>();
+
   SchooldetailsController detailsController = Get.find(); 
 @override
 void initState() {
@@ -52,6 +54,14 @@ void initState() {
   teacherPassKeyController = TextEditingController();
   staffPassKeyController = TextEditingController();
   officialPassKeyController = TextEditingController();
+   _scrollController.addListener(() {
+      const threshold = 200.0;
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - threshold) {
+        // ask the grid to load the next page
+        customfieldKey.currentState?.loadMore();
+      }
+    });
   initializeSchoolDetails();
 }
 
@@ -130,11 +140,23 @@ Future<bool> addAndUpdateDetails()async{
   return isupdate;
 }  
 
+@override
+  void dispose() {
+    _scrollController.dispose();
+      schoolNameController.dispose();
+  schoolChatBOtApi.dispose();
+  studentPassKeyController.dispose();
+  teacherPassKeyController.dispose();
+  staffPassKeyController.dispose();
+  officialPassKeyController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        controller: _scrollController,  
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +177,7 @@ Future<bool> addAndUpdateDetails()async{
             
             const SizedBox(height: 30),
             // School Gallery Title with Add Photo Button near it
-               schoolDetailsGallery(context,detailsController),
+             schoolDetailsGallery(context, detailsController, customfieldKey),
             
           ],
         ),

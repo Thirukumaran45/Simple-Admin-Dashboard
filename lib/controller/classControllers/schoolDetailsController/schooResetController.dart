@@ -559,8 +559,21 @@ Future<void> deleteAssignmentByTeacherClass({required String stuClass}) async {
   }
 
 
+// fees transaction hisrty delete
+Future<void> deleteFeesTransactionByClassSection({required String stuClass, required String stuSec}) async {
 
+  final examSnapshot = collectionVariable.feesDocCollection.collection("completedTransaction");
+  final querySnapshot = await examSnapshot
+      .where('class', isEqualTo: stuClass)
+      .where('section', isEqualTo: stuSec)
+      .get();
 
+  for (var doc in querySnapshot.docs) {
+    await doc.reference.delete();
+  }
+    update(); 
+
+}
  
   
 }

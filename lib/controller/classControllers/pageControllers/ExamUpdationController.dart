@@ -1,11 +1,15 @@
+import 'dart:developer' show log;
+
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' show SetOptions;
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
 import 'package:get/get.dart';
 
 class ExamUpdationController extends GetxController{
 
 late FirebaseCollectionVariable collectionController ;
-
+final int _limit = 18;
+DocumentSnapshot? _lastDocument;
+bool _isFetchingMore = false;
   @override
   void onInit() {
     super.onInit();
@@ -16,29 +20,44 @@ Future<List<Map<String, dynamic>>> getFilteredStudents({
   required String className,
   required String section,
 }) async {
-  final querySnapshot = await collectionController.studentLoginCollection
-      .where('class', isEqualTo: className)
-      .where('section', isEqualTo: section)
-      .get();
+  if (_isFetchingMore) return [];
 
-  List<Map<String, dynamic>> studentList = [];
+  _isFetchingMore = true;
+  try {
+    Query query = collectionController.studentLoginCollection.limit(_limit);
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
 
-  for (var data in querySnapshot.docs) {
+    final snapshot = await query
+        .where('class', isEqualTo: className)
+        .where('section', isEqualTo: section)
+        .get();
 
-    
-    final studentId = data.id;
-    final studentData = data.data() as Map<String, dynamic>;
+    _lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
 
-    studentList.add({
-      'id': studentId,
-      'name': studentData['name'] ?? 'Unknown',
-      'roll': studentData['RollNo'] ?? 'N/A',
-    });
+    List<Map<String, dynamic>> studentList = [];
+
+    for (var data in snapshot.docs) {
+      final studentId = data.id;
+      final studentData = data.data() as Map<String, dynamic>;
+
+      studentList.add({
+        'id': studentId,
+        'name': studentData['name'] ?? 'Unknown',
+        'roll': studentData['RollNo'] ?? 'N/A',
+      });
+    }
+
+    return studentList;
+  } catch (e) {
+    log("error in fetching students in exam result updation: $e");
+    return [];
+  } finally {
+    _isFetchingMore = false;
   }
-
-  return studentList;
-  
 }
+
 
 
 

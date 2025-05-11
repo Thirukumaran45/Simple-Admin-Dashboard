@@ -22,7 +22,7 @@ class _ClasswiseBonafiedState extends State<ClasswiseBonafied> {
   String? selectedTypevalue="Out Passing Student";
 
   final StudentlistBonafiedController controler = Get.find();
-
+final ScrollController _scrollController = ScrollController();
   List<Map<String, dynamic>> filteredData = [];
  
  @override
@@ -31,10 +31,19 @@ void initState() {
    setState(() {
       filteredData = List.from(controler.studentData);
     });
+    _scrollController.addListener(() {
+  if (_scrollController.position.pixels ==
+      _scrollController.position.maxScrollExtent) {
+    controler.fetchStudentData();
+  }
+});
+
   ever(controler.studentData, (_) {
-    setState(() {
-      filteredData = List.from(controler.studentData);
-    });
+    if (mounted) {
+  setState(() {
+    filteredData = List.from(controler.studentData);
+  });
+}
   });
 }
 
@@ -78,6 +87,12 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
               ),
             );
 } 
+
+@override
+void dispose() {
+  _scrollController.dispose();
+  super.dispose();
+}
 
 
   @override
@@ -212,6 +227,7 @@ Container(
           const SizedBox(height: 30),
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Container(
                 padding: const EdgeInsets.all(5),
                 width: double.infinity,
@@ -247,11 +263,15 @@ Container(
                   rows: filteredData.map((student) {
                     return DataRow(
                       cells: [
-                        DataCell(Text(student['rollNumber']!, style: const TextStyle(color: Colors.black),)),
-                        DataCell(Text(student['name']!,style: const TextStyle(color: Colors.black),)),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.07,
+                          child: Text(student['rollNumber']!, style: const TextStyle(color: Colors.black),))),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.14,
+                          child: Text(student['name']!,style: const TextStyle(color: Colors.black),))),
                         DataCell(Text(student['class']!,style: const TextStyle(color: Colors.black),)),
                         DataCell(Text(student['section']!,style: const TextStyle(color: Colors.black),)),
-                        DataCell(Container(
+                         DataCell(Container(
                               height: 38,
                               width: 80,
                               decoration: BoxDecoration(
@@ -268,29 +288,27 @@ Container(
                             ),),
                       
                         
-                        DataCell(SizedBox(width: 200,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                               elevation: 10, // Elevation for shadow effect
-                              padding: const EdgeInsets.symmetric(
-                                   horizontal: 16, vertical: 12), // Button padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(20), // Rounded corners
-                              ),
+                        DataCell(ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                             elevation: 10, // Elevation for shadow effect
+                            padding: const EdgeInsets.symmetric(
+                                 horizontal: 16, vertical: 12), // Button padding
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(20), // Rounded corners
                             ),
-                            onPressed: () async{
-                            await customSnackbar(context: context, text: "Donloaded Succesfully");
-                           await PdfApi().openPdf(academicYear:'2024',fileName:student['name']!, studentName: student['name']!,parentName:'Raman.K', studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', academicType:selectedTypevalue! );
-                           
-
-                            },
-                            child: const Text('Download Bonafied', style: TextStyle(
-                              fontSize: 14
-                            ),),
                           ),
+                          onPressed: () async{
+                          await customSnackbar(context: context, text: "Donloaded Succesfully");
+                         await PdfApi().openPdf(academicYear:'2024',fileName:student['name']!, studentName: student['name']!,parentName:'Raman.K', studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', academicType:selectedTypevalue! );
+                         
+                        
+                          },
+                          child: const Text('Download Bonafied', style: TextStyle(
+                            fontSize: 14
+                          ),),
                         )),
                        
                       ],

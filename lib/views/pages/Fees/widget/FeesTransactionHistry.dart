@@ -19,6 +19,7 @@ class Feestransactionhistry extends StatefulWidget {
 
 class _FeesDetailsPageState extends State<Feestransactionhistry> {
   TextEditingController searchNameController = TextEditingController();
+final ScrollController _scrollController = ScrollController();
 
   String? selectedDate ;
   String? selectedMonth;
@@ -31,6 +32,13 @@ class _FeesDetailsPageState extends State<Feestransactionhistry> {
  @override
 void initState() {
   super.initState();
+  _scrollController.addListener(() {
+  if (_scrollController.position.pixels ==
+      _scrollController.position.maxScrollExtent) {
+    controller.fetchTransactionHistry();
+  }
+});
+
   initializeList(); // applyFilters is called after fetching
 }
 
@@ -79,6 +87,11 @@ void initializeList() async {
     }
     return dates;
   }
+@override
+void dispose() {
+  _scrollController.dispose();
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -148,14 +161,15 @@ void initializeList() async {
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
-                  child: Text("Please wait a moment...", style: TextStyle(fontSize: 18),),
+                  child: Text("No Transaction Histry is Found !", style: TextStyle(fontSize: 18),),
                 ),
-                CircularProgressIndicator( color: Colors.green,),
+               
               ],
             ),
           )
 
                 : ListView.builder(
+                      controller: _scrollController,
                     padding: const EdgeInsets.all(8.0),
                     itemCount: filteredData.length,
                     itemBuilder: (context, index) {

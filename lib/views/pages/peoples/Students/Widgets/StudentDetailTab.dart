@@ -21,6 +21,7 @@ class _StudentDetailsTabState extends State<StudentDetailsTab> {
   String? selectedSection = "All";
   String rollNumber = '';
   String name = ''; 
+final ScrollController _scrollController = ScrollController();
 
   final StudentController controler = Get.find();
  
@@ -28,6 +29,13 @@ class _StudentDetailsTabState extends State<StudentDetailsTab> {
  @override
 void initState() {
   super.initState();
+  _scrollController.addListener(() {
+  if (_scrollController.position.pixels ==
+      _scrollController.position.maxScrollExtent) {
+    controler.fetchStudentData();
+  }
+});
+
    setState(() {
       filteredData = List.from(controler.studentData);
     });
@@ -179,6 +187,7 @@ void dispose() {        // Properly dispose of the GetX Worker
           const SizedBox(height: 30),
           Expanded(
             child: SingleChildScrollView(
+                controller: _scrollController, 
               child: Container(
                 padding: const EdgeInsets.all(5),
                 width: double.infinity,

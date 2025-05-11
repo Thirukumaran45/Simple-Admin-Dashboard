@@ -103,8 +103,10 @@ void dispose() {
 
                       return DataRow(
                         cells: [
-                          DataCell(Text(student['roll']!, style: const TextStyle(color:  Colors.black ,))),
-                          DataCell(Text(student['name']!, style: const TextStyle(color:  Colors.black ))),
+                          DataCell(SizedBox(
+                            width: MediaQuery.sizeOf(context).width*0.05,child: Text(student['roll']!, style: const TextStyle(color:  Colors.black ,)))),
+                          DataCell(SizedBox(
+                            width: MediaQuery.sizeOf(context).width*0.09,child: Text(student['name']!, style: const TextStyle(color:  Colors.black )))),
                           DataCell(Text("₹${student['pendingFees']!}", style: const TextStyle(fontSize: 16,color: Colors.red, fontWeight: FontWeight.bold))),
                           DataCell(Text("₹${student['totalFees']!}", style: const TextStyle(fontSize: 16,color: Colors.blue, fontWeight: FontWeight.bold))),
                           DataCell(Text("₹${student['paidFees']!}", style:  TextStyle(fontSize: 16,color: primaryGreenColors, fontWeight: FontWeight.bold))),
@@ -131,7 +133,7 @@ void dispose() {
                                 backgroundColor: primaryGreenColors,
                                 foregroundColor: Colors.white,
                                 elevation: 10,
-                                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               ),
                               onPressed: () {
@@ -140,7 +142,7 @@ void dispose() {
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('Update Fees', style: TextStyle(fontSize: 14)),
+                                  Text('Update Fees',),
                                   Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Icon(Icons.arrow_forward, color: Colors.white),

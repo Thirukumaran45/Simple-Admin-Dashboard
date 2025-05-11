@@ -2,7 +2,7 @@ import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/modules/higherOfficialModels.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
@@ -22,31 +22,49 @@ final int pageSize = 10; // NEW: Load 10 at a time
 void onInit() {
   super.onInit();
   collectionControler = Get.find<FirebaseCollectionVariable>();
-  fetchOfficialData();
+  fetchMoreOfficials();
 }
-void fetchOfficialData() async {
+int _limit = 10;
+DocumentSnapshot? _lastDocument;
+bool _isFetchingMore = false;
+
+void fetchMoreOfficials() async {
+  if (_isFetchingMore) return;
+
+  _isFetchingMore = true;
   try {
-   final snapshot = await collectionControler.officialLoginCollection.get();
-    officialData.value = snapshot.docs.asMap().entries.map((entry) {
-      int index = entry.key + 1; // Auto-generate serial number starting from 1
-      var doc = entry.value;
+    Query query = collectionControler.officialLoginCollection.limit(_limit);
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
 
-      return {
-        'sNo': index.toString(),
-        'name': doc[principalNamefield] ?? '',
-        'id': doc[principalId] ?? '',
-        'role': doc[principalRoleField] ?? '',
-        'email': doc[principalEmailfield] ?? '',
-        'phone': doc[principalPhoneNumberfield] ?? '',
-      };
-    }).toList().cast<Map<String, dynamic>>(); 
-        update(); // Notify GetX listeners
+    final snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
+      _lastDocument = snapshot.docs.last;
 
-  } catch (e) { 
-    log('Error in fetching the data: $e');
+      final newEntries = snapshot.docs.asMap().entries.map((entry) {
+        int index = officialData.length + entry.key + 1;
+        var doc = entry.value;
+        return {
+          'sNo': index.toString(),
+          'name': doc[principalNamefield] ?? '',
+          'id': doc[principalId] ?? '',
+          'role': doc[principalRoleField] ?? '',
+          'email': doc[principalEmailfield] ?? '',
+          'phone': doc[principalPhoneNumberfield] ?? '',
+        };
+      }).toList();
+
+      officialData.addAll(newEntries);
+      update();
+    }
+  } catch (e) {
+    log('Error while fetching more officials: $e');
+  } finally {
+    _isFetchingMore = false;
   }
 }
-   
+
 Future<Principaldetailmodel?> officialDataRead({required String uid}) async {
   try {
     final doc = await collectionControler.officialLoginCollection.doc(uid).get();
@@ -86,7 +104,7 @@ required  String  principalRole ,
      principalId : userId,
      principalRoleField : principalRole,
     });
-       fetchOfficialData();
+       fetchMoreOfficials();
         update(); 
 
     log("Officials details updated successfully.");
@@ -189,7 +207,7 @@ required  String  principalRole ,
     });
 
       await customSnackbar(context: context, text: "Registration succesfull");
-      fetchOfficialData();
+      fetchMoreOfficials();
         update(); // Notify GetX listeners
 
 

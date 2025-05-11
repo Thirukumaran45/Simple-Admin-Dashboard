@@ -1,6 +1,6 @@
 import 'dart:developer' show log;
 
-import 'package:cloud_firestore/cloud_firestore.dart' show  SetOptions;
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
 import 'package:get/get.dart';
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:flutter/material.dart' show TextEditingController;
@@ -11,6 +11,11 @@ class FeesController extends GetxController {
  FirebaseCollectionVariable collectionVariable = Get.find<FirebaseCollectionVariable>();
 final RxList<Map<String, dynamic>> feesData = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
+final int _limit = 18;
+DocumentSnapshot? _studentlastDocument;
+DocumentSnapshot? _histrylastDocument;
+bool _isFetchingMoreStudent = false;
+bool _isFetchingMoreHisrty = false;
 
 @override
   void onInit() {
@@ -19,11 +24,23 @@ final RxList<Map<String, dynamic>> feesData = <Map<String, dynamic>>[].obs;
   }
 
     Future<void> fetchStudentData({required String stuClass,required String stuSec}) async {
+    
+      if (_isFetchingMoreStudent) return;
+
+      _isFetchingMoreStudent = true;
     try {
- final  snapshot = await collectionVariable.studentLoginCollection.
+       Query query =collectionVariable.studentLoginCollection.limit(_limit);
+    if (_studentlastDocument != null) {
+      query = query.startAfterDocument(_studentlastDocument!);
+    }
+ final  snapshot = await query.
  where('class', isEqualTo: stuClass).where('section',isEqualTo: stuSec).
  get();
-  studentData.value = snapshot.docs.map((doc) {
+
+ if(snapshot.docs.isNotEmpty)
+ {
+  _studentlastDocument = snapshot.docs.last;
+    final newEntries = snapshot.docs.map((doc) {
   final data = doc.data() as Map<String, dynamic>;
 
   int allocated = int.tryParse("${data['allocatedAmount'] ?? '0'}") ?? 0;
@@ -34,17 +51,24 @@ final RxList<Map<String, dynamic>> feesData = <Map<String, dynamic>>[].obs;
     'roll': '${data[rollNofield] ?? ''}',
     'name': '${data[studentNamefield] ?? ''}',
     'pendingFees': '${data[totalFees] ?? '0'}',
-    'totalFees': '${data['allocatedAmount']?? '0'}',
+    'totalFees': '${data['allocatedAmount'] ?? '0'}',
     'paidFees': paid.toString(),
     'status': '${data[feesStatusField] ?? 'Unpaid'}',
-    'id':'${data[studentIdField] ?? ''}'
+    'id': '${data[studentIdField] ?? ''}',
   };
-}).toList().cast<Map<String, dynamic>>();
+}).toList()
+.cast<Map<String, dynamic>>();
+
+      studentData.addAll(newEntries);
+      update();
+    }
 
 }   catch (e) {
   log('error in fetching the data $e');
         update(); 
-}
+}finally {
+    _isFetchingMoreStudent = false;
+  }
   }
 
     String gettoadayDate() {
@@ -119,42 +143,50 @@ Future<void> addAndUpdateBankDetailsToFirestore(
 
 Future<void> fetchTransactionHistry() async {
   List<Map<String, dynamic>> tempList = [];
+ if (_isFetchingMoreHisrty) return;
 
-  for (int i = 1; i < 13; i++) {
-    for (String sec in ['A', 'B', 'C', 'D']) {
-      final snapshot = await collectionVariable.feesDocCollection.collection('$i$sec').get();
-     
-      final currentList = snapshot.docs.map((doc) {
-        final data = doc.data();
-        String paymentDate = data['paymentDate'];
-        String onlyDate = paymentDate.split(' ')[0];
-        
-        return {
-
-          'studentName': '${data['studentName'] ?? ''}',
-          'class': '${data['class'] ?? ''}',
-          'section': '${data['section'] ?? ''}',
-          'paidAmount': '${data['paidAmount'] ?? ''}',
-          'balanceAmount': '${data['balanceAmount'] ?? ''}',
-          'totalAmount': '${data['totalAmount'] ?? ''}',
-          'paymentDate': onlyDate,
-          'paymentMonth': '${data['paymentMonth'] ?? ''}',
-          'transactionId': '${data['transactionId'] ?? ''}',
-          'studentId': '${data['studentId'] ?? ''}',         
-           'fee_amount': data['fee_amount'] ?? [],
-           'feeAmount': data['feeAmount'] ?? [],
-
-
-        };
-      }).toList();
-      tempList.addAll(currentList);
+  _isFetchingMoreHisrty = true;
+      try {
+        Query query =  collectionVariable.feesDocCollection.collection('completedTransaction').limit(_limit);
+    if (_histrylastDocument != null) {
+      query = query.startAfterDocument(_histrylastDocument!);
     }
+  final snapshot = await query.get();
+       
+  final currentList = snapshot.docs.map((doc) {
+    final data = doc.data() as Map<String,dynamic>;
+    String paymentDate = data['paymentDate'];
+    String onlyDate = paymentDate.split(' ')[0];
+    
+    return {
+  
+      'studentName': '${data['studentName'] ?? ''}',
+      'class': '${data['class'] ?? ''}',
+      'section': '${data['section'] ?? ''}',
+      'paidAmount': '${data['paidAmount'] ?? ''}',
+      'balanceAmount': '${data['balanceAmount'] ?? ''}',
+      'totalAmount': '${data['totalAmount'] ?? ''}',
+      'paymentDate': onlyDate,
+      'paymentMonth': '${data['paymentMonth'] ?? ''}',
+      'transactionId': '${data['transactionId'] ?? ''}',
+      'studentId': '${data['studentId'] ?? ''}',         
+       'fee_amount': data['fee_amount'] ?? [],
+       'feeAmount': data['feeAmount'] ?? [],
+  
+  
+    };
+  }).toList();
+  tempList.addAll(currentList);
+    
+  final dateFormat = DateFormat('dd-MM-yyyy');
+  tempList.sort((a, b) =>
+    dateFormat.parse(b['paymentDate']!).compareTo(dateFormat.parse(a['paymentDate']!)));
+    feesData.value = tempList;
+}  catch (e) {
+  log("error in fetching transaction histry:$e");
+}finally {
+    _isFetchingMoreHisrty = false;
   }
-
-final dateFormat = DateFormat('dd-MM-yyyy');
-tempList.sort((a, b) =>
-  dateFormat.parse(b['paymentDate']!).compareTo(dateFormat.parse(a['paymentDate']!)));
-  feesData.value = tempList;
   update();
 }
 
@@ -163,12 +195,9 @@ Future<List<String>> fetchUniqueMonthValuesAll() async {
   // Use a Set to avoid duplicates.
 
   Set<String> monthValues = {};
-  List<String> sections = ['A', 'B', 'C', 'D'];
 
-  for (int i = 1; i <= 12; i++) {
-    for (String sec in sections) {
       try {
-        var snapshot = await collectionVariable.feesDocCollection.collection("${i.toString()}$sec")
+        var snapshot = await collectionVariable.feesDocCollection.collection("completedTransaction")
             .get();
 
         for (var doc in snapshot.docs) {
@@ -178,22 +207,17 @@ Future<List<String>> fetchUniqueMonthValuesAll() async {
           }
         }
       } catch (e) {
-        log('Error in fetching month values for class $i section $sec: $e');
+        log('Error in fetching month values : $e');
       }
-    }
-  }
+    
   update();
   return monthValues.toList();
 }
   
 Future<List<String>> fetchUniqueDateValuesAll() async {
   Set<String> dateValues = {};
-  List<String> sections = ['A', 'B', 'C', 'D'];
-
-  for (int i = 1; i <= 12; i++) {
-    for (String sec in sections) {
       try {
-        var snapshot = await collectionVariable.feesDocCollection.collection("${i.toString()}$sec")
+        var snapshot = await collectionVariable.feesDocCollection.collection("completedTransaction")
             .get();
 
         for (var doc in snapshot.docs) {
@@ -206,9 +230,8 @@ Future<List<String>> fetchUniqueDateValuesAll() async {
           }
         }
       } catch (e) {
-        log('Error in fetching date values for class $i section $sec: $e');
-      }
-    }
+        log('Error in fetching date values : $e');
+   
   }  update();
   log(dateValues.toString() );
   return dateValues.toList();

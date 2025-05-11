@@ -27,6 +27,7 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
   ExamUpdationController controller = Get.find();
   String? totalMark;
   String? overallMark;
+final ScrollController _scrollController = ScrollController();
 
 @override
 void initState() {
@@ -40,6 +41,14 @@ void initState() {
   // Now add the listeners
   totalSubjectMarkController.addListener(() => checkSaveButtonVisibility(true));
   singleSubjectMarkController.addListener(() => checkSaveButtonVisibility(false));
+_scrollController.addListener(() {
+  if (_scrollController.position.pixels ==
+      _scrollController.position.maxScrollExtent) {
+    controller.getFilteredStudents(
+      className: widget.stuClass,section: widget.section
+    );
+  }
+});
 
   // Initialize students and fetch details
   filteredStudents = students;
@@ -251,6 +260,7 @@ void dispose() {
             ),
             Expanded(
               child: SingleChildScrollView(
+                    controller: _scrollController, 
                 child: Container(
                     padding: const EdgeInsets.all(8),
              width: MediaQuery.of(context).size.width ,
@@ -271,44 +281,46 @@ void dispose() {
                     rows: filteredStudents.map((student) {
                       return DataRow(cells: [
                         
-                        DataCell(Text(student['roll']!,style:const TextStyle(color: Colors.black))),
-                        DataCell(Text(student['name']!,style: const TextStyle(color: Colors.black))),
+                        DataCell(SizedBox( 
+                          width: MediaQuery.sizeOf(context).width*0.07,
+                          child: Text(student['roll']!,style:const TextStyle(color: Colors.black)))),
+                        DataCell(SizedBox(
+                          width: MediaQuery.sizeOf(context).width*0.25,
+                          child: Text(student['name']!,style: const TextStyle(color: Colors.black)))),
                         DataCell(Text(widget.stuClass,style:const TextStyle(color: Colors.black))),
                         DataCell(Text(widget.section,style:const TextStyle(color: Colors.black))),
-                         DataCell(SizedBox(width: 170,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: primaryGreenColors,
-                                foregroundColor: Colors.white,
-                                 elevation: 10, // Elevation for shadow effect
-                                padding: const EdgeInsets.symmetric(
-                                     horizontal: 18, vertical: 12), // Button padding
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(20), // Rounded corners
-                                ),
-                              ),
-                              onPressed: () {
-                                customNvigation(
-                                  context, '/exam-Details-updation/sectionWiseResultPublishment/studentOverview/student?examName=${widget.examName}&class=${widget.stuClass}&section=${widget.section}&name=${student['name']!}&id=${student["id"]}&singleSubjectMark=${singleSubjectMarkController.text.toString()}');
-                                                  
-                              },
-                              child:const Row(
-                                children: [
-                                   Text('Publish Result', style: TextStyle(
-                                    fontSize: 14
-                                  ),),
-                                  Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Icon(Icons.arrow_forward,color: Colors.white,),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        )),
+                         DataCell(Padding(
+                           padding: const EdgeInsets.all(5.0),
+                           child: ElevatedButton(
+                             style: ElevatedButton.styleFrom(
+                               backgroundColor: primaryGreenColors,
+                               foregroundColor: Colors.white,
+                                elevation: 10, // Elevation for shadow effect
+                               padding: const EdgeInsets.symmetric(
+                                    horizontal: 18, vertical: 12), // Button padding
+                               shape: RoundedRectangleBorder(
+                                 borderRadius:
+                                     BorderRadius.circular(20), // Rounded corners
+                               ),
+                             ),
+                             onPressed: () {
+                               customNvigation(
+                                 context, '/exam-Details-updation/sectionWiseResultPublishment/studentOverview/student?examName=${widget.examName}&class=${widget.stuClass}&section=${widget.section}&name=${student['name']!}&id=${student["id"]}&singleSubjectMark=${singleSubjectMarkController.text.toString()}');
+                                                 
+                             },
+                             child:const Row(
+                               children: [
+                                  Text('Publish Result', style: TextStyle(
+                                   fontSize: 14
+                                 ),),
+                                 Padding(
+                                   padding: EdgeInsets.all(8.0),
+                                   child: Icon(Icons.arrow_forward,color: Colors.white,),
+                                 )
+                               ],
+                             ),
+                           ),
+                         )),
                       ]);
                     }).toList(),
                   ),

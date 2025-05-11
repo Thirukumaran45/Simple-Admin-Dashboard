@@ -24,15 +24,15 @@ late SchoolResetYearController controller;
   }
 
   final List<String> historyItems = [
-    "Rest Attendance History",
-    "Rest Remainder Chat History",
-    "Rest Exam Publish History",
-    "Rest Student Assignment History",
-    "Rest Leave Submission History",
-    "Rest Teacher Assignment Uploads",
-    "Rest Class Time Table ",
-    "Rest School Chat History",
-
+    "Reset Attendance History",
+    "Reset Remainder Chat History",
+    "Reset Exam Publish History",
+    "Reset Student Assignment History",
+    "Reset Leave Submission History",
+    "Reset Teacher Assignment Uploads",
+    "Reset Class Time Table ",
+    "Reset School Chat History",
+    "Reset Fees Transaction Histry "
   ];
 
 // Define a function that returns a Map<int, Future<void> Function()>
@@ -68,6 +68,7 @@ Map<int, Future<void> Function()> getDeletionFunctionsMap({
           sec: section,
         ),
     7: () => controller.deleteSchoolChatData(),
+    8:()=>controller.deleteFeesTransactionByClassSection(stuClass: stuClass, stuSec: section),
   };
 }
 

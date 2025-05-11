@@ -1,12 +1,16 @@
 import 'dart:developer' show log;
 
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
 import 'package:get/get.dart';
 
 class StudentlistBonafiedController extends GetxController {
 late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
+final int _limit = 18;
+DocumentSnapshot? _lastDocument;
+bool _isFetchingMore = false;
 
   @override
   void onInit() {
@@ -16,8 +20,17 @@ late FirebaseCollectionVariable collectionControler;
   }
  
   void fetchStudentData() async {
+     if (_isFetchingMore) return;
+
+  _isFetchingMore = true;
     try {
-  snapshot = await collectionControler.studentLoginCollection.get();
+ Query query = collectionControler.studentLoginCollection.limit(_limit);
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+  snapshot = await query.get();
+  _lastDocument = snapshot.docs.last;
   studentData.value = snapshot.docs.map((doc) {
     return {
       'rollNumber': doc[rollNofield] ?? '',

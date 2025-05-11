@@ -8,39 +8,57 @@ import 'package:flutter/material.dart';
 
 class Customfield extends StatefulWidget {
   final SchooldetailsController controller;
-  
-  const Customfield({super.key, required this.controller});
+  const Customfield({Key? key, required this.controller}) : super(key: key);
 
   @override
-  State<Customfield> createState() => _CustomfieldState();
+  State<Customfield> createState() => CustomfieldState();  // ← note the public name
 }
 
-class _CustomfieldState extends State<Customfield> {
-  bool isLoading = true;
+class CustomfieldState extends State<Customfield> {
+  bool isLoading = false;
+  bool _hasMore = true;
   List<String> schoolPhotos = [];
-  
+
   @override
   void initState() {
     super.initState();
-    fetchGalleryImages();
+    // initial load
+    fetchGalleryImages(isInitial: true);
   }
-Future<void> fetchGalleryImages() async {
-   List<String> images = await widget.controller.getGalleryImages();
-   if (!mounted) return; // ✅ Check if widget is still in the tree
-   setState(() {
-     schoolPhotos.clear();
-     schoolPhotos.addAll(images);
-     isLoading = false;
-   });
-}
 
+  Future<void> fetchGalleryImages({required bool isInitial}) async {
+    if (isLoading) return;
+    setState(() => isLoading = true);
+
+    final images = await widget.controller.getGalleryImages(isInitial: isInitial);
+    if (!mounted) return;
+
+    setState(() {
+      if (isInitial) {
+        schoolPhotos = images;
+      } else {
+        schoolPhotos.addAll(images);
+      }
+      _hasMore = images.length == 4;  // page size = 4
+      isLoading = false;
+    });
+  }
+
+  /// Called by parent when it scrolls near bottom
+  void loadMore() {
+    if (_hasMore && !isLoading) {
+      fetchGalleryImages(isInitial: false);
+    }
+  }
 
  Future<void> uploadImage() async {
    final pickedImage = await widget.controller.addPhoto();
    if (pickedImage != null) {
      await widget.controller.uploadImageGallery(image: pickedImage);
-     if (mounted) {  // ✅ Check if widget is still in the tree
-       fetchGalleryImages(); // ✅ Direct call, no need for setState()
+     if (mounted) {  
+     setState(() {
+       fetchGalleryImages(isInitial: true); 
+     });
      }
    }
 }
@@ -186,9 +204,8 @@ onTap: () {
   }
 }
 
-Widget schoolDetailsGallery(BuildContext context, SchooldetailsController controller) {
-  // Create a GlobalKey to access the Customfield state
-  final GlobalKey<_CustomfieldState> customfieldKey = GlobalKey<_CustomfieldState>();
+Widget schoolDetailsGallery(BuildContext context, SchooldetailsController controller, GlobalKey<CustomfieldState> customfieldKey,) {
+
 
   return Column(
     children: [
@@ -251,18 +268,7 @@ Widget schoolDetailsGallery(BuildContext context, SchooldetailsController contro
       ),
       // Pass the key to the Customfield widget
       Customfield(key: customfieldKey, controller: controller),
-      Padding(
-        padding: const EdgeInsets.all(25),
-        child: Center(
-          child: TextButton(
-            onPressed: () {},
-            child: const Text(
-              "Load more ...",
-              style: TextStyle(color: Colors.blue, fontSize: 20),
-            ),
-          ),
-        ),
-      ),
+      
     ],
   );
 }

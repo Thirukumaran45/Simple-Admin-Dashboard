@@ -16,6 +16,9 @@ class StaffController extends GetxController{
    late FirebaseCollectionVariable collectionControler;
 late dynamic snapshot;
  
+final int _limit = 18;
+DocumentSnapshot? _lastDocument;
+bool _isFetchingMore = false;
  final RxList<Map<String, dynamic>> staffData = <Map<String, dynamic>>[].obs;
 
 
@@ -26,9 +29,6 @@ late dynamic snapshot;
     fetchStaffData();
   }
 
-final int _limit = 15;
-DocumentSnapshot? _lastDocument;
-bool _isFetchingMore = false;
 
 void fetchStaffData() async {
   if (_isFetchingMore) return;
@@ -66,30 +66,6 @@ void fetchStaffData() async {
     _isFetchingMore = false;
   }
 }
-
-// void fetchStaffData() async {
-//   try {
-//     snapshot = await collectionControler.staffLoginCollection.get();
-//     staffData.value = snapshot.docs.asMap().entries.map((entry) {
-//       int index = entry.key + 1; // Auto-generate serial number starting from 1
-//       var doc = entry.value;
-
-//       return {
-//         'sNo': index.toString(),
-//         'name': doc[staffNamefield] ?? '',
-//         'id': doc[stafflId] ?? '',
-//         'phone': doc[staffPhoneNumberfield] ?? '',
-//         'email': doc[staffEmailfield] ?? '',
-//         'address': doc[staffAddressfield] ?? '',
-//       };
-//     }).toList().cast<Map<String, dynamic>>(); 
-//         update(); // Notify GetX listeners
-
-//   } catch (e) { 
-//     log('Error in fetching the data: $e');
-//   }
-// }
- 
 
 Future<Stafffdetailsmodel?> staffDataRead({required String uid}) async {
   try {

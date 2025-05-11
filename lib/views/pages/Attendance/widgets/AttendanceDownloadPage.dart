@@ -6,7 +6,7 @@ import 'package:admin_pannel/contant/pdfApi/PdfAttendance.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get, Inst;
 
 class AttendanceDownloadPage extends StatefulWidget {
   final String section;
@@ -25,13 +25,12 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   String teacherName='';
   bool isLoading = true; 
 
-  final AttendanceController controler = Get.find();
+  late AttendanceController controler ;
 
   Map<int, bool> showSaveButton = {}; 
  // Track changed attendance
   List<Map<String, dynamic>> filteredData = [];
   List<Map<String, dynamic>> studentData = [];
-  AttendanceController controller = Get.find();
   final ScrollController _scrollController = ScrollController();
 
   List<String> month = [];
@@ -39,6 +38,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   @override
   void initState() { 
     super.initState();
+  controler = Get.find();   
     initializeList();
     selectedMonth = controler.gettodaymonth();
     selectedDate = controler.gettoadayDate();
@@ -51,7 +51,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
     });
    } 
  Future<void> _loadMoreStudents() async {
-    final more = await controller.fetchPagedStudents(
+    final more = await controler.fetchPagedStudents(
       stuClass: widget.classNUmber,
       stuSec: widget.section,
       reset: false,
@@ -66,8 +66,8 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
 
  
 void initializeList() async {
-  List<String> monthVal = await controller.fetchUniqueMonthValuesAll();
-  List<String> dateVal = await controller.getAttendanceDates();
+  List<String> monthVal = await controler.fetchUniqueMonthValuesAll();
+  List<String> dateVal = await controler.getAttendanceDates();
   String name = await controler.getTeacherName(sec: widget.section, stuClass: widget.classNUmber);
 
   setState(() {
@@ -83,7 +83,7 @@ void initializeList() async {
       selectedDate = controler.gettoadayDate();
     }
   });
-final data = await controller.fetchPagedStudents(stuClass: widget.classNUmber, stuSec: widget.section);
+final data = await controler.fetchPagedStudents(stuClass: widget.classNUmber, stuSec: widget.section);
 
 setState(() {
   // Assuming the data is a List<Map<String, dynamic>>, you can directly assign it to studentData
@@ -124,6 +124,8 @@ setState(() {
   }
  @override
   void dispose() {
+    filteredData.clear();
+    controler.dispose();
     _scrollController.dispose();
     super.dispose();
   }

@@ -2,7 +2,7 @@ import 'dart:developer'show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/contant/constant.dart';
 import 'package:admin_pannel/modules/teacherModels.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue;
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
@@ -14,7 +14,9 @@ class Teachercontroller extends GetxController{
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
  final RxList<Map<String, dynamic>> teacherData = <Map<String, dynamic>>[].obs;
-
+final int _limit = 18;
+DocumentSnapshot? _lastDocument;
+bool _isFetchingMore = false;
   @override
   void onInit() {
     super.onInit();
@@ -23,8 +25,16 @@ class Teachercontroller extends GetxController{
   }
 
 void fetchTeacherData() async {
+  if (_isFetchingMore) return;
+
+  _isFetchingMore = true;
   try {
-    snapshot = await collectionControler.teacherLoginCollection.get();
+      Query query =  collectionControler.teacherLoginCollection.limit(_limit);
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+    snapshot = await query.get();
+     _lastDocument = snapshot.docs.last;
     teacherData.value = snapshot.docs.asMap().entries.map((entry) {
       int index = entry.key + 1; // Auto-generate serial number starting from 1
       var doc = entry.value;
@@ -40,6 +50,9 @@ void fetchTeacherData() async {
     }).toList().cast<Map<String, dynamic>>();
   } catch (e) { 
     log('Error in fetching the data: $e');
+  }
+  finally {
+    _isFetchingMore = false;
   }
    update(); // Notify GetX listeners
 }

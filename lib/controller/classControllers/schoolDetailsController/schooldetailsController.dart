@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/modules/schoolDetailsModels.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' show Query, QueryDocumentSnapshot;
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' show UploadTask, TaskSnapshot;
 import 'package:flutter/foundation.dart' show Uint8List,kIsWeb;
@@ -10,6 +11,7 @@ import 'package:get/get.dart';
 
 class SchooldetailsController extends GetxController{
 String? email;
+QueryDocumentSnapshot? lastVisibleImage;
 late FirebaseCollectionVariable collectionVariable;
 @override
   void onInit() {
@@ -177,6 +179,7 @@ Future<void> uploadImageGallery({required dynamic image}) async {
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
     await collectionVariable.galleryCollection.add({'url': downloadUrl});
+    update();
   } catch (e) {
     log('Error uploading image: $e');
   }
@@ -218,20 +221,31 @@ Future<void> deleteImageFromGallery({
   }
 }
 
-Future<List<String>> getGalleryImages() async {
+
+Future<List<String>> getGalleryImages({bool isInitial = false}) async {
   List<String> imageUrls = [];
   try {
-    final  querySnapshot = await collectionVariable.galleryCollection.get();
-    for (var doc in querySnapshot.docs) {
-      String url = doc['url'];
+    Query query = collectionVariable.galleryCollection.limit(4);
 
-      imageUrls.add(url);
+    if (!isInitial && lastVisibleImage != null) {
+      query = query.startAfterDocument(lastVisibleImage!);
+    }
+
+    final querySnapshot = await query.get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      lastVisibleImage = querySnapshot.docs.last;
+      for (var doc in querySnapshot.docs) {
+        imageUrls.add(doc['url']);
+      }
     }
   } catch (e) {
     log('Error fetching images: $e');
   }
   return imageUrls;
 }
+
+
 Future<String?> deleteById(String imageUrl) async {
   try {
     final querySnapshot = await collectionVariable.galleryCollection
