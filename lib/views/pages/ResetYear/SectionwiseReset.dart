@@ -2,7 +2,7 @@ import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooResetController.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class SectionWiseResetData extends StatefulWidget {
 final String stuClass;
@@ -18,9 +18,8 @@ late SchoolResetYearController controller;
 @override
   void initState() {
     super.initState();
-        controller = Get.find();
+        controller = Get.find<SchoolResetYearController>();
         
-
   }
 
   final List<String> historyItems = [
@@ -72,7 +71,10 @@ Map<int, Future<void> Function()> getDeletionFunctionsMap({
   };
 }
 
-
+@override
+  void dispose() {
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

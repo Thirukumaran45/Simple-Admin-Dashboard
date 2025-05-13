@@ -5,7 +5,7 @@ import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get, Inst;
 
 class SideNav extends StatefulWidget {
   final GlobalKey<BeamerState> beamer;
@@ -15,20 +15,23 @@ class SideNav extends StatefulWidget {
   State<SideNav> createState() => _sideNavState();
 }
 
+// ignore: camel_case_types
 class _sideNavState extends State<SideNav> {
   int selected = 0;
-  DashboardController dashboardController =Get.find();
+  late DashboardController dashboardController;
 
  List<String> navItems =[];
    List<String> navs=[];
    List<IconData> navIcons =[];
   String? assetImage;
   String defaultSchoolPhoto ="assets/images/splash.svg";
-  SchooldetailsController controller=Get.find();
+ late SchooldetailsController controller;
 
 @override
   void initState() {
     super.initState();
+    controller=Get.find<SchooldetailsController>();
+    dashboardController =Get.find<DashboardController>();
     navIcons = List.from( dashboardController.navIcons);
     navs = List.from(dashboardController.navs);
     navItems=List.from(dashboardController.navItems);
@@ -44,6 +47,10 @@ class _sideNavState extends State<SideNav> {
        
    });
 }
+@override
+  void dispose() {
+    super.dispose();
+  }
 @override
   Widget build(BuildContext context) {
     final path = (context.currentBeamLocation.state as BeamState).uri.path;

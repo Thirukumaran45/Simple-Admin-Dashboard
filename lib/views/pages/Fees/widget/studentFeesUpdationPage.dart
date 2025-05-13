@@ -6,7 +6,7 @@ import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get, Inst;
 
 class StudentFeesUpdationpage extends StatefulWidget {
   const StudentFeesUpdationpage({
@@ -29,7 +29,7 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
   List<TextEditingController> feeAmountControllers = [];
   late TextEditingController allocatedFeeController;
   bool isSaveButtonVisible = false;
-  final FeesController controller = Get.find();
+  late FeesController controller;
   List<Map<String, String>> filteredData = [];
 late Future<List<Map<String, dynamic>>> matchedFeesFuture;
 
@@ -37,6 +37,7 @@ late Future<List<Map<String, dynamic>>> matchedFeesFuture;
 @override
 void initState() {
   super.initState();
+ controller = Get.find<FeesController>();
 
   List<String> defaultFeeNames = [
     "Tution Fee",
@@ -111,6 +112,8 @@ void saveFees() async {
       controller.dispose();
     }
     allocatedFeeController.dispose();
+    
+    filteredData.clear();
     super.dispose();
   }
 

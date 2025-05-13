@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class Customfield extends StatefulWidget {
   final SchooldetailsController controller;
-  const Customfield({Key? key, required this.controller}) : super(key: key);
+  const Customfield({super.key, required this.controller});
 
   @override
   State<Customfield> createState() => CustomfieldState();  // ← note the public name
@@ -74,6 +74,11 @@ Future<void> deleteImage(int index) async {
   }
 }
 
+@override
+  void dispose() {
+    schoolPhotos.clear();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

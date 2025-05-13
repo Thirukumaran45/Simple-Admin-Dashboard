@@ -5,7 +5,7 @@ import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class Photoviewpage extends StatefulWidget {
   const Photoviewpage({super.key, });
@@ -18,10 +18,11 @@ class _PhotoviewpageState extends State<Photoviewpage> {
 
   String? assetImage;
   String defaultSchoolPhoto ="assets/images/splash.svg";
-  SchooldetailsController controller=Get.find();
+  late SchooldetailsController controller;
 @override
   void initState() {
     super.initState();
+     controller=Get.find<SchooldetailsController>();
     initializeFunction();
   }
 Future<void> handlePhotoUpdate() async {
@@ -45,6 +46,10 @@ Future<void> initializeFunction() async {
    });
 }
 
+@override
+  void dispose() {
+    super.dispose();
+  }
 @override
 Widget build(BuildContext context) {
   return Scaffold(

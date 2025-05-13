@@ -3,7 +3,7 @@ import 'package:admin_pannel/controller/classControllers/pageControllers/ExamUpd
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class StudentResult extends StatefulWidget {
   final String stuname;
@@ -29,7 +29,7 @@ class _StudentResultState extends State<StudentResult> {
   final Map<String, TextEditingController> _subjectControllers = {};
   final Map<String, TextEditingController> _marksControllers = {};
   bool _isEdited = false;
-  ExamUpdationController controller = Get.find();
+  late ExamUpdationController controller ;
   final List<String> subjects = [
     "Tamil",
     "Maths",
@@ -44,7 +44,7 @@ class _StudentResultState extends State<StudentResult> {
   @override
   void initState() {
     super.initState();
-
+   controller = Get.find<ExamUpdationController>();
     // Initialize all controllers with default values and add listeners.
     for (int i = 0; i < subjects.length; i++) {
       _subjectControllers['sub${i + 1}'] = 
@@ -97,7 +97,9 @@ void dispose() {
     _marksControllers['mark${i + 1}']?.removeListener(_onFieldChanged);
     _subjectControllers['sub${i + 1}']?.dispose();
     _marksControllers['mark${i + 1}']?.dispose();
+
   }
+  
   super.dispose();
 }
 

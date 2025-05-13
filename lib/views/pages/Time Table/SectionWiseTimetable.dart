@@ -4,7 +4,7 @@ import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class SectionWiseTimetable extends StatefulWidget {
   final String stuClass;
@@ -17,7 +17,7 @@ class SectionWiseTimetable extends StatefulWidget {
 
 class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
   final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  TimetableController timetableContrl=Get.find();
+  late TimetableController timetableContrl;
 
   Map<String, TimeOfDay> startTimes = {};
   Map<String, TimeOfDay> endTimes = {};
@@ -29,6 +29,7 @@ class _SectionWiseTimetableState extends State<SectionWiseTimetable> {
   @override
   void initState() {
     super.initState();
+     timetableContrl=Get.find<TimetableController>();
     for (var day in days) {
       timetable[day] = {};
       selectedTeachers[day] = {};

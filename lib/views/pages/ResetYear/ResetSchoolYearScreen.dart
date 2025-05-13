@@ -2,7 +2,7 @@ import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooResetController.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class ResetSchoolYearScreen extends StatefulWidget {
   const ResetSchoolYearScreen({super.key});
@@ -18,7 +18,7 @@ late SchoolResetYearController controller;
 @override
   void initState() {
     super.initState();
-    controller = Get.find();
+    controller = Get.find<SchoolResetYearController>();
   }
 
 Future<void> deleteAllData(BuildContext context,String stuClass) async {
@@ -34,7 +34,10 @@ await controller.deleteSchoolChatData();
 
 }
 
-
+@override
+  void dispose() {
+    super.dispose();
+  }
   
 
   @override

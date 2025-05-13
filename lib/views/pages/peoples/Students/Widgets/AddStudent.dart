@@ -6,7 +6,7 @@ import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, s
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 import 'package:intl/intl.dart';
 
 class AddStudentTab extends StatefulWidget {
@@ -21,7 +21,7 @@ class _AddStudentTabState extends State<AddStudentTab> {
   String? assetImage;
   dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  FirebaseAuthUser authControlelr = FirebaseAuthUser();
+  late FirebaseAuthUser authControlelr ;
   
   late final TextEditingController _dobController ;
   late final TextEditingController addresscontrl ;
@@ -37,10 +37,12 @@ late final TextEditingController fatherNameController ;
 late final TextEditingController fatherMobileController ;
 late final TextEditingController motherNameController ;
 late final TextEditingController motherMobileController ; 
-final StudentController controller = Get.find();
+late StudentController controller ;
 
 @override
   void initState() {
+    controller = Get.find<StudentController>();
+    authControlelr = Get.find<FirebaseAuthUser>();
           _dobController = TextEditingController();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();

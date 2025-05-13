@@ -5,6 +5,7 @@ import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
+import 'package:get/get.dart' show Get, Inst;
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -43,8 +44,8 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   
   bool isObsecure = true;
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  late final TextEditingController emailController ;
+  late final TextEditingController passwordController ;
 
   String? emailError;
   String? passwordError;
@@ -57,18 +58,24 @@ class _BodyState extends State<Body> {
     return emailRegex.hasMatch(email);
   }
 
-  void loadingBar(){
-    
-  }
 
   @override
   void initState() {
     super.initState();
-    controller = FirebaseAuthUser();
-    collectioncontrolelr = FirebaseCollectionVariable();
-    
+    controller = Get.find<FirebaseAuthUser>();
+    collectioncontrolelr = Get.find<FirebaseCollectionVariable>();
+     emailController = TextEditingController();
+  passwordController = TextEditingController();
   }
 
+@override
+  void dispose() {
+    controller.dispose();
+    collectioncontrolelr.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

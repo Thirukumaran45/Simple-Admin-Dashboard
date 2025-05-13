@@ -6,7 +6,7 @@ import 'package:admin_pannel/views/pages/HomePage/widgets/SideNav.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -19,13 +19,15 @@ class _LandingPageState extends State<LandingPage> {
   final _beamerKey = GlobalKey<BeamerState>();
   late FirebaseCollectionVariable collectionVar;
 
-  SchooldetailsController controller=Get.find();
+  late SchooldetailsController controller;
  
 
   @override
   void initState() {
     super.initState();
-    collectionVar = Get.find();
+    collectionVar = Get.find<FirebaseCollectionVariable>();
+    controller=Get.find<SchooldetailsController>();
+ 
   }
 
 Future<String?> _fetchSchoolName() async {
@@ -95,6 +97,11 @@ Future<String?> _fetchSchoolName() async {
     );
   }
      );
+  }
+  @override
+  void dispose() {
+    super.dispose();
+
   }
   @override
   Widget build(BuildContext context) {

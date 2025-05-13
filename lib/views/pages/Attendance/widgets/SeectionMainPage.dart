@@ -2,7 +2,7 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class ClassPage extends StatefulWidget {
@@ -18,17 +18,21 @@ class ClassPage extends StatefulWidget {
 }
 
 class _ClassPageState extends State<ClassPage> {
-  final AttendanceController controler = Get.find();
+  late AttendanceController controler ;
   late Future<Map<String, Map<String, String>>> futureAttendanceData;
 
 @override
   void initState() {
     super.initState();
-     // Fetch the attendance data using the Future provided by the controller.
+   controler = Get.find<AttendanceController>();
     futureAttendanceData = controler.getSectionWiseTotalPresentAndAbsent(stuClass: widget.classNumber);
    
   }
-
+@override
+  void dispose() {
+      controler.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

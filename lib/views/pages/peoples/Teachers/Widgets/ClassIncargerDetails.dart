@@ -2,7 +2,7 @@ import 'package:admin_pannel/controller/classControllers/peoplesControlelr/Teach
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class ClassInchargerDetails extends StatefulWidget {
   const ClassInchargerDetails({super.key});
@@ -25,11 +25,12 @@ class _ClassInchargerDetailsState extends State<ClassInchargerDetails> {
 
   final List<ValueNotifier<bool>> isClassEditing = List.generate(12, (_) => ValueNotifier(false));
 
-  Teachercontroller controller = Get.find();
+ late Teachercontroller controller ;
 
   @override
   void initState() {
     super.initState();
+    controller = Get.find<Teachercontroller>();
     nameControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
     phoneNumberControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
     emailControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));

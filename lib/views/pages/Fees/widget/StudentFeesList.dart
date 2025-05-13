@@ -3,7 +3,7 @@ import 'package:admin_pannel/controller/classControllers/pageControllers/FessCon
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst,Worker,ever;
 class StudentFeesList extends StatefulWidget {
   const StudentFeesList({super.key, required this.stuClass, required this.section});
 
@@ -15,15 +15,17 @@ class StudentFeesList extends StatefulWidget {
 }
 
 class _StudentFeesListState extends State<StudentFeesList> {
-  TextEditingController searchNameController = TextEditingController();
-  TextEditingController searchRollController = TextEditingController();
+  late TextEditingController searchNameController ;
+  late TextEditingController searchRollController ;
 late Worker studentDataWorker;
   List<Map<String, dynamic>> filteredStudents = [];
   late FeesController controller;
   @override
   void initState() {
     super.initState();
-    controller=Get.find();
+      searchNameController = TextEditingController();
+   searchRollController = TextEditingController();
+    controller=Get.find<FeesController>();
    initializeData();
   }
 
@@ -47,6 +49,9 @@ void initializeData() async {
 
 @override
 void dispose() {
+     searchNameController .dispose();
+   searchRollController.dispose();
+   filteredStudents.clear();
   studentDataWorker.dispose(); // dispose your `ever` listener
   super.dispose();
 }

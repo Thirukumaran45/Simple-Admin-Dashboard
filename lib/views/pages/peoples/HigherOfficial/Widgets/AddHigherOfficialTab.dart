@@ -6,7 +6,7 @@ import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog,showLoadingDialogInSec;
 
 class AddHigherOfficialTab extends StatefulWidget {
@@ -20,18 +20,19 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  FirebaseAuthUser authControlelr = FirebaseAuthUser();
+  late FirebaseAuthUser authControlelr ;
   late final TextEditingController addresscontrl ;
   late final TextEditingController firstNameController ;
   late final TextEditingController lastNameController ;
   late final TextEditingController officialMobileController ;
   late final TextEditingController emailController ;
   late final TextEditingController passwordController;
-  final Higherofficialcontroller controller = Get.find();
+  late Higherofficialcontroller controller ;
 @override
   void initState() {
     super.initState();
-
+   authControlelr = Get.find<FirebaseAuthUser>();
+   controller = Get.find<Higherofficialcontroller>();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
    lastNameController = TextEditingController();
@@ -58,6 +59,7 @@ Future<void> profileFuntion() async {
    officialMobileController .dispose();
    emailController .dispose();
    passwordController.dispose();
+   authControlelr.dispose();
     super.dispose();
   }
 

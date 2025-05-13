@@ -3,7 +3,7 @@ import 'package:admin_pannel/controller/classControllers/pageControllers/ExamUpd
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class StudentExamResultPublish extends StatefulWidget {
   const StudentExamResultPublish({super.key, required this.examName, required this.stuClass, required this.section});
@@ -24,7 +24,7 @@ class _StudentExamResultPublishState extends State<StudentExamResultPublish> {
   bool showSingleSaveButton = false;
   List<Map<String, dynamic>> students =[];
   List<Map<String, dynamic>> filteredStudents = [];
-  ExamUpdationController controller = Get.find();
+  late ExamUpdationController controller;
   String? totalMark;
   String? overallMark;
 final ScrollController _scrollController = ScrollController();
@@ -32,6 +32,7 @@ final ScrollController _scrollController = ScrollController();
 @override
 void initState() {
   super.initState();
+  controller = Get.find<ExamUpdationController>();
   // Initialize all controllers before using them
   searchNameController = TextEditingController();
   searchRollController = TextEditingController();
@@ -113,10 +114,12 @@ Future<void> addAndUpdateTotalandSingleMark()async{
 }
 @override
 void dispose() {
+  filteredStudents.clear();
   searchNameController.dispose();
   searchRollController.dispose();
   totalSubjectMarkController.dispose();
   singleSubjectMarkController.dispose();
+  _scrollController.dispose();
   super.dispose();
 }
 

@@ -24,9 +24,10 @@ class _BankAccountDetailsState extends State<BankAccountDetails> {
 @override
 void initState() {
   super.initState();
-  controller = Get.find();
+  controller = Get.find<FeesController>();
   loadAllBankData();
 }
+
 
 
 void loadAllBankData() async {
@@ -73,6 +74,16 @@ void loadAllBankData() async {
     );
     setState(() => isChanged = false);
   }
+  @override
+  void dispose() {
+    for (var contrl in [...bankControllers, ...apiControllers]) {
+     contrl.dispose();
+    } 
+    
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -220,11 +231,5 @@ void loadAllBankData() async {
     );
   }
 
-  @override
-  void dispose() {
-    for (var controller in [...bankControllers, ...apiControllers]) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
+
 }

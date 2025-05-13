@@ -7,7 +7,7 @@ import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst,ever;
 
 import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog;
 
@@ -22,7 +22,7 @@ class _TeacherDetailsTabState extends State<HigherOfficialDetailsTab> {
   String name = '';
   String phoneNumber = '';
   String emailAddress = '';
-Higherofficialcontroller controller = Get.find();
+ late Higherofficialcontroller controller ;
   List<Map<String, dynamic>> filteredData = [];
 final ScrollController _scrollController = ScrollController();
 
@@ -30,6 +30,7 @@ final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
+     controller = Get.find<Higherofficialcontroller>();
   _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {

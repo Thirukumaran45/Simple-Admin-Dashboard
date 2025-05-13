@@ -2,7 +2,8 @@ import 'dart:developer' show log;
 
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
-import 'package:get/get.dart';
+import 'package:get/get.dart' ;
+
 
 class StudentlistBonafiedController extends GetxController {
 late FirebaseCollectionVariable collectionControler;

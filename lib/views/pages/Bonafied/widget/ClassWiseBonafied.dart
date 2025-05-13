@@ -6,7 +6,7 @@ import 'package:admin_pannel/contant/pdfApi/PdfBonafied.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst,ever;
 
 class ClasswiseBonafied extends StatefulWidget {
   const ClasswiseBonafied({super.key});
@@ -21,13 +21,15 @@ class _ClasswiseBonafiedState extends State<ClasswiseBonafied> {
   String rollNumber = '';
   String? selectedTypevalue="Out Passing Student";
 
-  final StudentlistBonafiedController controler = Get.find();
+  late StudentlistBonafiedController controler ;
 final ScrollController _scrollController = ScrollController();
   List<Map<String, dynamic>> filteredData = [];
  
  @override
 void initState() {
   super.initState();
+  controler = Get.find<StudentlistBonafiedController>();
+  
    setState(() {
       filteredData = List.from(controler.studentData);
     });
@@ -90,6 +92,8 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
 
 @override
 void dispose() {
+  filteredData.clear();
+  controler.dispose();
   _scrollController.dispose();
   super.dispose();
 }

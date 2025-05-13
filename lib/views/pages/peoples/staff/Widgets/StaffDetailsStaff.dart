@@ -7,7 +7,7 @@ import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst,ever;
 
 import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog;
 
@@ -23,12 +23,13 @@ class _StaffDetailsTabState extends State<StaffDetailsTab> {
   String phoneNumber = '';
   String emailAddress = '';
 final ScrollController _scrollController = ScrollController();
-  StaffController controller = Get.find();
+ late StaffController controller ;
   List<Map<String, dynamic>> filteredData = [];
 
   @override
   void initState() {
     super.initState();
+     controller = Get.find();
      setState(() {
       filteredData = List.from(controller.staffData);
     });

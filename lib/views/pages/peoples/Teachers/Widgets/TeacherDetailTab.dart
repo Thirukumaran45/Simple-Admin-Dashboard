@@ -8,7 +8,7 @@ import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst,ever;
 
 class TeacherDetailsTab extends StatefulWidget {
   const TeacherDetailsTab({super.key});
@@ -23,12 +23,13 @@ class _TeacherDetailsTabState extends State<TeacherDetailsTab> {
   String emailAddress = '';
 
    final ScrollController _scrollController = ScrollController();
-Teachercontroller controller = Get.find();
+   late Teachercontroller controller;
   List<Map<String, dynamic>> filteredData = [];
 
   @override
   void initState() {
     super.initState();
+    controller = Get.find<Teachercontroller>();
     _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
@@ -65,7 +66,7 @@ Teachercontroller controller = Get.find();
   }
 
 @override
-void dispose() {      
+void dispose() {  
   _scrollController.dispose();  // Properly dispose of the GetX Worker
   filteredData.clear();          // Clear the filtered list
   super.dispose();

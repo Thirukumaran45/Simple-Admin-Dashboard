@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' show Query, QueryDocumentS
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' show UploadTask, TaskSnapshot;
 import 'package:flutter/foundation.dart' show Uint8List,kIsWeb;
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get, GetxController, Inst;
 
 class SchooldetailsController extends GetxController{
 String? email;

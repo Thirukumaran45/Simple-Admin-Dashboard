@@ -1,7 +1,7 @@
 import 'dart:developer' show log;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get, GetxController, Inst ;
 import 'package:intl/intl.dart' show DateFormat;
 
 class AttendanceController extends GetxController {
@@ -123,51 +123,55 @@ Future<String> getTeacherName({required String stuClass, required String sec}) a
   }
 }
 
-
-// Replace your one‐shot fetchStudentData with:
+/// in AttendanceController.dart
 Future<List<Map<String, dynamic>>> fetchPagedStudents({
   required String stuClass,
   required String stuSec,
+  required String dateFilter,     // ← new
+  required String monthFilter,    // ← new
   bool reset = false,
 }) async {
   if (_isFetchingMoreStudents) return [];
 
-  // On reset, clear pagination state:
   if (reset) {
     _lastStudentDoc = null;
   }
 
   _isFetchingMoreStudents = true;
-  final String date = gettoadayDate();
+  
   try {
     Query query = collectionControler.attendanceCollection
-        .collection(date)
-        .doc("$stuClass$stuSec")
-        .collection("presented_student")
-        .limit(_pageSize);
+      .collection(dateFilter)
+      .doc("$stuClass$stuSec")
+      .collection("presented_student");
+
+    // ADD your filters here:
+    if (dateFilter.isNotEmpty) {
+      query = query.where('date', isEqualTo: dateFilter);
+    }
+    if (monthFilter.isNotEmpty) {
+      query = query.where('month', isEqualTo: monthFilter);
+    }
+
+    query = query.limit(_pageSize);
 
     if (_lastStudentDoc != null) {
       query = query.startAfterDocument(_lastStudentDoc!);
     }
 
     final snapshot = await query.get();
-    if (snapshot.docs.isEmpty) {
-      return [];
-    }
+    if (snapshot.docs.isEmpty) return [];
 
-    // Remember last document to paginate next time
     _lastStudentDoc = snapshot.docs.last;
-
-    // Map docs to your model
     return snapshot.docs.map((doc) {
       final data = doc.data() as Map<String,dynamic>;
       return {
         'rollNumber': data['rollNo'] ?? '',
-        'name': data["studentName"] ?? '',
-        'id': data["studentId"] ?? '',
-        'date': data['date'] ?? '',
-        'month': data['month'] ?? '',
-        'attendanceStatus': data["status"] ?? 'Absent',
+        'name'      : data['studentName'] ?? '',
+        'id'        : data['studentId'] ?? '',
+        'date'      : data['date'] ?? '',
+        'month'     : data['month'] ?? '',
+        'attendanceStatus': data['status'] ?? 'Absent',
         'percentage': data['percentage'] ?? ''
       };
     }).toList();
@@ -178,7 +182,6 @@ Future<List<Map<String, dynamic>>> fetchPagedStudents({
     _isFetchingMoreStudents = false;
   }
 }
-
 
  
 

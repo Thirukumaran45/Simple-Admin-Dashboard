@@ -6,7 +6,7 @@ import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfTotalFeesScript.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 import 'package:intl/intl.dart';
 
 class Feestransactionhistry extends StatefulWidget {
@@ -18,13 +18,13 @@ class Feestransactionhistry extends StatefulWidget {
 }
 
 class _FeesDetailsPageState extends State<Feestransactionhistry> {
-  TextEditingController searchNameController = TextEditingController();
+  late TextEditingController searchNameController;
 final ScrollController _scrollController = ScrollController();
 
   String? selectedDate ;
   String? selectedMonth;
   String name = '';
-  final FeesController controller = Get.find();
+  late FeesController controller ;
   List<Map<String, dynamic>> filteredData = [];
   List<String> month = [];
   List<String>date=[];bool isLoading = true;
@@ -32,6 +32,8 @@ final ScrollController _scrollController = ScrollController();
  @override
 void initState() {
   super.initState();
+  controller = Get.find<FeesController>();
+   searchNameController = TextEditingController();
   _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
@@ -89,7 +91,9 @@ void initializeList() async {
   }
 @override
 void dispose() {
+  filteredData.clear();
   _scrollController.dispose();
+  controller.dispose();
   super.dispose();
 }
 

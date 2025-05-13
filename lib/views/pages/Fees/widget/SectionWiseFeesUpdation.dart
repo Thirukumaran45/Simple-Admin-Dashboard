@@ -2,7 +2,7 @@ import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 
 class SectionWiseFeesUpdation extends StatefulWidget {
@@ -24,11 +24,6 @@ class _SectionWiseFeesUpdationState extends State<SectionWiseFeesUpdation> {
     preloadAllFeesSummary();
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   Future<void> preloadAllFeesSummary() async {
     Map<String, Map<String, Map<String, String>>> summary = {};

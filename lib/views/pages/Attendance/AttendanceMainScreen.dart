@@ -3,7 +3,7 @@
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get, Inst;
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class AttendanceMainScreen extends StatefulWidget {

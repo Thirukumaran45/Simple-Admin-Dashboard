@@ -5,8 +5,9 @@ import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart' show  GetxController;
 
-class FirebaseAuthUser {
+class FirebaseAuthUser extends GetxController{
   
   FirebaseCollectionVariable collectioncontrolelr = FirebaseCollectionVariable();
 

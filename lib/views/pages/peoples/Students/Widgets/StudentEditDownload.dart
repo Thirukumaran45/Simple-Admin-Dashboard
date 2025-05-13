@@ -8,7 +8,7 @@ import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class StudentEditDownload extends StatefulWidget {
   final String uid;
@@ -35,12 +35,13 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
   
   StudentdetailsModel? studentDetails;
   bool isEdited = false;
-  StudentController controller = Get.find();
+  late StudentController controller ;
   String? assetImage;
 
   @override
   void initState() {
     super.initState();
+    controller = Get.find<StudentController>();
     initializeFunction(); // Fetch student data asynchronously
   }
 
@@ -98,6 +99,7 @@ Future<void> initializeFunction() async {
     rollNumberController.dispose();
     totalFeesController.dispose();
     pendingFeesController.dispose();
+    
     super.dispose();
   }
 

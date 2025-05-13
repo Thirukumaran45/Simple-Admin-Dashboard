@@ -8,7 +8,7 @@ import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
  
 class TeacherEditDownload extends StatefulWidget {
    final String uid;
@@ -31,11 +31,12 @@ class _StudentEditDownloadState extends State<TeacherEditDownload> {
   String? assetImage;
   bool isEdited = false;
   Teacherdetailmodel? teacherDetails;
-  Teachercontroller controller = Get.find();
+  late Teachercontroller controller ;
 
   @override
   void initState() {
     super.initState();
+    controller = Get.find<Teachercontroller>();
     initializeFunction();
    }
 

@@ -38,7 +38,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
   @override
   void initState() { 
     super.initState();
-  controler = Get.find();   
+  controler = Get.find<AttendanceController>();   
     initializeList();
     selectedMonth = controler.gettodaymonth();
     selectedDate = controler.gettoadayDate();
@@ -50,19 +50,22 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
       }
     });
    } 
- Future<void> _loadMoreStudents() async {
-    final more = await controler.fetchPagedStudents(
-      stuClass: widget.classNUmber,
-      stuSec: widget.section,
-      reset: false,
-    );
-    if (more.isNotEmpty) {
-      setState(() {
-        studentData.addAll(more);
-        applyFilters();
-      });
-    }
+// load more when scrolling:
+Future<void> _loadMoreStudents() async {
+  final more = await controler.fetchPagedStudents(
+    stuClass    : widget.classNUmber,
+    stuSec      : widget.section,
+  dateFilter  : selectedDate!,
+  monthFilter : selectedMonth!,
+    reset: false,
+  );
+  if (more.isNotEmpty) {
+    setState(() {
+      studentData.addAll(more);
+      applyFilters(); // you can even remove this now if you trust Firestore to give only filtered data
+    });
   }
+}
 
  
 void initializeList() async {
@@ -83,7 +86,13 @@ void initializeList() async {
       selectedDate = controler.gettoadayDate();
     }
   });
-final data = await controler.fetchPagedStudents(stuClass: widget.classNUmber, stuSec: widget.section);
+final data = await controler.fetchPagedStudents(
+  stuClass    : widget.classNUmber,
+  stuSec      : widget.section,
+  dateFilter  : selectedDate!,
+  monthFilter : selectedMonth!,
+  reset       : true,            // <-- reset pagination on a new filter
+);
 
 setState(() {
   // Assuming the data is a List<Map<String, dynamic>>, you can directly assign it to studentData
@@ -143,16 +152,55 @@ setState(() {
             child: customIconNavigation(context, '/attendance/class?classNumber=${widget.classNUmber}')   ),
               const Text("Filter by Options :", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
              
-               _buildDropdown('Select Date', selectedDate,date, (value) {
-                setState(() => selectedDate = value);
-                applyFilters();
-              }),
+              // Date dropdown
+_buildDropdown(
+  'Select Date',
+  selectedDate,
+  date,
+  (value) async {
+    // 1️⃣ update the filter
+    setState(() => selectedDate = value);
+
+    // 2️⃣ fetch fresh data from Firestore (reset pagination!)
+    final fresh = await controler.fetchPagedStudents(
+      stuClass    : widget.classNUmber,
+      stuSec      : widget.section,
+      dateFilter  : selectedDate!,
+      monthFilter : selectedMonth!,
+      reset       : true,
+    );
+
+    // 3️⃣ update state + re-apply your in-memory filter
+    setState(() {
+      studentData = fresh;
+      applyFilters();
+    });
+  },
+),
+  
+// Month dropdown
+_buildDropdown(
+  'Select Month',
+  selectedMonth,
+  month,
+  (value) async {
+    setState(() => selectedMonth = value);
+    final fresh = await controler.fetchPagedStudents(
+      stuClass    : widget.classNUmber,
+      stuSec      : widget.section,
+      dateFilter  : selectedDate!,
+      monthFilter : selectedMonth!,
+      reset       : true,
+    );
+    setState(() {
+      studentData = fresh;
+      applyFilters();
+    });
+  },
+),
+
               
-                 // Month Dropdown
-              _buildDropdown('Select Month', selectedMonth, month, (value) {
-                setState(() => selectedMonth = value);
-                applyFilters();
-              }),
+               
               SizedBox(
                 width: 150,
                 child: TextField(
@@ -175,8 +223,28 @@ setState(() {
                   },
                 ),
               ),
-              customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
-              customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:()async{
+             customIconTextButton(
+  Colors.blue,
+  icon: Icons.search,
+  onPressed: () async {
+    setState(() {});
+
+    final fresh = await controler.fetchPagedStudents(
+      stuClass    : widget.classNUmber,
+      stuSec      : widget.section,
+      dateFilter  : selectedDate!,
+      monthFilter : selectedMonth!,
+      reset       : true,
+    );
+
+    setState(() {
+      studentData = fresh;
+      applyFilters();
+    });
+  },
+  text: "Search",
+),
+ customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:()async{
                   await customSnackbar(context: context, text: "Donloaded Succesfully");
                 await PdfAttendance().openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,
                 studentClass: widget.classNUmber,students:filteredData,teacherName: teacherName  );

@@ -5,7 +5,7 @@ import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/customfield.
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class SchoolUpdateMainScreen extends StatefulWidget {
   const SchoolUpdateMainScreen({super.key});
@@ -44,10 +44,11 @@ class _SchoolGalleryPageState extends State<SchoolUpdateMainScreen> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<CustomfieldState> customfieldKey = GlobalKey<CustomfieldState>();
 
-  SchooldetailsController detailsController = Get.find(); 
+ late SchooldetailsController detailsController ; 
 @override
 void initState() {
   super.initState();
+  detailsController = Get.find<SchooldetailsController>(); 
   schoolNameController = TextEditingController();
   schoolChatBOtApi = TextEditingController();
   studentPassKeyController = TextEditingController();

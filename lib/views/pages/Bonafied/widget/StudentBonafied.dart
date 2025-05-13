@@ -13,15 +13,32 @@ class StudentBonafied extends StatefulWidget {
 }
 
 class _StudentBonafiedState extends State<StudentBonafied> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController parentNameController = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
-  final TextEditingController classController = TextEditingController();
-  final TextEditingController yearController = TextEditingController();
-  
+  late final _formKey = GlobalKey<FormState>();
+  late final TextEditingController nameController ;
+  late final TextEditingController parentNameController ;
+  late final TextEditingController dobController ;
+  late final TextEditingController classController ;
+  late final TextEditingController yearController ;
   String selectedOption = "Current Academic";
 
+@override
+  void initState() {
+    super.initState();
+   nameController = TextEditingController();
+   parentNameController = TextEditingController();
+   dobController = TextEditingController();
+   classController = TextEditingController();
+   yearController = TextEditingController();
+  }
+  @override
+  void dispose() {
+    nameController .dispose();
+   parentNameController .dispose();
+   dobController .dispose();
+   classController .dispose();
+   yearController .dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

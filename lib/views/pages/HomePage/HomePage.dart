@@ -1,7 +1,7 @@
 import 'package:admin_pannel/views/pages/HomePage/widgets/barGraph.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get, Inst;
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});

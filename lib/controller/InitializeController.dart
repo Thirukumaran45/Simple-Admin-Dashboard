@@ -1,4 +1,5 @@
 
+import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:admin_pannel/controller/classControllers/pageControllers/DashboardController.dart';
 import 'package:admin_pannel/controller/classControllers/pageControllers/ExamUpdationController.dart';
@@ -11,7 +12,7 @@ import 'package:admin_pannel/controller/classControllers/peoplesControlelr/Teach
 import 'package:admin_pannel/controller/classControllers/pageControllers/TimetableController.dart';
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooResetController.dart';
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 
 Future<void> initializeGetController()async{
@@ -28,4 +29,5 @@ Future<void> initializeGetController()async{
     Get.lazyPut(()=>TimetableController());
     Get.lazyPut(()=>ExamUpdationController());
     Get.lazyPut(()=>SchoolResetYearController());
+    Get.lazyPut(()=>FirebaseAuthUser());
 }

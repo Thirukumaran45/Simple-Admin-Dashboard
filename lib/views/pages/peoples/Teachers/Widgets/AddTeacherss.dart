@@ -7,7 +7,7 @@ import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, s
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 import 'package:intl/intl.dart';
 
 class AddTeacherTab extends StatefulWidget {
@@ -21,8 +21,7 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  FirebaseAuthUser authControlelr = FirebaseAuthUser();
-
+  late FirebaseAuthUser authControlelr ;
   late final TextEditingController addresscontrl ;
   late final TextEditingController _empDateController ;
   late final TextEditingController firstNameController ;
@@ -32,11 +31,13 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
   late final TextEditingController teacherMobileController ;
   late final TextEditingController emailController ;
   late final TextEditingController passwordController;
-  final Teachercontroller controller = Get.find();
+  late Teachercontroller controller ;
 
   @override
   void initState() {
     super.initState();
+    authControlelr = Get.find<FirebaseAuthUser>();
+    controller = Get.find<Teachercontroller>();
    addresscontrl = TextEditingController();
    _empDateController = TextEditingController();
    firstNameController = TextEditingController();
@@ -59,6 +60,7 @@ Future<void> profileFuntion() async {
 
 @override
   void dispose() {
+
    addresscontrl .dispose();
    _empDateController .dispose();
    firstNameController .dispose();

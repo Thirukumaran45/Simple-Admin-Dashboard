@@ -8,7 +8,7 @@ import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:admin_pannel/views/widget/CustomeButton.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class HigherOfficialEditDownload extends StatefulWidget {
 final String uid;
@@ -28,13 +28,14 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
  String? assetImage;
   bool isEdited = false;
   Principaldetailmodel? teacherDetails;
-  Higherofficialcontroller controller = Get.find();
+  late Higherofficialcontroller controller ;
 
 
 
   @override
   void initState() {
     super.initState();
+    controller = Get.find<Higherofficialcontroller>();
     initializeFunction();
    }
 

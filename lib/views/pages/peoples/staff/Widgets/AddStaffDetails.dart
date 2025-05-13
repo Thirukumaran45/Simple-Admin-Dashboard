@@ -7,7 +7,7 @@ import 'package:admin_pannel/views/widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog, showLoadingDialogInSec;
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' show Get,Inst;
 
 class AddStaffTab extends StatefulWidget {
   const AddStaffTab({super.key});
@@ -27,11 +27,11 @@ class _AddStaffTabState extends State<AddStaffTab> {
   late final TextEditingController officialMobileController ;
   late final TextEditingController emailController ;
   late final TextEditingController passwordController;
-  final StaffController controller = Get.find();
+  late StaffController controller ;
 @override
   void initState() {
     super.initState();
-
+ controller = Get.find<StaffController>();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
    lastNameController = TextEditingController();
@@ -58,6 +58,7 @@ Future<void> profileFuntion() async {
    officialMobileController .dispose();
    emailController .dispose();
    passwordController.dispose();
+  
     super.dispose();
   }
   @override
