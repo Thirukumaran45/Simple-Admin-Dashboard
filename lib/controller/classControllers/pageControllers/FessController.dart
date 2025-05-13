@@ -278,12 +278,14 @@ Future<void> addAndUpdateStudentFeesDetails({
   for (int i = 0; i < feeNameControllers.length; i++) {
     feeMap['fee${i + 1}'] = feeNameControllers[i].text;
     feeMap['fee${i + 1}_amount'] = feeAmountControllers[i].text;
+    feeMap['isView']='true';
   }
 
   await collectionVariable.studentLoginCollection
       .doc(id)
       .set(feeMap, SetOptions(merge: true));
 }
+
 
 Future<Map<String, dynamic>> getStudentFeesDetails({
   required String id,

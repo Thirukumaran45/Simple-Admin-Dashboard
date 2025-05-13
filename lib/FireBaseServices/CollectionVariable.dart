@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart' show GetxController;
 
@@ -136,11 +135,5 @@ class FirebaseCollectionVariable extends GetxController {
     studentLoginCollection = loginCollection.doc('students').collection('live_students');
   }
 
-  Future<void> signOutAccount() async {
-    await FirebaseAuth.instance.signOut();
-  }
-  Future<String>getCurrentUserEmail()async{
-    final String currentUserEmail =  FirebaseAuth.instance.currentUser!.email!;
-  return currentUserEmail;
-  }
+
 }

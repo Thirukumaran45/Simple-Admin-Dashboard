@@ -12,8 +12,9 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
-
 class _LoginPageState extends State<LoginPage> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +67,7 @@ class _BodyState extends State<Body> {
     collectioncontrolelr = Get.find<FirebaseCollectionVariable>();
      emailController = TextEditingController();
   passwordController = TextEditingController();
+  
   }
 
 @override
@@ -76,6 +78,7 @@ class _BodyState extends State<Body> {
     passwordController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

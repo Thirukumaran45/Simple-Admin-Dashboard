@@ -5,11 +5,11 @@ import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart' show  GetxController;
-
+import 'package:get/get.dart' show  GetxController, Get,Inst;
 class FirebaseAuthUser extends GetxController{
   
-  FirebaseCollectionVariable collectioncontrolelr = FirebaseCollectionVariable();
+  FirebaseCollectionVariable collectioncontrolelr = Get.find();
+  
 
   Future<Authuser?> signinUser({required String email, required String password, required BuildContext context}) async {
   try {
@@ -17,6 +17,7 @@ class FirebaseAuthUser extends GetxController{
       email: email,
       password: password,
     );
+    
    await checkBackendEmail(email);  
     return Authuser(id: userCredential.user!.uid, email: userCredential.user!.email!);
   }  catch (e) {
@@ -60,5 +61,13 @@ Future<Authuser?> createUser({required String email, required String password, r
   
 }
 }
+  Future<void> signOutAccount() async {
+    await FirebaseAuth.instance.signOut();
 
+   
+  }
+  Future<String>getCurrentUserEmail()async{
+    final String currentUserEmail =  FirebaseAuth.instance.currentUser!.email!;
+  return currentUserEmail;
+  }
 }

@@ -15,7 +15,7 @@ import 'package:admin_pannel/controller/classControllers/schoolDetailsController
 import 'package:get/get.dart' show Get,Inst;
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
 
-Future<void> initializeGetController()async{
+void initializeGetController() {
     Get.lazyPut(()=>DashboardController()); 
     Get.lazyPut(()=>SchooldetailsController());
     Get.lazyPut(()=>StudentController()); 
@@ -30,4 +30,21 @@ Future<void> initializeGetController()async{
     Get.lazyPut(()=>ExamUpdationController());
     Get.lazyPut(()=>SchoolResetYearController());
     Get.lazyPut(()=>FirebaseAuthUser());
+}
+
+void disposeAllControllers() {
+  Get.delete<DashboardController>();
+  Get.delete<SchooldetailsController>();
+  Get.delete<StudentController>();
+  Get.delete<Teachercontroller>();
+  Get.delete<Higherofficialcontroller>();
+  Get.delete<StaffController>();
+  Get.delete<FeesController>();
+  Get.delete<AttendanceController>();
+  Get.delete<StudentlistBonafiedController>();
+  Get.delete<FirebaseCollectionVariable>();
+  Get.delete<TimetableController>();
+  Get.delete<ExamUpdationController>();
+  Get.delete<SchoolResetYearController>();
+  Get.delete<FirebaseAuthUser>();
 }

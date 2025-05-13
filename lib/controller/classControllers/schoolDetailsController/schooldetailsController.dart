@@ -2,6 +2,7 @@ import 'dart:developer' show log;
 import 'dart:io';
 
 import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/modules/schoolDetailsModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show Query, QueryDocumentSnapshot;
 import 'package:file_picker/file_picker.dart';
@@ -13,16 +14,18 @@ class SchooldetailsController extends GetxController{
 String? email;
 QueryDocumentSnapshot? lastVisibleImage;
 late FirebaseCollectionVariable collectionVariable;
+late FirebaseAuthUser authcntrl;
 @override
   void onInit() {
     super.onInit();
-    collectionVariable = Get.find();
+    authcntrl = Get.find<FirebaseAuthUser>();
+    collectionVariable = Get.find<FirebaseCollectionVariable>();
     initializeEmail();
   }
 
 void initializeEmail()=>currrentUserEmail();
   Future<void > currrentUserEmail ()async{
-    String adminEmail = await collectionVariable.getCurrentUserEmail();
+    String adminEmail = await authcntrl.getCurrentUserEmail();
    email = adminEmail;
   }
 

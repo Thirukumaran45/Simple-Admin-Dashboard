@@ -137,7 +137,7 @@ Future<void>updateResult({
     result['sub${i}_grade'] = resultMark['sub${i}_grade'] ?? '';
   }
   result['scored_mark'] = resultMark['scored_mark'] ?? '0';
-
+  result['isView'] = 'true';
   await examDoc.set(
     result,SetOptions(merge: true)
   );    

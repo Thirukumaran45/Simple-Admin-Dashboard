@@ -1,4 +1,5 @@
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+
+import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart' ;
 import 'package:admin_pannel/contant/CustomNavigation.dart';
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:admin_pannel/views/pages/HomePage/RoutingPage.dart';
@@ -17,7 +18,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final _beamerKey = GlobalKey<BeamerState>();
-  late FirebaseCollectionVariable collectionVar;
+  late FirebaseAuthUser collectionVar;
 
   late SchooldetailsController controller;
  
@@ -25,7 +26,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     super.initState();
-    collectionVar = Get.find<FirebaseCollectionVariable>();
+    collectionVar = Get.find<FirebaseAuthUser>();
     controller=Get.find<SchooldetailsController>();
  
   }
@@ -80,7 +81,7 @@ Future<String?> _fetchSchoolName() async {
     if (valu == true) {
       customPopNavigation(context, '/adminLogin');
       await collectionVar.signOutAccount(); // Sign out the user
-      
+    
      
     }
 
