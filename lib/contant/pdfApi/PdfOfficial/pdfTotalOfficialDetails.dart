@@ -1,8 +1,8 @@
 import 'dart:typed_data';
-import 'package:admin_pannel/contant/constant.dart';
+import '../../constant.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:get/get.dart' show Get, Inst;
 
 class PdfTotalOfficialDetails {

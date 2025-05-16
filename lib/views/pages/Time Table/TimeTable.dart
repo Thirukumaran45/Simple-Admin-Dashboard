@@ -1,5 +1,5 @@
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../contant/CustomNavigation.dart';
+import '../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
 class Timetable extends StatelessWidget {

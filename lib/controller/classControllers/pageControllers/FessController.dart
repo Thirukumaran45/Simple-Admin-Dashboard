@@ -1,9 +1,9 @@
 import 'dart:developer' show log;
-
+import '../../../contant/ConstantVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
 import 'package:get/get.dart' ;
 
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import '../../../FireBaseServices/CollectionVariable.dart';
 import 'package:flutter/material.dart' show TextEditingController;
 import 'package:intl/intl.dart' show DateFormat;
 
@@ -278,7 +278,7 @@ Future<void> addAndUpdateStudentFeesDetails({
   for (int i = 0; i < feeNameControllers.length; i++) {
     feeMap['fee${i + 1}'] = feeNameControllers[i].text;
     feeMap['fee${i + 1}_amount'] = feeAmountControllers[i].text;
-    feeMap['isView']='true';
+    feeMap['isView']=true;
   }
 
   await collectionVariable.studentLoginCollection

@@ -1,6 +1,6 @@
 
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
+import '../../../../contant/CustomNavigation.dart';
+import '../../../../controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;
 import 'package:percent_indicator/circular_percent_indicator.dart';

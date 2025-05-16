@@ -1,11 +1,11 @@
 
-import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/contant/pdfApi/PdfOfficial/pdfTotalOfficialDetails.dart';
-import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../../contant/constant.dart';
+import '../../../../../controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
+import '../../../../../contant/CustomNavigation.dart';
+import '../../../../../contant/pdfApi/PdfOfficial/pdfTotalOfficialDetails.dart';
+import '../../widgets/CustomeTextField.dart';
+import '../../../../widget/CustomeButton.dart';
+import '../../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst,ever;
 

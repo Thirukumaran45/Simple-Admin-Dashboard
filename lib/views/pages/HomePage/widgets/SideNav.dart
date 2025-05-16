@@ -1,7 +1,7 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/controller/classControllers/pageControllers/DashboardController.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../controller/classControllers/pageControllers/DashboardController.dart';
+import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../../../widget/CustomeColors.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;

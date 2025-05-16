@@ -1,7 +1,8 @@
- import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/controller/classControllers/pageControllers/ExamUpdationController.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+ import '../../../../contant/CustomNavigation.dart';
+import '../../../../controller/classControllers/pageControllers/ExamUpdationController.dart';
+import '../../../../controller/classControllers/schoolDetailsController/pushNotificationController.dart';
+import '../../../widget/CustomDialogBox.dart';
+import '../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;
 
@@ -30,6 +31,7 @@ class _StudentResultState extends State<StudentResult> {
   final Map<String, TextEditingController> _marksControllers = {};
   bool _isEdited = false;
   late ExamUpdationController controller ;
+  late PushNotificationControlelr notificationControlelr;
   final List<String> subjects = [
     "Tamil",
     "Maths",
@@ -44,6 +46,7 @@ class _StudentResultState extends State<StudentResult> {
   @override
   void initState() {
     super.initState();
+    notificationControlelr = Get.find<PushNotificationControlelr>();
    controller = Get.find<ExamUpdationController>();
     // Initialize all controllers with default values and add listeners.
     for (int i = 0; i < subjects.length; i++) {
@@ -99,7 +102,7 @@ void dispose() {
     _marksControllers['mark${i + 1}']?.dispose();
 
   }
-  
+  notificationControlelr.dispose();
   super.dispose();
 }
 
@@ -274,15 +277,16 @@ for (int i = 1; i <= subjects.length; i++) {
 }
 
     resultMark['scored_mark'] = scoredMark.toString();
-
     // Show dialog and update the result
+    
+    await notificationControlelr.examFeesUpdationPushNotification(id: widget.id);
+    if(!context.mounted)return;
     await showCustomDialog(context, "Student Exam Result Published ");
     await controller.updateResult(
       studentId: widget.id,
       examType: widget.examName,
       resultMark: resultMark,
     );
-
     setState(() {
       _isEdited = false;
     });

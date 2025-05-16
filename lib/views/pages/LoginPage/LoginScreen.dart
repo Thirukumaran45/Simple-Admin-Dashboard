@@ -1,8 +1,8 @@
 
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../FireBaseServices/CollectionVariable.dart';
+import '../../../FireBaseServices/FirebaseAuth.dart';
+import '../../../contant/CustomNavigation.dart';
+import '../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:get/get.dart' show Get, Inst;

@@ -1,9 +1,9 @@
 
 import 'dart:developer' show log;
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
-import 'package:admin_pannel/views/pages/SchoolDetailsUpdate/widget/customfield.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import 'widget/customfield.dart';
+import '../../widget/CustomDialogBox.dart';
+import '../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;
 

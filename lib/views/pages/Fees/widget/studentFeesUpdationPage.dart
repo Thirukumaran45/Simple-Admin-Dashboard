@@ -1,11 +1,12 @@
 
 
-import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
-import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfSingleScript.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../controller/classControllers/pageControllers/FessController.dart';
+import '../../../../contant/pdfApi/PdfFees/PdfSingleScript.dart';
+import '../../../../controller/classControllers/schoolDetailsController/pushNotificationController.dart';
+import '../../../widget/CustomDialogBox.dart';
+import '../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
+import '../../../../contant/CustomNavigation.dart';
 import 'package:get/get.dart' show Get, Inst;
 
 class StudentFeesUpdationpage extends StatefulWidget {
@@ -32,13 +33,13 @@ class _StudentFeesUpdationPageState extends State<StudentFeesUpdationpage> {
   late FeesController controller;
   List<Map<String, String>> filteredData = [];
 late Future<List<Map<String, dynamic>>> matchedFeesFuture;
-
+late PushNotificationControlelr notificationControlelr ;
 
 @override
 void initState() {
   super.initState();
  controller = Get.find<FeesController>();
-
+notificationControlelr = Get.find<PushNotificationControlelr>();
   List<String> defaultFeeNames = [
     "Tution Fee",
     "Exam Fee",
@@ -96,7 +97,6 @@ void saveFees() async {
     feeAmountControllers: feeAmountControllers,
   );
   await controller.fetchStudentData(stuClass: widget.stuClass, stuSec: widget.stuSec);
-
   setState(() {
     isSaveButtonVisible = false;
   });
@@ -114,6 +114,7 @@ void saveFees() async {
     allocatedFeeController.dispose();
     
     filteredData.clear();
+    notificationControlelr.dispose();
     super.dispose();
   }
 
@@ -210,6 +211,7 @@ void saveFees() async {
                           onPressed: ()
                         async  {
                           
+                         await notificationControlelr.feeUpdationPushNotificationToSpecific(id: widget.id);
                          isSaveButtonVisible? await showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
                             saveFees();
                           },

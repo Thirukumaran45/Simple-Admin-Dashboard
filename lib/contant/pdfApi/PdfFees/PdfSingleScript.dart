@@ -1,6 +1,6 @@
 import 'dart:typed_data';
-import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../../constant.dart';
+import '../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:get/get.dart' show Get, Inst;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';

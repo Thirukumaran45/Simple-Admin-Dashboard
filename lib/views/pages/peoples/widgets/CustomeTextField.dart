@@ -1,6 +1,6 @@
 
 import 'dart:io' show File;
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../widget/CustomeColors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

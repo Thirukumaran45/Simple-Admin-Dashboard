@@ -1,11 +1,11 @@
 import 'dart:developer'show log;
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/modules/studentModels.dart';
+import '../../../FireBaseServices/CollectionVariable.dart';
+import '../../../contant/constant.dart';
+import '../../../modules/studentModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' ;
-
+import '../../../contant/ConstantVariable.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' show UploadTask, TaskSnapshot;

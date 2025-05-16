@@ -1,4 +1,4 @@
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import 'CustomeColors.dart';
 import 'package:flutter/material.dart';
 
 void showLoadingDialogInSec(BuildContext context, int seconds) {

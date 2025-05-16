@@ -1,10 +1,10 @@
 
-import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfSingleScript.dart';
-import 'package:admin_pannel/contant/pdfApi/PdfFees/PdfTotalFeesScript.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../controller/classControllers/pageControllers/FessController.dart';
+import '../../../../contant/CustomNavigation.dart';
+import '../../../../contant/pdfApi/PdfFees/PdfSingleScript.dart';
+import '../../../../contant/pdfApi/PdfFees/PdfTotalFeesScript.dart';
+import '../../../widget/CustomeButton.dart';
+import '../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;
 import 'package:intl/intl.dart';

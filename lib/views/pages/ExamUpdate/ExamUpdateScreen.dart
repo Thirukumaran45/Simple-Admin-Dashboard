@@ -1,5 +1,5 @@
 
-import 'package:admin_pannel/contant/CustomNavigation.dart';
+import '../../../contant/CustomNavigation.dart';
 import 'package:flutter/material.dart';
 
 class ExamUpdateScreen extends StatelessWidget {

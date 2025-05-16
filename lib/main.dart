@@ -1,17 +1,19 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/SchoolWebSite/websiteMainScreen.dart';
-import 'package:admin_pannel/SchoolWebSite/widgets/userAuthRedirect.dart';
-import 'package:admin_pannel/controller/InitializeController.dart' show disposeAllControllers,initializeGetController;
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
+import 'SchoolWebSite/websiteMainScreen.dart';
+import 'SchoolWebSite/widgets/userAuthRedirect.dart';
+import 'controller/InitializeController.dart' show disposeAllControllers,initializeGetController;
+import 'contant/CustomNavigation.dart';
+import 'views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:url_strategy/url_strategy.dart';
-import 'package:admin_pannel/views/pages/LoginPage/LoginScreen.dart';
+import 'package:url_strategy/url_strategy.dart' show setPathUrlStrategy;
+import 'views/pages/LoginPage/LoginScreen.dart';
 import 'package:web/web.dart' as web;
 import 'dart:js_interop';
+import 'package:flutter/foundation.dart' show kIsWeb; // Add this import at the top
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
@@ -46,19 +48,19 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 AuthWrapper authController =  const AuthWrapper();
-  @override
-  void initState() {
-    super.initState();
+@override
+void initState() {
+  super.initState();
 
-    if (const bool.hasEnvironment('dart.library.js_interop')) {
-      web.window.addEventListener(
-        'beforeunload',
-        (web.Event _) {
-          disposeAllControllers();
-        }.toJS,
-      );
-    }
+  if (kIsWeb) {
+    web.window.addEventListener(
+      'beforeunload',
+      (web.Event _) {
+        disposeAllControllers();
+      }.toJS,
+    );
   }
+}
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(

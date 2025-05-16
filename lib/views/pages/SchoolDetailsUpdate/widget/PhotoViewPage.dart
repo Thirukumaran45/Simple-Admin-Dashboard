@@ -1,8 +1,8 @@
 
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
+import '../../../../contant/CustomNavigation.dart';
+import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../../../widget/CustomDialogBox.dart';
+import '../../../widget/CustomeButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:get/get.dart' show Get,Inst;

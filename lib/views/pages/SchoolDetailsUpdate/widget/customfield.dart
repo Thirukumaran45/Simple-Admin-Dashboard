@@ -1,9 +1,9 @@
 
 
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../contant/CustomNavigation.dart';
+import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../../../widget/CustomeButton.dart';
+import '../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
 class Customfield extends StatefulWidget {

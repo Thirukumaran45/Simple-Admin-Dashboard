@@ -1,12 +1,12 @@
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/TeacherController.dart';
-import 'package:admin_pannel/modules/teacherModels.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/contant/pdfApi/pdfTeacher/pdfTeacherDetails.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../../contant/ConstantVariable.dart' show dateofEmploymentfield;
+import '../../../../../contant/constant.dart';
+import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
+import '../../../../../modules/teacherModels.dart';
+import '../../../../../contant/CustomNavigation.dart';
+import '../../../../../contant/pdfApi/pdfTeacher/pdfTeacherDetails.dart';
+import '../../../../widget/CustomDialogBox.dart';
+import '../../../../widget/CustomeButton.dart';
+import '../../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;
  
@@ -32,7 +32,6 @@ class _StudentEditDownloadState extends State<TeacherEditDownload> {
   bool isEdited = false;
   Teacherdetailmodel? teacherDetails;
   late Teachercontroller controller ;
-
   @override
   void initState() {
     super.initState();
@@ -209,7 +208,6 @@ Future<void> handlePhotoUpdate(String studentId) async {
                               onPressed: () async{
                                 if (isEdited) {
                        await showCustomDialog(context, "Teacher details Updated Succecfully");
-                        
                   bool isUpdated = await controller.updateTeacherDetails(
                     teacherAddress: homeAddressController.text.toString(),
                     teacherSubjectHandling: subjectHandlingController.text.toString(),

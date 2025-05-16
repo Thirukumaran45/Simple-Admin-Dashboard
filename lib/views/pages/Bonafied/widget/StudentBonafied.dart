@@ -1,8 +1,8 @@
-import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/contant/pdfApi/PdfBonafied.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../contant/constant.dart';
+import '../../../../contant/CustomNavigation.dart';
+import '../../../../contant/pdfApi/PdfBonafied.dart';
+import '../../../widget/CustomeButton.dart';
+import '../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 
 class StudentBonafied extends StatefulWidget {

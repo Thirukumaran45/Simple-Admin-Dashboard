@@ -1,6 +1,6 @@
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/views/pages/HomePage/widgets/Dashboard.dart';
-import 'package:admin_pannel/views/pages/LoginPage/LoginScreen.dart';
+import '../../contant/CustomNavigation.dart';
+import '../../views/pages/HomePage/widgets/Dashboard.dart';
+import '../../views/pages/LoginPage/LoginScreen.dart';
 import 'package:beamer/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

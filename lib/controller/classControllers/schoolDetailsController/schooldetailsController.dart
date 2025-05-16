@@ -1,9 +1,10 @@
 import 'dart:developer' show log;
 import 'dart:io';
 
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
-import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
-import 'package:admin_pannel/modules/schoolDetailsModels.dart';
+import '../../../FireBaseServices/CollectionVariable.dart';
+import '../../../FireBaseServices/FirebaseAuth.dart';
+import '../../../contant/ConstantVariable.dart';
+import '../../../modules/schoolDetailsModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show Query, QueryDocumentSnapshot;
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' show UploadTask, TaskSnapshot;

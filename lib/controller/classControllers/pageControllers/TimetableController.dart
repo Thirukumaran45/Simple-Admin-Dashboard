@@ -2,7 +2,7 @@
 
 import 'dart:developer' show log;
 
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import '../../../FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show SetOptions,DocumentSnapshot;
 import 'package:get/get.dart' ;
 

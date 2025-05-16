@@ -1,19 +1,20 @@
 
-import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
-import 'package:admin_pannel/controller/classControllers/pageControllers/AttendanceController.dart';
-import 'package:admin_pannel/controller/classControllers/pageControllers/DashboardController.dart';
-import 'package:admin_pannel/controller/classControllers/pageControllers/ExamUpdationController.dart';
-import 'package:admin_pannel/controller/classControllers/pageControllers/FessController.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StafffController.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentController.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentListBonafiedControlelr.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/TeacherController.dart';
-import 'package:admin_pannel/controller/classControllers/pageControllers/TimetableController.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooResetController.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../FireBaseServices/FirebaseAuth.dart';
+import 'classControllers/pageControllers/AttendanceController.dart';
+import 'classControllers/pageControllers/DashboardController.dart';
+import 'classControllers/pageControllers/ExamUpdationController.dart';
+import 'classControllers/pageControllers/FessController.dart';
+import 'classControllers/peoplesControlelr/HigherOfficialController.dart';
+import 'classControllers/peoplesControlelr/StafffController.dart';
+import 'classControllers/peoplesControlelr/StudentController.dart';
+import 'classControllers/peoplesControlelr/StudentListBonafiedControlelr.dart';
+import 'classControllers/peoplesControlelr/TeacherController.dart';
+import 'classControllers/pageControllers/TimetableController.dart';
+import 'classControllers/schoolDetailsController/pushNotificationController.dart';
+import 'classControllers/schoolDetailsController/schooResetController.dart';
+import 'classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:get/get.dart' show Get,Inst;
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import '../FireBaseServices/CollectionVariable.dart';
 
 void initializeGetController() {
     Get.lazyPut(()=>DashboardController()); 
@@ -30,6 +31,7 @@ void initializeGetController() {
     Get.lazyPut(()=>ExamUpdationController());
     Get.lazyPut(()=>SchoolResetYearController());
     Get.lazyPut(()=>FirebaseAuthUser());
+    Get.lazyPut(()=>PushNotificationControlelr());
 }
 
 void disposeAllControllers() {
@@ -47,4 +49,5 @@ void disposeAllControllers() {
   Get.delete<ExamUpdationController>();
   Get.delete<SchoolResetYearController>();
   Get.delete<FirebaseAuthUser>();
+  Get.delete<PushNotificationControlelr>();
 }

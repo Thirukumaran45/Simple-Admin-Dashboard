@@ -1,6 +1,6 @@
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooResetController.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
+import '../../../contant/CustomNavigation.dart';
+import '../../../controller/classControllers/schoolDetailsController/schooResetController.dart';
+import '../../widget/CustomDialogBox.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;
 

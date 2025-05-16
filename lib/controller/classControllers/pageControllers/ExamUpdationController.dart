@@ -1,6 +1,6 @@
 import 'dart:developer' show log;
 
-import 'package:admin_pannel/FireBaseServices/CollectionVariable.dart';
+import '../../../FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
 import 'package:get/get.dart' show Get, GetxController, Inst;
 
@@ -137,7 +137,7 @@ Future<void>updateResult({
     result['sub${i}_grade'] = resultMark['sub${i}_grade'] ?? '';
   }
   result['scored_mark'] = resultMark['scored_mark'] ?? '0';
-  result['isView'] = 'true';
+  result['isView'] = true;
   await examDoc.set(
     result,SetOptions(merge: true)
   );    

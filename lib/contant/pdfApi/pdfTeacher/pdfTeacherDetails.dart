@@ -1,11 +1,11 @@
 import 'dart:developer' show log;
 import 'dart:typed_data';
-import 'package:admin_pannel/contant/constant.dart';
+import '../../constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:flutter/material.dart' ;
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:get/get.dart' show Get, Inst;
 
 class PdfTeacherDetails {

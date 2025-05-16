@@ -1,9 +1,9 @@
-import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StudentController.dart';
-import 'package:admin_pannel/views/pages/peoples/widgets/CustomeTextField.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
+import '../../../../../FireBaseServices/FirebaseAuth.dart';
+import '../../../../../controller/classControllers/peoplesControlelr/StudentController.dart';
+import '../../widgets/CustomeTextField.dart';
+import '../../../../../contant/CustomNavigation.dart';
 import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog, showLoadingDialogInSec;
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart' show Get,Inst;

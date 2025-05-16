@@ -1,10 +1,10 @@
 
-import 'package:admin_pannel/FireBaseServices/FirebaseAuth.dart' ;
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/controller/classControllers/schoolDetailsController/schooldetailsController.dart';
-import 'package:admin_pannel/views/pages/HomePage/RoutingPage.dart';
-import 'package:admin_pannel/views/pages/HomePage/widgets/SideNav.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
+import '../../../../FireBaseServices/FirebaseAuth.dart' ;
+import '../../../../contant/CustomNavigation.dart';
+import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
+import '../RoutingPage.dart';
+import 'SideNav.dart';
+import '../../../widget/CustomDialogBox.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;

@@ -1,12 +1,12 @@
 
-import 'package:admin_pannel/contant/constant.dart';
-import 'package:admin_pannel/controller/classControllers/peoplesControlelr/StafffController.dart';
-import 'package:admin_pannel/modules/staffModels.dart';
-import 'package:admin_pannel/contant/CustomNavigation.dart';
-import 'package:admin_pannel/contant/pdfApi/PdfStaff/pdfStaffDetails.dart';
-import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
-import 'package:admin_pannel/views/widget/CustomeButton.dart';
-import 'package:admin_pannel/views/widget/CustomeColors.dart';
+import '../../../../../contant/constant.dart';
+import '../../../../../controller/classControllers/peoplesControlelr/StafffController.dart';
+import '../../../../../modules/staffModels.dart';
+import '../../../../../contant/CustomNavigation.dart';
+import '../../../../../contant/pdfApi/PdfStaff/pdfStaffDetails.dart';
+import '../../../../widget/CustomDialogBox.dart';
+import '../../../../widget/CustomeButton.dart';
+import '../../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst;
 
