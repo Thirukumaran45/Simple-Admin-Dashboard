@@ -1,5 +1,5 @@
 import 'dart:developer'show log;
-import '../../../FireBaseServices/CollectionVariable.dart';
+import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../contant/constant.dart';
 import '../../../modules/studentModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;

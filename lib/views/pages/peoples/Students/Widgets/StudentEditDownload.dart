@@ -234,7 +234,7 @@ Future<void> initializeFunction() async {
                             child: ElevatedButton(
                               onPressed: ()async {
                                 if (isEdited) {
-                     await showCustomDialog(context, "Student details Updated Succecfully");
+                     await CustomDialogs().showCustomDialog(context, "Student details Updated Succecfully");
                     String name = studentNameController.text.toUpperCase();
                      
                   bool isUpdated = await controller.updateStudentDetails(

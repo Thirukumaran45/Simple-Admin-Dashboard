@@ -281,7 +281,7 @@ for (int i = 1; i <= subjects.length; i++) {
     
     await notificationControlelr.examFeesUpdationPushNotification(id: widget.id);
     if(!context.mounted)return;
-    await showCustomDialog(context, "Student Exam Result Published ");
+    await CustomDialogs().showCustomDialog(context, "Student Exam Result Published ");
     await controller.updateResult(
       studentId: widget.id,
       examType: widget.examName,

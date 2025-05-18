@@ -190,7 +190,7 @@ void dispose() {
                         child: ElevatedButton(
                           onPressed: () async{
                             if (isEdited) {
-                     await showCustomDialog(context, "Staff details Updated Succecfully");
+                     await CustomDialogs().showCustomDialog(context, "Staff details Updated Succecfully");
        bool isUpdated = await controller.updateStaffDetails(
                     staffAddress: homeAddressController.text.toString(),
                      staffEmail: emailController.text.toString(),

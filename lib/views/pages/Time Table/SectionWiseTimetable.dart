@@ -190,7 +190,7 @@ void dispose() {
               child: ElevatedButton(
               onPressed: () {
       if (isChanged) {
-        showLoadingDialogInSec(context, 7);
+        CustomDialogs().showLoadingDialogInSec(context, 7);
 
         // Print timetable details
        for (var period in timetableContrl.periods) {

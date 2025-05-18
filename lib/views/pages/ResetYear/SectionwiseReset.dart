@@ -133,11 +133,11 @@ Map<int, Future<void> Function()> getDeletionFunctionsMap({
                                 ,foregroundColor: Colors.white
                               ),
                              onPressed: () async {
-  final bool val = await showCustomConfirmDialog(
+  final bool val = await CustomDialogs().showCustomConfirmDialog(
       context: context,
       text: "Are you sure about to delete and reset ?");
   if (!context.mounted) return;
-  if (val) showLoadingDialogInSec(context, 7);
+  if (val) CustomDialogs().showLoadingDialogInSec(context, 7);
 
   int historyIndex = historyItems.indexOf(item);
   var deletionFunctions = getDeletionFunctionsMap(

@@ -1,0 +1,32 @@
+
+abstract class AppException implements Exception {
+  final String message;
+  AppException(this.message);
+}
+
+class UserNotFoundException extends AppException {
+  UserNotFoundException([super.message = "Invalid credential user not found !"]);
+}
+
+class NetworkException extends AppException {
+  NetworkException([super.message = "No internet connection."]);
+}
+
+
+class CloudDataReadException extends AppException {
+  CloudDataReadException([super.message = " Fetching error, please try again later !"]);
+}
+
+class CloudDataWriteException extends AppException {
+  CloudDataWriteException([super.message = "Error in creating the data, please try again later !"]);
+}
+
+
+
+class CloudDataUpdateException extends AppException {
+  CloudDataUpdateException([super.message = "Error in updating the data, please try again later !"]);
+}
+
+class CloudDataDeleteException extends AppException {
+  CloudDataDeleteException([super.message = "Error in deleting the data, please try agian later !"]);
+}

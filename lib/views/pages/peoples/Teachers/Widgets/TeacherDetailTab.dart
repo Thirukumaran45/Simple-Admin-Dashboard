@@ -201,7 +201,7 @@ void dispose() {
                           ),
                           onPressed: ()async {
                             // Implement view more functionality
-                           bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+                           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
                             await controller.deleteTeacher(teacherId: teacher['id']!,);
                            ever(controller.teacherData, (_) {

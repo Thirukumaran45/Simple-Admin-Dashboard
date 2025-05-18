@@ -1,8 +1,8 @@
 import 'dart:developer' show log;
 import 'dart:io';
 
-import '../../../FireBaseServices/CollectionVariable.dart';
-import '../../../FireBaseServices/FirebaseAuth.dart';
+import '../../../services/FireBaseServices/CollectionVariable.dart';
+import '../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../contant/ConstantVariable.dart';
 import '../../../modules/schoolDetailsModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show Query, QueryDocumentSnapshot;

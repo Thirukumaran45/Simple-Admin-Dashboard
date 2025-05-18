@@ -87,9 +87,9 @@ await controller.deleteSchoolChatData();
                             foregroundColor: Colors.white
                           ),
                           onPressed: ()async{
-                           final bool val = await showCustomConfirmDialog(context: context, text: "Are you sure about to delete and reset ?");
+                           final bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Are you sure about to delete and reset ?");
                             if(!context.mounted)return;
-                          if(val)showLoadingDialogInSec(context,15);
+                          if(val)CustomDialogs().showLoadingDialogInSec(context,15);
                             await deleteAllData(context,'${index + 1}');
                         
 

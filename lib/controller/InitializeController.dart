@@ -1,5 +1,5 @@
 
-import '../FireBaseServices/FirebaseAuth.dart';
+import '../services/FireBaseServices/FirebaseAuth.dart';
 import 'classControllers/pageControllers/AttendanceController.dart';
 import 'classControllers/pageControllers/DashboardController.dart';
 import 'classControllers/pageControllers/ExamUpdationController.dart';
@@ -14,7 +14,7 @@ import 'classControllers/schoolDetailsController/pushNotificationController.dart
 import 'classControllers/schoolDetailsController/schooResetController.dart';
 import 'classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'package:get/get.dart' show Get,Inst;
-import '../FireBaseServices/CollectionVariable.dart';
+import '../services/FireBaseServices/CollectionVariable.dart';
 
 void initializeGetController() {
     Get.lazyPut(()=>DashboardController()); 

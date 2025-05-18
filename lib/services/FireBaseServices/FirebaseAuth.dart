@@ -2,13 +2,14 @@ import 'dart:developer' show log;
 
 import 'AuthUserModule.dart';
 import 'CollectionVariable.dart';
-import '../views/widget/CustomDialogBox.dart';
+import '../../views/widget/CustomDialogBox.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show  GetxController, Get,Inst;
 class FirebaseAuthUser extends GetxController{
   
-  FirebaseCollectionVariable collectioncontrolelr = Get.find();
+  FirebaseCollectionVariable collectioncontrolelr = Get.find<FirebaseCollectionVariable>();
+
   
 
   Future<Authuser?> signinUser({required String email, required String password, required BuildContext context}) async {
@@ -21,7 +22,7 @@ class FirebaseAuthUser extends GetxController{
    await checkBackendEmail(email);  
     return Authuser(id: userCredential.user!.uid, email: userCredential.user!.email!);
   }  catch (e) {
-    await showCustomDialog(context, "Oops ! something wrong please enter valid credentials ");
+    await CustomDialogs().showCustomDialog(context, "Oops ! something wrong please enter valid credentials ");
     return null; // Return null if authentication fails
   }
 }
@@ -56,7 +57,7 @@ Future<Authuser?> createUser({required String email, required String password, r
   }
   on FirebaseAuthException catch(e){
    log("Firebase Auth Error: ${e.code}");
-    showCustomDialog(context, "Error ${e.code}");
+   CustomDialogs().showCustomDialog(context, "Error ${e.code}");
     return null; // Return null if authentication fails
   
 }

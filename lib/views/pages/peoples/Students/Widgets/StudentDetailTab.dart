@@ -272,7 +272,7 @@ DataCell(
       ),
     ),
    onPressed: () async {
-  bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+  bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
   if (val) {
     await controler.deleteStudent(studentId: student['id']!, stuClass: student['class'], stuSec: student['section']);
    ever(controler.studentData, (_) {

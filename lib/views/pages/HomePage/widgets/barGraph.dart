@@ -1,7 +1,8 @@
+import 'package:admin_pannel/views/pages/HomePage/widgets/timer.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-Widget _buildChartContainer({required String title, required Widget chart}) {
+Widget _buildChartContainer({required String title, required Widget chart, required IconData icon }) {
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
@@ -18,12 +19,22 @@ Widget _buildChartContainer({required String title, required Widget chart}) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0,vertical: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+                Icon(icon) ,
+               const SizedBox(width: 20,),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
         const SizedBox(
-          height: 80,
+          height: 50,
         ),
         SizedBox(
           height: 200,
@@ -49,14 +60,12 @@ Widget buildPieChartData(double teacherAvg, double studentAvg, double workerAvg,
         text: "Teacher",
         val: teacherVal,
         valAvg: teacherAvg,
-        isIcon: false,
       ),
       _buildDataOverviewRow(
         color: Colors.blueAccent,
         text: "Student",
         val: studentVal,
         valAvg: studentAvg,
-        isIcon: false,
         '',
       ),
       _buildDataOverviewRow(
@@ -64,14 +73,12 @@ Widget buildPieChartData(double teacherAvg, double studentAvg, double workerAvg,
         text: "Working Staff",
         val: workerVal,
         valAvg: workerAvg,
-        isIcon: false,
         '',
       ),_buildDataOverviewRow(
         color: Colors.green,
         text: "Higher Official",
         val: officialval,
         valAvg: officialAvg,
-        isIcon: false,
         '',
       ),
       
@@ -85,30 +92,26 @@ Widget _buildDataOverviewRow(
   required String text,
   required dynamic val,
   required double valAvg,
-  required bool isIcon,
 }) {
   return Padding(
     padding: const EdgeInsets.all(10),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        isIcon
-            ? Icon(
-                icon,
-                color: color,
-              )
-            : Container(
+        Container(
                 height: 12,
                 width: 12,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: color,boxShadow: const [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0, 4),
+                  blurRadius: 8,
+                ),
+              ],),
               ),
         const SizedBox(width: 10),
-        isIcon
-            ? Text(
-                '$text: $val',
-                style: TextStyle(fontSize: 16,  color: Colors.grey[950]),
-              )
-            : Text(
+        
+            Text(
                 "$text : $val (${valAvg.toStringAsFixed(1)}%)",
                 style:  TextStyle(fontSize: 16, color: Colors.grey[950]),
               ),
@@ -121,7 +124,9 @@ Widget buildPieChart(double teacherAvg, double studentAvg, double workerAvg, dou
 required officialval,
     required studentVal,
     required workerVal,}) {
+      double totalpeople = teacherVal+studentVal+workerVal+officialval;
   return _buildChartContainer(
+    icon: Icons.apartment,
     chart: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -129,52 +134,66 @@ required officialval,
           flex: 3,
           child: Padding(
             padding: const EdgeInsets.only(left: 30.0,bottom: 20),
-            child: PieChart(
-              PieChartData(
-                sectionsSpace: 0,
-                centerSpaceRadius: 70,
-                sections: [
-                  PieChartSectionData(
-                    value: teacherAvg,
-                    color: Colors.redAccent,
-                    title: "${teacherAvg.toStringAsFixed(1)}%",
-                    titleStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                PieChart(
+                  PieChartData(
+                    sectionsSpace: 0,
+                    centerSpaceRadius: 70,
+                    
+                    sections: [
+                      PieChartSectionData(
+                        value: teacherAvg,
+                        color: Colors.redAccent,
+                        title: "${teacherAvg.toStringAsFixed(1)}%",
+                        titleStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      PieChartSectionData(
+                        value: studentAvg,
+                        color: Colors.blueAccent,
+                        title: "${studentAvg.toStringAsFixed(1)}%",
+                        titleStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      PieChartSectionData(
+                        value: workerAvg,
+                        color: Colors.orangeAccent,
+                        title: "${workerAvg.toStringAsFixed(1)}%",
+                        titleStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ), PieChartSectionData(
+                        value: officialAvg,
+                        color: Colors.green,
+                        title: "${officialAvg.toStringAsFixed(1)}%",
+                        titleStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  PieChartSectionData(
-                    value: studentAvg,
-                    color: Colors.blueAccent,
-                    title: "${studentAvg.toStringAsFixed(1)}%",
-                    titleStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  PieChartSectionData(
-                    value: workerAvg,
-                    color: Colors.orangeAccent,
-                    title: "${workerAvg.toStringAsFixed(1)}%",
-                    titleStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ), PieChartSectionData(
-                    value: officialAvg,
-                    color: Colors.green,
-                    title: "${officialAvg.toStringAsFixed(1)}%",
-                    titleStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                  Text(
+      '$totalpeople',
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
+    ),
+              ],
             ),
           ),
         ),
@@ -194,92 +213,19 @@ required officialval,
         ),
       ],
     ),
-    title: 'Number of People Overview',
+    title: 'Total strength in school ',
   );
 }
 
-Widget buildLineChart(List<double> monthlyRevenue) {
-  final months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
+
+
+Widget buildLineChart({required void Function() onPressed}) {
+
 
   return _buildChartContainer(
-    title: "Fees Revenue Overview",
-    chart: LineChart(
-      LineChartData(
-        gridData: const FlGridData(show: false),
-        titlesData: FlTitlesData(
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, meta) {
-                if (value.toInt() < months.length) {
-                  return Text(
-                    months[value.toInt()],
-                    style:  TextStyle(fontSize: 12, color: Colors.grey[950]),
-                  );
-                }
-                return const SizedBox(); // Prevent index out of range
-              },
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 40, // Adjusted for wider text
-              getTitlesWidget: (value, meta) => Text(
-                '₹${(value.toInt())}L', // Display value in lakhs
-                style:  TextStyle(fontSize: 12, color: Colors.grey[950]),
-              ),
-            ),
-          ),
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: List.generate(
-              monthlyRevenue.length,
-              (index) => FlSpot(index.toDouble(),
-                  monthlyRevenue[index] / 100000), // Convert to lakhs
-            ),
-            isCurved: true,
-            color: Colors.blue,
-            barWidth: 3,
-            isStrokeCapRound: true,
-            belowBarData: BarAreaData(
-              show: true,
-              color: Colors.blue.withAlpha(60),
-            ),
-          )
-        ],
-        lineTouchData: LineTouchData(
-          handleBuiltInTouches: true,
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipItems: (List<LineBarSpot> touchBarSpots) {
-              return touchBarSpots.map((barSpot) {
-                final flSpot = barSpot;
-                return LineTooltipItem(
-                  '₹${(flSpot.y * 100000).toStringAsFixed(0)}', // Show exact value in lakhs
-                  const TextStyle(color: Colors.white),
-                );
-              }).toList();
-            },
-          ),
-        ),
-      ),
-    ),
+    icon: Icons.campaign,
+    title: "Alert unpaymnet fees",
+    chart:AutomatedButtonWithTimer(onPressed:  onPressed),
+
   );
 }

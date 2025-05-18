@@ -1,5 +1,5 @@
 
-import '../../../../../FireBaseServices/FirebaseAuth.dart';
+import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import '../../widgets/CustomeTextField.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -7,8 +7,7 @@ import '../../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart' show Get,Inst;
-import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog, showCustomDialog,showLoadingDialogInSec;
-
+import '../../../../widget/CustomDialogBox.dart' ;
 class AddHigherOfficialTab extends StatefulWidget {
   const AddHigherOfficialTab({super.key});
 
@@ -167,10 +166,10 @@ Future<void> profileFuntion() async {
        
      if(updatePhotoUrl!=null)
      {
-       bool val = await showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
+       bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
      if(val)
      {
-     showLoadingDialogInSec(context, 10);
+     CustomDialogs().showLoadingDialogInSec(context, 10);
       final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
      String userId = user!.id;
      final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
@@ -193,7 +192,7 @@ Future<void> profileFuntion() async {
      {
 
   if(!context.mounted) return;
-  await showCustomDialog(context, "Please pick profile photo for the person !");
+  await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person !");
      }
 
 

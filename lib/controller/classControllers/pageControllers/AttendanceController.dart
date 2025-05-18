@@ -1,5 +1,6 @@
 import 'dart:developer' show log;
-import '../../../FireBaseServices/CollectionVariable.dart';
+import 'package:admin_pannel/services/FirebaseException/pageException.dart' ;
+import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
 import 'package:get/get.dart' show Get, GetxController, Inst ;
 import 'package:intl/intl.dart' show DateFormat;
@@ -11,6 +12,7 @@ class AttendanceController extends GetxController {
 final int _pageSize = 15;
 DocumentSnapshot? _lastStudentDoc;
 bool _isFetchingMoreStudents = false;
+
   @override
   void onInit() {
     super.onInit();
@@ -42,10 +44,11 @@ Future<List<String>> getAttendanceDates() async {
         return List<String>.from(rawList);
       }
     }
-  } catch (e) {
-    log("Error fetching attendance dates: $e");
+  }  catch (fe) {
+    log("Error fetching attendance dates: $fe");
+    throw CloudDataReadException(" Fetching error, please try again later !"); 
   }
-
+ 
   return [];
 }
 
@@ -74,6 +77,7 @@ for( String date in listDate){
         }
       } catch (e) {
         log('Error in fetching month values for class $i section $sec: $e');
+        throw CloudDataReadException('Error in getting attendacne month values');
       }
     }
   }
@@ -83,6 +87,7 @@ for( String date in listDate){
 }
 
 Future<void> updateAttendance({required String stuClass, required String sec, required String status}) async {
+  try {
   final String date = gettoadayDate();
   
   final snapshot = await collectionControler.attendanceCollection
@@ -90,21 +95,25 @@ Future<void> updateAttendance({required String stuClass, required String sec, re
       .doc("$stuClass$sec")
       .collection("presented_student")
       .get();
-
+  
   for (var doc in snapshot.docs) {
     final String id = doc.data()["studentId"]; // Extract studentId for each document
-
+  
     // Update attendance status in the attendance collection
     await doc.reference.update({'attendanceStatus': status});
-
+  
     // Update the student's document in studentLoginCollection
     await collectionControler.studentLoginCollection.doc(id).update({
       "Today Attendance": status,
     });
   }
-
+}  catch (e) {
+  log('error in updating the attendance $e');
+  throw CloudDataReadException("Updating the attendance is failed, please try again later !");
+}
 
 }
+
 Future<String> getTeacherName({required String stuClass, required String sec}) async {
   try {
     final String date = gettoadayDate();
@@ -113,13 +122,15 @@ Future<String> getTeacherName({required String stuClass, required String sec}) a
     final docSnapshot = await docRef.get();
 
     if (docSnapshot.exists) {
-      return docSnapshot.data()?['teacherName'] ?? '';
+      final data = docSnapshot.data() as Map<String, dynamic>;
+      String teacherName = data['teacherName'] ?? '';
+      return teacherName;
     } else {
       return ''; 
     }
   } catch (e) {
     log("Error fetching teacher name: $e");
-    return ''; // Return empty string on error
+    throw CloudDataReadException("No teacher are found !");
   }
 }
 
@@ -177,7 +188,7 @@ Future<List<Map<String, dynamic>>> fetchPagedStudents({
     }).toList();
   } catch (e) {
     log('Error paginating students: $e');
-    return [];
+    throw CloudDataDeleteException("Error in fetching the student details");
   } finally {
     _isFetchingMoreStudents = false;
   }
@@ -192,24 +203,26 @@ final String date = gettoadayDate();
 
   Map<int, Map<String, String>> classWiseAttendance = {};
 
+  try {
   for (int i = 1; i < 13; i++) {
     int totalPresent = 0;
     int totalAbsent = 0;
     Map<String, String> sectionStatus = {}; // Stores status for sections A, B, C, D
-
+  
     for (String sec in ['A', 'B', 'C', 'D']) {
+      
       final docRef = collectionControler.attendanceCollection
           .collection(date)
           .doc("${i.toString()}$sec");
-
+  
       final docSnapshot = await docRef.get();
-
+  
       if (docSnapshot.exists) {
         final data = docSnapshot.data(); // Explicitly cast to a Map
         final String presentStr = data?["number of Student present"] ?? '0';
         final String absentStr = data?["number of Student absent"] ?? '0';
         final String status = data?["class attendance status"] ?? 'Not Taken';
-
+  
         totalPresent += int.tryParse(presentStr) ?? 0;
         totalAbsent += int.tryParse(absentStr) ?? 0;
         sectionStatus[sec] = status; // Store status for each section
@@ -217,7 +230,7 @@ final String date = gettoadayDate();
         sectionStatus[sec] = 'Not Taken'; // Default if document doesn't exist
       }
     }
- 
+   
     classWiseAttendance[i] = {
       "numberOfPresent": totalPresent.toString(),
       "numberOfAbsent": totalAbsent.toString(),
@@ -228,6 +241,10 @@ final String date = gettoadayDate();
     };
   }
   return classWiseAttendance;
+} catch (e) {
+  log(e.toString());
+  throw CloudDataReadException('Could not get the total number of present and absent, please try again later !');
+}
 }
 
 Future<Map<String, Map<String, String>>> getSectionWiseTotalPresentAndAbsent({required String stuClass})async{
@@ -235,36 +252,41 @@ final String date = gettoadayDate();
 
   Map<String, Map<String, String>> sectionWiseAttendance = {};
 
-   for (String sec in ['A','B','C','D']) {
-      final docRef = collectionControler.attendanceCollection.collection(date)
-          .doc("$stuClass$sec");
+   try {
+  for (String sec in ['A','B','C','D']) {
+     final docRef = collectionControler.attendanceCollection.collection(date)
+         .doc("$stuClass$sec");
+  
+     final docSnapshot = await docRef.get();
+  
+     if (docSnapshot.exists) {
+       final data = docSnapshot.data(); // Explicitly cast to a Map
+      final String  presentStr = data?["number of Student present"] ?? '0';
+       final String  absentStr = data?["number of Student absent"] ?? '0';
+       final String  status = data?["class attendance status"] ?? 'Not Taken';
+  
+     sectionWiseAttendance[sec]={
+     "numberOfPresent": presentStr,
+     "numberOfAbsent": absentStr,
+     "status":status
+     };
+  
+     }
+     else{
+        sectionWiseAttendance[sec]={
+     "numberOfPresent": '0',
+     "numberOfAbsent": '0',
+     "status":"Not Taken"
+     };
+     }
+    
+     }
+  
+   return sectionWiseAttendance;
+}  catch (e) {
+throw CloudDataReadException('Could not get the total number of present and absent, please try again later !');
 
-      final docSnapshot = await docRef.get();
-
-      if (docSnapshot.exists) {
-        final data = docSnapshot.data(); // Explicitly cast to a Map
-       final String  presentStr = data?["number of Student present"] ?? '0';
-        final String  absentStr = data?["number of Student absent"] ?? '0';
-        final String  status = data?["class attendance status"] ?? 'Not Taken';
-
-      sectionWiseAttendance[sec]={
-      "numberOfPresent": presentStr,
-      "numberOfAbsent": absentStr,
-      "status":status
-      };
-
-      }
-      else{
-         sectionWiseAttendance[sec]={
-      "numberOfPresent": '0',
-      "numberOfAbsent": '0',
-      "status":"Not Taken"
-      };
-      }
-     
-      }
-   
-    return sectionWiseAttendance;
+}
 }
 
 }

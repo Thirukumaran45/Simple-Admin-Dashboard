@@ -1,6 +1,6 @@
 import 'dart:developer' show log;
 
-import '../../../FireBaseServices/CollectionVariable.dart';
+import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
 import 'package:get/get.dart' show Get, GetxController, Inst;
 

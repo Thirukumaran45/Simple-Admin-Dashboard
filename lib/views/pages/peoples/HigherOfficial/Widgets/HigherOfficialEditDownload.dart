@@ -195,7 +195,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             child: ElevatedButton(
                               onPressed: () async{
                                 if (isEdited) {
-                              await showCustomDialog(context, "Higher Official details Updated Succecfully");
+                              await CustomDialogs().showCustomDialog(context, "Higher Official details Updated Succecfully");
                                 bool isUpdated = await controller.updateOfficialDetails(
                     principalAddress: homeAddressController.text.toString(),
                      principalEmail: emailController.text.toString(),

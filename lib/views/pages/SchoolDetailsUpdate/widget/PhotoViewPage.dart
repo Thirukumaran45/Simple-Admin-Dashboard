@@ -70,7 +70,7 @@ Widget build(BuildContext context) {
                 bool val = await controller.deleteSchoolPhoto();
                 if (val) {
                   if (!context.mounted) return;
-                  bool isUpdate = await showCustomConfirmDialog(context: context, text: "Succesfully deleted, back to the page?");
+                  bool isUpdate = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Succesfully deleted, back to the page?");
                   if (!context.mounted) return;
                   if (isUpdate) customNvigation(context, '/school-details-updation');
                 }

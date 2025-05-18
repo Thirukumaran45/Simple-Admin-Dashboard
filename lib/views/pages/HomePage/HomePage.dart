@@ -1,6 +1,8 @@
+import 'package:admin_pannel/controller/classControllers/schoolDetailsController/pushNotificationController.dart';
+
 import 'widgets/barGraph.dart';
 import 'package:flutter/material.dart';
-import '../../../FireBaseServices/CollectionVariable.dart';
+import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:get/get.dart' show Get, Inst;
 
 class Homepage extends StatefulWidget {
@@ -13,10 +15,11 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   late FirebaseCollectionVariable collectionControler;
   Map<String, dynamic> numberOfPeopleMap = {}; // Store results here
-
+  late PushNotificationControlelr notificationControlelr;
   @override
   void initState() {
     super.initState();
+    notificationControlelr = Get.find<PushNotificationControlelr>();
     collectionControler = Get.find<FirebaseCollectionVariable>();
     fetchData();
   }
@@ -41,20 +44,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    List<double> monthFeesAmt = [
-      2000000, // ₹20L
-      3500000, // ₹35L
-      4000000, // ₹40L
-      5500000, // ₹55L
-      6000000, // ₹60L
-      7200000, // ₹72L
-      8500000, // ₹85L
-      9000000, // ₹90L
-      10200000, // ₹102L
-      11000000, // ₹110L
-      12500000, // ₹125L
-      13000000, // ₹130L
-    ];
+
   // Parse numberOfPeople values to double, ensuring they are not null or empty
   double teacherPercentage = double.tryParse(numberOfPeopleMap["teachers"] ?? "0") ?? 0;
   double studentPercentage = double.tryParse(numberOfPeopleMap["students"] ?? "0") ?? 0;
@@ -82,10 +72,12 @@ class _HomepageState extends State<Homepage> {
             Row(
               children: [
                 Expanded(
-                    flex: 1, child: buildLineChart(monthFeesAmt)),
+                    flex: 1, child: buildLineChart(onPressed: () async{
+                      notificationControlelr.feeUpdationPushNotificationToAll();
+                    },)),
                 const SizedBox(width: 20),
                 Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: buildPieChart(teacherAvg, studentAvg, workerAvg,
                     officialval:officialsPercentage,
                     officialAvg,
@@ -112,50 +104,70 @@ class _HomepageState extends State<Homepage> {
       ],
     );
   }
-
-  Widget _buildCard(String title, String? value, IconData icon, Color color) {
-    return Expanded(
-        flex: 4,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-              color: color.withAlpha(80),
-              borderRadius: BorderRadius.circular(15)),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+Widget _buildCard(String title, String? value, IconData icon, Color color) {
+  return Expanded(
+    flex: 4,
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: color.withAlpha((0.1 * 255).toInt()), // softer background
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: color.withAlpha((0.3 * 255).toInt()),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+            spreadRadius: 1,
+          ),
+        ],
+        border: Border.all(color: color.withAlpha((0.4 * 255).toInt()), width: 1),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      icon,
-                      size: 30,
-                      color: color,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    )
-                  ],
+                Icon(
+                  icon,
+                  size: 30,
+                  color: color,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(width: 10),
                 Text(
-                  value ?? "0", // Ensure it is always a String
+                  title,
                   style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 )
               ],
             ),
-          ),
-        ));
+            const SizedBox(height: 10),
+            Text(
+              value ?? "0",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: color.darken(0.2), // subtle dark shade of main color
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+}
+extension ColorUtils on Color {
+  /// Darkens the color by the given [amount] (between 0 and 1).
+  Color darken([double amount = .1]) {
+    assert(amount >= 0 && amount <= 1);
+    final hsl = HSLColor.fromColor(this);
+    final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+    return hslDark.toColor();
   }
 }

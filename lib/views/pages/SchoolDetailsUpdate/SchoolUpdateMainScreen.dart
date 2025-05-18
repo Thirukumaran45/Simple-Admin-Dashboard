@@ -330,8 +330,8 @@ Widget _buildPasskeyRow(List<String> passkeys) {
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                 onPressed: () async {
 final isupdate = await addAndUpdateDetails(); 
-  isupdate?showCustomDialog(context, "School Details Updated Succesfully"):
-  showCustomDialog(context, "Something went wrong, please check the details !");
+  isupdate?CustomDialogs().showCustomDialog(context, "School Details Updated Succesfully"):
+  CustomDialogs().showCustomDialog(context, "Something went wrong, please check the details !");
   setState(() {
     if (label == "School Name") {
       isEditingSchoolName = false;

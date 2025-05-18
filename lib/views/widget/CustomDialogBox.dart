@@ -1,6 +1,9 @@
 import 'CustomeColors.dart';
 import 'package:flutter/material.dart';
 
+@immutable
+class CustomDialogs{
+
 void showLoadingDialogInSec(BuildContext context, int seconds) {
   showDialog(
     context: context,
@@ -32,7 +35,6 @@ void showLoadingDialogInSec(BuildContext context, int seconds) {
   );
 }
 
-
 Future<void> showCustomDialog(BuildContext context, String text) async {
   return await showDialog(
     context: context,
@@ -53,7 +55,7 @@ Future<void> showCustomDialog(BuildContext context, String text) async {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: FutureBuilder(
-                      future: Future.delayed(const Duration(seconds: 3)), // 3-second delay
+                      future: Future.delayed(const Duration(seconds: 2)), 
                       builder: (context, snapshot) {
                         if (snapshot.connectionState != ConnectionState.done) {
                              return const Row(
@@ -114,7 +116,6 @@ Future<void> showCustomDialog(BuildContext context, String text) async {
     },
   );
 }
-
 
 Future<bool> showCustomConfirmDialog({
   required BuildContext context,
@@ -217,3 +218,45 @@ Future<bool> showCustomConfirmDialog({
 .then((value) => value ?? false);
 }
 
+Future<void> showCustomErrorDialog(
+    BuildContext context,
+    String message, {
+    String title = "Error",
+  }) {
+  return showDialog(
+    context: context,
+    builder: (ctx) => Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          // Title row
+          Row(children: [
+            const Icon(Icons.error_outline, color: Colors.red),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(title,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close, color: Colors.red),
+              onPressed: () => Navigator.of(ctx).pop(),
+            )
+          ]),
+          const SizedBox(height: 8),
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: primaryGreenColors),
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text("OK"),
+          )
+        ]),
+      ),
+    ),
+  );
+}
+
+}

@@ -9,7 +9,7 @@ import '../../../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' show Get,Inst,ever;
 
-import '../../../../widget/CustomDialogBox.dart' show showCustomConfirmDialog;
+import '../../../../widget/CustomDialogBox.dart';
 
 class HigherOfficialDetailsTab extends StatefulWidget {
   const HigherOfficialDetailsTab({super.key});
@@ -201,7 +201,7 @@ void dispose() {        // Properly dispose of the GetX Worker
                                   BorderRadius.circular(20), // Rounded corners
                             ),
                           ),
-                          onPressed: ()async {           bool val = await showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+                          onPressed: ()async {           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
                             await controller.deleteOfficials(officialId: teacher['id']!,);
                            ever(controller.officialData, (_) {

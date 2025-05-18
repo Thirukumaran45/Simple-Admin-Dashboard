@@ -1,5 +1,5 @@
 
-import '../../../../FireBaseServices/FirebaseAuth.dart' ;
+import '../../../../services/FireBaseServices/FirebaseAuth.dart' ;
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import '../RoutingPage.dart';
@@ -75,10 +75,11 @@ Future<String?> _fetchSchoolName() async {
           const SizedBox(width: 20),
           IconButton(
             onPressed: () async {
-              final valu = await showCustomConfirmDialog(
+              final valu = await CustomDialogs().showCustomConfirmDialog(
         context: context, text: "Are you sure about to Sign-Out ?");
     
     if (valu == true) {
+      if(!context.mounted)return;
       customPopNavigation(context, '/adminLogin');
       await collectionVar.signOutAccount(); // Sign out the user
     

@@ -13,6 +13,9 @@ import 'views/pages/LoginPage/LoginScreen.dart';
 import 'package:web/web.dart' as web;
 import 'dart:js_interop';
 import 'package:flutter/foundation.dart' show kIsWeb; // Add this import at the top
+import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
+// import 'package:connectivity_plus/connectivity_plus.dart' show Connectivity, ConnectivityResult;
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +33,8 @@ void main() async {
   measurementId: "G-GGQVTBJGYG"
       ),
     );
+   await dotenv.load(fileName: ".env");
+
     log("Firebase initialized successfully");
   } catch (e) {
     log("Error initializing Firebase: $e");
@@ -46,44 +51,50 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-AuthWrapper authController =  const AuthWrapper();
-@override
-void initState() {
-  super.initState();
 
-  if (kIsWeb) {
-    web.window.addEventListener(
-      'beforeunload',
-      (web.Event _) {
-        disposeAllControllers();
-      }.toJS,
-    );
+class _MyAppState extends State<MyApp> {
+  AuthWrapper authController = const AuthWrapper();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (kIsWeb) {
+      web.window.addEventListener(
+        'beforeunload',
+        (web.Event _) {
+          disposeAllControllers();
+        }.toJS,
+      );
+    }
   }
-}
+
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerDelegate: BeamerDelegate(
-        initialPath: '/', // Start from InitialPage
-       notFoundPage:authController.langingAuthPage(),
+        initialPath: '/',
+        notFoundPage: authController.langingAuthPage(),
         locationBuilder: RoutesLocationBuilder(
           routes: {
             '/': (context, state, data) => const BeamPage(
-          child: InitialPage(),
-          title: 'NAG CBSE ERP',
-          type: BeamPageType.scaleTransition,
-          key: ValueKey('school web page'),
-        ),
-            '/auth': (context, state, data) => authController.authNavigate(), // Handles login check
+                  child: InitialPage(),
+                  title: 'NAG CBSE ERP',
+                  type: BeamPageType.scaleTransition,
+                  key: ValueKey('school web page'),
+                ),
+            '/auth': (context, state, data) => authController.authNavigate(),
             '/adminLogin': (context, state, data) => const BeamPage(
-          child: LoginPage(),
-          title: 'Admin Login',
-          type: BeamPageType.slideRightTransition,
-          key: ValueKey('admin-login'),
-        ),
-            '/home': (context, state, data) => const AuthGuard(child: LandingPage()),
+                  child: LoginPage(),
+                  title: 'Admin Login',
+                  type: BeamPageType.slideRightTransition,
+                  key: ValueKey('admin-login'),
+                ),
+            '/home': (context, state, data) =>
+                const AuthGuard(child: LandingPage()),
           },
         ).call,
       ),
@@ -91,6 +102,7 @@ void initState() {
     );
   }
 }
+
 
 
 

@@ -23,14 +23,15 @@ class PdfApi {
     final pdf = pw.Document();
     String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
-
+    final schoolDetails = await controller.getSchoolDetails();
+    String schoolName = schoolDetails.schoolName.toUpperCase();
     pdf.addPage(
       pw.MultiPage(
         build: (context) => <pw.Widget>[
           pw.Stack(
             children: [
               if (watermarkImage != null)
-                pw.Positioned.fill(
+                pw.Positioned.fill( 
                   child: pw.Center(
                     child: pw.Opacity(
                       opacity: 0.2,

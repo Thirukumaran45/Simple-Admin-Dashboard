@@ -212,7 +212,7 @@ void saveFees() async {
                         async  {
                           
                          await notificationControlelr.feeUpdationPushNotificationToSpecific(id: widget.id);
-                         isSaveButtonVisible? await showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
+                         isSaveButtonVisible? await CustomDialogs().showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
                             saveFees();
                           },
                          style: ElevatedButton.styleFrom(

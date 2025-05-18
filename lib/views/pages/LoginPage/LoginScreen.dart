@@ -1,6 +1,6 @@
 
-import '../../../FireBaseServices/CollectionVariable.dart';
-import '../../../FireBaseServices/FirebaseAuth.dart';
+import '../../../services/FireBaseServices/CollectionVariable.dart';
+import '../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../contant/CustomNavigation.dart';
 import '../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';

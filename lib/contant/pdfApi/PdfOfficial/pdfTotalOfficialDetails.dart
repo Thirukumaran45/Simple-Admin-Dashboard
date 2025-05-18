@@ -22,7 +22,7 @@ class PdfTotalOfficialDetails {
 
     pdf.addPage(
       pw.MultiPage(
-        build: (context) => <pw.Widget>[
+        build: (context) => <pw.Widget>[ 
           pw.Stack(
             children: [
               if (watermarkImage != null)
