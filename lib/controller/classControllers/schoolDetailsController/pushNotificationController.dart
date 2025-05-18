@@ -59,9 +59,9 @@ final FirebaseCollectionVariable collectionVariable = Get.find<FirebaseCollectio
 };
    
   final List<String> scopes = [
-     "https://www.googleapis.com/auth/userinfo.email",
-     "https://www.googleapis.com/auth/firebase.database",
-     "https://www.googleapis.com/auth/firebase.messaging"
+     dotenv.env['GOOGLE_USER_INFO']!,
+     dotenv.env['FIRBASE_DATABASE']!,
+     dotenv.env['FIREBASE_MESSAGING']!
    ]; 
   
    final client = await clientViaServiceAccount(ServiceAccountCredentials.fromJson(serviceAccountJson) , scopes);
