@@ -1,8 +1,9 @@
 import 'dart:developer' show log;
+import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+
 import '../../../contant/ConstantVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
 import 'package:get/get.dart' ;
-
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:flutter/material.dart' show TextEditingController;
 import 'package:intl/intl.dart' show DateFormat;
@@ -66,7 +67,7 @@ bool _isFetchingMoreHisrty = false;
 
 }   catch (e) {
   log('error in fetching the data $e');
-        update(); 
+  throw CloudDataReadException("Error in getting student details, please try again later !");
 }finally {
     _isFetchingMoreStudent = false;
   }
@@ -110,7 +111,8 @@ Future<List<Map<String, String>>> fetchAllBankDetails() async {
     return result;
   } catch (e) {
     log('Error fetching all bank details: $e');
-    return [];
+    throw CloudDataReadException("Error in fetching bank details, please try again later !");
+    
   }
   
 }
@@ -138,6 +140,7 @@ Future<void> addAndUpdateBankDetailsToFirestore(
     update(); 
   } catch (e) {
     log("Error updating bank details: $e");
+    throw CloudDataWriteException("Error in updating the bank details, please try again later !");
   }
 }
 
@@ -185,6 +188,7 @@ Future<void> fetchTransactionHistry() async {
     feesData.value = tempList;
 }  catch (e) {
   log("error in fetching transaction histry:$e");
+  throw CloudDataReadException("Error in fetching transaction histry, please try again later !");
 }finally {
     _isFetchingMoreHisrty = false;
   }
@@ -209,6 +213,7 @@ Future<List<String>> fetchUniqueMonthValuesAll() async {
         }
       } catch (e) {
         log('Error in fetching month values : $e');
+        throw CloudDataReadException("Error in getting the month details, please try again later !");
       }
     
   update();
@@ -232,7 +237,8 @@ Future<List<String>> fetchUniqueDateValuesAll() async {
         }
       } catch (e) {
         log('Error in fetching date values : $e');
-   
+        throw CloudDataReadException("Error in getting the month details, please try again later !");
+        
   }  update();
   log(dateValues.toString() );
   return dateValues.toList();
@@ -242,14 +248,15 @@ Future<Map<String, String>> getFeesSummary({
   required String sectedClass,
   required String section,
 }) async {
+  try {
   final studentSnapshot = await collectionVariable.studentLoginCollection
       .where('class', isEqualTo: sectedClass.trim().toUpperCase())
       .where('section', isEqualTo: section.trim().toUpperCase())
       .get();
-
+  
   int paidCount = 0;
   int unpaidCount = 0;
-
+  
   for (var doc in studentSnapshot.docs) {
     final data = doc.data() as Map<String, dynamic>;
     final feeStatus = data['Fess Status']?.toString().trim().toLowerCase();
@@ -263,6 +270,9 @@ Future<Map<String, String>> getFeesSummary({
     'paid': paidCount.toString(),
     'unpaid': unpaidCount.toString(),
   };
+}  catch (e) {
+        throw CloudDataReadException("Error in getting the fee summary details, please try again later !");
+  }
 }
 
 Future<void> addAndUpdateStudentFeesDetails({
@@ -271,38 +281,44 @@ Future<void> addAndUpdateStudentFeesDetails({
   required List<TextEditingController> feeNameControllers,
   required List<TextEditingController> feeAmountControllers,
 }) async {
+  try {
   Map<String, dynamic> feeMap = {
     'allocatedAmount': allocateddAmount,
   };
-
+  
   for (int i = 0; i < feeNameControllers.length; i++) {
     feeMap['fee${i + 1}'] = feeNameControllers[i].text;
     feeMap['fee${i + 1}_amount'] = feeAmountControllers[i].text;
     feeMap['isView']=true;
   }
-
+  
   await collectionVariable.studentLoginCollection
       .doc(id)
       .set(feeMap, SetOptions(merge: true));
+}  catch (e) {
+        throw CloudDataWriteException("Error in updating the fees details, please try again later !");
+  
+}
 }
 
 
 Future<Map<String, dynamic>> getStudentFeesDetails({
   required String id,
 }) async {
+  try {
   final snapshot = await collectionVariable.studentLoginCollection.doc(id).get();
   final doc = snapshot.data() as Map<String, dynamic>;
-
+  
   List<TextEditingController> feeNameControllers = [];
   List<TextEditingController> feeAmountControllers = [];
-
+  
   String allocatedAmount = doc['allocatedAmount']?.toString() ?? '0';
-
+  
   int i = 1;
   while (true) {
     final feeKey = 'fee$i';
     final feeAmountKey = 'fee${i}_amount';
-
+  
     if (doc.containsKey(feeKey) && doc.containsKey(feeAmountKey)) {
       feeNameControllers.add(TextEditingController(text: doc[feeKey].toString()));
       feeAmountControllers.add(TextEditingController(text: doc[feeAmountKey].toString()));
@@ -311,12 +327,16 @@ Future<Map<String, dynamic>> getStudentFeesDetails({
       break;
     }
   }
-
+  
   return {
     'allocatedAmount': allocatedAmount,
     'feeNameControllers': feeNameControllers,
     'feeAmountControllers': feeAmountControllers,
   };
+} catch (e) {
+        throw CloudDataReadException("Error in getting student fee details, please try again later !");
+  
+}
 }
 
 

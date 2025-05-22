@@ -4,15 +4,14 @@ abstract class AppException implements Exception {
   AppException(this.message);
 }
 
-class UserNotFoundException extends AppException {
-  UserNotFoundException([super.message = "Invalid credential user not found !"]);
+
+class ServerException extends AppException {
+  ServerException([super.message = "Error in the server"]);
 }
 
-class NetworkException extends AppException {
-  NetworkException([super.message = "No internet connection."]);
+class PushNotificationException extends AppException {
+  PushNotificationException([super.message = "Error in push notification"]);
 }
-
-
 class CloudDataReadException extends AppException {
   CloudDataReadException([super.message = " Fetching error, please try again later !"]);
 }

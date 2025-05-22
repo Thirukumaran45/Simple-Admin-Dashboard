@@ -1,6 +1,7 @@
 import 'dart:developer'show log;
+import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+
 import '../../../services/FireBaseServices/CollectionVariable.dart';
-import '../../../contant/constant.dart';
 import '../../../modules/studentModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
 import 'package:flutter/material.dart';
@@ -47,9 +48,11 @@ bool _isFetchingMore = false;
       'parentMobile': doc[motherPhoneNoField] ?? '',
     };
   }).toList().cast<Map<String, dynamic>>(); 
+  update();
 }   catch (e) {
   log('error in fetching the data $e');
-        update(); // Notify GetX listeners
+    throw CloudDataReadException("Error in loading student details, please try again later !");
+
 }finally {
     _isFetchingMore = false;
   }
@@ -71,7 +74,8 @@ Future<StudentdetailsModel?> studentDataRead({required String uid}) async {
     
   }  catch (e) {
     log('Error fetching student data: $e');
-    return null;
+        throw CloudDataReadException("Error in getting student details, please try again later !");
+
   }
   
 }
@@ -119,7 +123,8 @@ Future<bool> updateStudentDetails({
     return true; // Return success
   } catch (e) {
     log("Error updating student details: $e");
-    return false; // Return failure
+        throw CloudDataUpdateException("Error in updating student details, please try again later !");
+
   }
 }
 
@@ -172,6 +177,8 @@ Future<String> updateStudentPhoto(String studentId,) async {
         }
     } catch (e) {
         log("Error updating student photo: $e");
+    throw CloudDataUpdateException("Error in updating student photo, please try again later !");
+
     }
     return downloadUrl;
 }
@@ -186,7 +193,8 @@ Future<String?> getStudentPhotoUrl(String studentId) async {
   } catch (e) {
     log(
       'error in getting the downloads url $e'); 
-    return null; 
+        throw CloudDataReadException("Error in getting student photo, please try again later !");
+
   }
 }
 
@@ -232,14 +240,14 @@ Future<void> registerUser({
       totalAttendanceDays:''
     });
 
-      await customSnackbar(context: context, text: "Registration succesfull");
-         fetchStudentData();
+    
 
         update(); // Notify GetX listeners
 
   } catch (e) {
     log(e.toString());
-      await customSnackbar(context: context, text: "failed to create person $e");
+     throw CloudDataWriteException("Error in adding student details, please try again later !");
+
                                
    
   }
@@ -263,16 +271,19 @@ Future<dynamic> addPhoto() async {
 
   } catch (e) {
     log(e.toString());
+    throw CloudDataWriteException("Error in adding student details, please try again later !");
+
   }
 }  
 
 Future<String> photoStorage({required String userId, required dynamic image}) async {
   String downloadUrl = '';
 
+  try {
   final ref = collectionControler.firebaseStorageRef.child("Student photo/$userId");
-
+  
   UploadTask uploadTask;
-
+  
   if (kIsWeb && image is Uint8List) {
     // Web: Use putData for Uint8List
     uploadTask = ref.putData(image);
@@ -280,38 +291,48 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
     // Mobile: Use putFile for File
     uploadTask = ref.putFile(image);
   } else {
-    throw Exception("Invalid image format");
+        throw CloudDataWriteException("Error in adding student photo, please try again later !");
   }
-
+  
   // Wait for upload to complete
   TaskSnapshot snapshot = await uploadTask;
-
+  
   // Get download URL
   downloadUrl = await snapshot.ref.getDownloadURL();
         update(); // Notify GetX listeners
-
+  
   return downloadUrl;
+}  catch (e) {
+    throw CloudDataWriteException("Error in adding student photo, please try again later !");
+  
+}
 }
 
 Future<void> updateNumberOfStudent(bool isIncrement) async {
 
 
-final dataDoc = collectionControler.loginCollection.doc('students');
-final val = await dataDoc.get();
-
-if(val.exists)
-{
- await collectionControler.loginCollection.doc('students').update({
-    'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
-  });
+try {
+  final dataDoc = collectionControler.loginCollection.doc('students');
+  final val = await dataDoc.get();
+  
+  if(val.exists)
+  {
+   await collectionControler.loginCollection.doc('students').update({
+      'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
+    });
+  }
+  else
+  {
+     await collectionControler.loginCollection.doc('students').set({
+      'numberOfPeople': 1,
+    });
+  }
+          update(); 
+}  catch (e) {
+    throw CloudDataUpdateException("Error in updating number of student details, please try again later !");
+  
 }
-else
-{
-   await collectionControler.loginCollection.doc('students').set({
-    'numberOfPeople': 1,
-  });
-}
-        update(); // Notify GetX listeners
+// Notify GetX listeners
 
 
 }
@@ -356,7 +377,8 @@ Future<bool> deleteStudent({
     return true;
   } catch (e) {
     log("Error in delete: $e");
-    return false;
+    throw CloudDataDeleteException("Error in deleting student details, please try again later !");
+
   }
 }
 }

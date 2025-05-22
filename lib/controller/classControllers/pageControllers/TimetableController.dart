@@ -2,6 +2,8 @@
 
 import 'dart:developer' show log;
 
+import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show SetOptions,DocumentSnapshot;
 import 'package:get/get.dart' ;
@@ -37,6 +39,8 @@ Future<void> fetchTeachers() async {
   update(); 
 }  catch (e) {
   log("error in fetching the teacher details: $e");
+        throw CloudDataReadException("Error in getting teacher details, please try again later !");
+
 }
 }
 
@@ -69,6 +73,8 @@ Future<void> saveTimetableToFirestore({
       update();
 }  catch (e) {
   log("erorr in add and update funtion $e");
+        throw CloudDataWriteException("Error in updating class timetable, please try again later !");
+
 }
   
 
@@ -79,12 +85,17 @@ Future<DocumentSnapshot<Map<String, dynamic>> >loadTimetableCollection({required
 required String day,
 required String period
 })async{
+  try {
   final docData= await collectionControler.timetableCollection
       .doc(classSection)
       .collection(day)
       .doc(period)
           .get();
           return docData;
+}  catch (e) {
+      throw CloudDataReadException("Error in getting the class timetable, please try again later !");
+  
+}
 }
 
 

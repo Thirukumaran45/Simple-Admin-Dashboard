@@ -39,7 +39,7 @@ Future<List<String>> getAttendanceDates() async {
 
       if (data != null && data.containsKey('attendance_dates')) {
         List<dynamic> rawList = data['attendance_dates'];
-
+       update();
         // Convert dynamic list to List<String> safely
         return List<String>.from(rawList);
       }
@@ -75,6 +75,7 @@ for( String date in listDate){
             monthValues.add(data['month']);
           }
         }
+       update();
       } catch (e) {
         log('Error in fetching month values for class $i section $sec: $e');
         throw CloudDataReadException('Error in getting attendacne month values');
@@ -107,6 +108,8 @@ Future<void> updateAttendance({required String stuClass, required String sec, re
       "Today Attendance": status,
     });
   }
+       update();
+
 }  catch (e) {
   log('error in updating the attendance $e');
   throw CloudDataReadException("Updating the attendance is failed, please try again later !");
@@ -124,14 +127,17 @@ Future<String> getTeacherName({required String stuClass, required String sec}) a
     if (docSnapshot.exists) {
       final data = docSnapshot.data() as Map<String, dynamic>;
       String teacherName = data['teacherName'] ?? '';
+      
       return teacherName;
     } else {
       return ''; 
-    }
+    } 
+    
   } catch (e) {
     log("Error fetching teacher name: $e");
     throw CloudDataReadException("No teacher are found !");
   }
+  
 }
 
 /// in AttendanceController.dart
@@ -186,6 +192,7 @@ Future<List<Map<String, dynamic>>> fetchPagedStudents({
         'percentage': data['percentage'] ?? ''
       };
     }).toList();
+    
   } catch (e) {
     log('Error paginating students: $e');
     throw CloudDataDeleteException("Error in fetching the student details");
@@ -240,6 +247,7 @@ final String date = gettoadayDate();
       "D": sectionStatus["D"] ?? "Not Taken",
     };
   }
+       update();
   return classWiseAttendance;
 } catch (e) {
   log(e.toString());

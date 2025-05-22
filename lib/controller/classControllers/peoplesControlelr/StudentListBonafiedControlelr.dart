@@ -1,4 +1,6 @@
 import 'dart:developer' show log;
+import 'package:admin_pannel/services/FirebaseException/pageException.dart' show CloudDataReadException;
+
 import '../../../contant/ConstantVariable.dart';
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
@@ -45,7 +47,8 @@ bool _isFetchingMore = false;
   }).toList().cast<Map<String, dynamic>>(); 
 }   catch (e) {
   log('error in fetching the data $e');
-        update(); // Notify GetX listeners
+    throw CloudDataReadException("Error in loading student details, please try again later !");
+
 }
   }
 }

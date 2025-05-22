@@ -1,6 +1,8 @@
 import 'dart:developer' show log;
 import 'dart:io';
 
+import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../contant/ConstantVariable.dart';
@@ -71,7 +73,7 @@ try {
   return true;
 }  catch (e) {
   log("error in adding and updating the schooldetails:$e");
-  return false;
+  throw CloudDataWriteException("Error in updating school details");
 }
 }
 
@@ -131,6 +133,8 @@ Future<String>updateSchoolPhorilfePhoto()async
         }
     } catch (e) {
         log("Error updating Staffs photo: $e");
+      throw CloudDataReadException('Error in getting school details, please try again later !');
+
     }
         update(); // Notify GetX listeners
 
@@ -148,7 +152,8 @@ Future<String?> getSchoolPhotoUrl( ) async {
   } catch (e) {
     log(
       'error in getting the downloads url $e'); 
-    return null; 
+      throw CloudDataReadException('Error in getting school photo, please try again later !');
+
   }
 }
 
@@ -160,7 +165,8 @@ Future<bool> deleteSchoolPhoto() async {
     return true;
   } catch (e) {
     log("Error deleting school photo: $e");
-    return false;
+      throw CloudDataDeleteException('Error in deleting school photo, please try again later !');
+
   }
 }
 Future<void> uploadImageGallery({required dynamic image}) async {
@@ -186,6 +192,8 @@ Future<void> uploadImageGallery({required dynamic image}) async {
     update();
   } catch (e) {
     log('Error uploading image: $e');
+      throw CloudDataUpdateException('Error in updating school photo, please try again later !');
+
   }
 }
 
@@ -206,6 +214,8 @@ Future<dynamic> addPhoto() async {
     } 
   } catch (e) {
     log(e.toString());
+      throw CloudDataWriteException('Error in adding school photo, please try again later !');
+
   }
         update(); // Notify GetX listeners
 
@@ -222,6 +232,8 @@ Future<void> deleteImageFromGallery({
     await ref.delete();
   } catch (e) {
     log('Error deleting image: $e');
+      throw CloudDataDeleteException('Error in deleting image from gallery, please try again later !');
+
   }
 }
 
@@ -245,6 +257,8 @@ Future<List<String>> getGalleryImages({bool isInitial = false}) async {
     }
   } catch (e) {
     log('Error fetching images: $e');
+      throw CloudDataReadException('Error in getting school gallery photos, please try again later !');
+
   }
   return imageUrls;
 }
@@ -267,7 +281,8 @@ Future<String?> deleteById(String imageUrl) async {
     }
   } catch (e) {
     log("Error deleting image: $e");
-    return ""; // Return null on error
+      throw CloudDataDeleteException('Error in deleting school photo, please try again later !');
+
   }
 }
 

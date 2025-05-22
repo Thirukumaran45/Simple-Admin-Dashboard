@@ -1,5 +1,7 @@
 import 'dart:developer' show log;
 
+import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show FieldValue;
 import 'package:get/get.dart' show Get, GetxController, Inst;
@@ -40,6 +42,8 @@ Future<void> deleteStorageDirectory(String directoryPath) async {
 
   } catch (e) {
     log(' Error deleting storage directory: $e');
+        throw CloudDataDeleteException('Error in deleting storage directory, please try again later !');
+    
   }
     update(); 
 
@@ -64,6 +68,8 @@ Future<List<String>> getAttendanceDates() async {
     }
   } catch (e) {
     log("Error fetching attendance dates: $e");
+        throw CloudDataReadException('Error in getting attendance dates, please try again later !');
+
   }
     update(); 
 
@@ -118,6 +124,8 @@ Future<void> deleteAttendanceDataByClass(String className) async {
 
   } catch (e) {
     log("Error deleting attendance data: $e");
+        throw CloudDataDeleteException('Error in deleting attendace for class\'s, please try again later !');
+
   }
   update();
 }
@@ -171,6 +179,8 @@ Future<void> deleteAttendanceDataByClassSection( String className, String sectio
 
   } catch (e) {
     log("Error deleting attendance data: $e");
+        throw CloudDataDeleteException('Error in deleting attendance for class and section, please try again later !');
+
   }
     update(); 
 
@@ -204,6 +214,8 @@ Future<void> deleteRemainderChatDataByClassSection({
 
   } catch (e) {
     log('Error deleting remainder chat data: $e');
+        throw CloudDataDeleteException('Error in deleting remainder histry for class and section, please try again later !');
+
   }
     update(); 
 
@@ -233,6 +245,8 @@ Future<void> deleteRemainderChatDataByClass({
 
   } catch (e) {
     log('Error deleting remainder chat data: $e');
+        throw CloudDataDeleteException('Error in deleting remainder histry for class\'s, please try again later !');
+
   }
     update(); 
 
@@ -260,6 +274,8 @@ Future<void> deleteRemainderChatDataByClass({
 
   } catch (e) {
     log('Error deleting schoolChat chat data: $e');
+        throw CloudDataDeleteException('Error in deleting school chat histry, please try again later !');
+
   }
     update(); 
 
@@ -269,44 +285,56 @@ Future<void> deleteRemainderChatDataByClass({
 //delete exam result by class and sec
 Future<void> deleteExamDataByClass({required String stuClass}) async {
 
+  try {
   final examSnapshot = collectionVariable.studentLoginCollection;
   final querySnapshot = await examSnapshot
       .where('class', isEqualTo: stuClass)
       .get();
-
+  
   for (var doc in querySnapshot.docs) {
     final examResultRef = doc.reference.collection('exam_result');
-
+  
     final examResultSnapshot = await examResultRef.get();
-
+  
     for (var examDoc in examResultSnapshot.docs) {
       await examDoc.reference.delete();
     }
     
   }
     update(); 
+}  catch (e) {
+  log(e.toString());
+        throw CloudDataDeleteException('Error in deleting exam result for class\'s, please try again later !');
+
+}
 
 }
 
 Future<void> deleteExamDataByClassSection({required String stuClass, required String stuSec}) async {
 
+  try {
   final examSnapshot = collectionVariable.studentLoginCollection;
   final querySnapshot = await examSnapshot
       .where('class', isEqualTo: stuClass)
       .where('section', isEqualTo: stuSec)
       .get();
-
+  
   for (var doc in querySnapshot.docs) {
     final examResultRef = doc.reference.collection('exam_result');
-
+  
     final examResultSnapshot = await examResultRef.get();
-
+  
     for (var examDoc in examResultSnapshot.docs) {
       await examDoc.reference.delete();
     }
     
   }
     update(); 
+}  catch (e) {
+   log(e.toString());
+        throw CloudDataDeleteException('Error in deleting exam result for class and section, please try again later !');
+
+}
 
 }
 
@@ -314,42 +342,49 @@ Future<void> deleteExamDataByClassSection({required String stuClass, required St
 //delete exam result by class and sec
 Future<void> deleteAssignmentByClassSection({required String stuClass, required String stuSec}) async {
 
+  try {
   final examSnapshot = collectionVariable.studentLoginCollection;
   final querySnapshot = await examSnapshot
       .where('class', isEqualTo: stuClass)
       .where('section', isEqualTo: stuSec)
       .get();
-
+  
   for (var doc in querySnapshot.docs) {
     final examResultRef = doc.reference.collection('assignments');
-
+  
     final examResultSnapshot = await examResultRef.get();
-
+  
     for (var examDoc in examResultSnapshot.docs) {
       await examDoc.reference.delete();
     }
   
   }
-
+  
     String storagePath = 'assignments/$stuClass/$stuSec/';
     await deleteStorageDirectory(storagePath);
-
+  
     update(); 
+}  catch (e) {
+   log(e.toString());
+        throw CloudDataDeleteException('Error in deleting assignments for class and section, please try again later !');
+
+}
 
 }
 
 Future<void> deleteAssignmentByClass({required String stuClass, }) async {
 
+  try {
   final examSnapshot = collectionVariable.studentLoginCollection;
   final querySnapshot = await examSnapshot
       .where('class', isEqualTo: stuClass)
       .get();
-
+  
   for (var doc in querySnapshot.docs) {
     final examResultRef = doc.reference.collection('assignments');
-
+  
     final examResultSnapshot = await examResultRef.get();
-
+  
     for (var examDoc in examResultSnapshot.docs) {
       await examDoc.reference.delete();
     }
@@ -360,6 +395,11 @@ Future<void> deleteAssignmentByClass({required String stuClass, }) async {
     await deleteStorageDirectory(storagePath);
   }
     update(); 
+}  catch (e) {
+   log(e.toString());
+        throw CloudDataDeleteException('Error in deleting assignments for class\'s, please try again later !');
+
+}
 
 
 }
@@ -369,44 +409,56 @@ Future<void> deleteAssignmentByClass({required String stuClass, }) async {
 
 Future<void> deleteLeaveHistrytByClassSection({required String stuClass, required String stuSec}) async {
 
+  try {
   final examSnapshot = collectionVariable.studentLoginCollection;
   final querySnapshot = await examSnapshot
       .where('class', isEqualTo: stuClass)
       .where('section', isEqualTo: stuSec)
       .get();
-
+  
   for (var doc in querySnapshot.docs) {
     final examResultRef = doc.reference.collection('leave_histry');
-
+  
     final examResultSnapshot = await examResultRef.get();
-
+  
     for (var examDoc in examResultSnapshot.docs) {
       await examDoc.reference.delete();
     }
   
   }
     update(); 
+}  catch (e) {
+   log(e.toString());
+        throw CloudDataDeleteException('Error in deleting leave histry for class and section, please try again later !');
+
+}
 
 }
 
 Future<void> deleteLeaveHistryByClass({required String stuClass, }) async {
 
+  try {
   final examSnapshot = collectionVariable.studentLoginCollection;
   final querySnapshot = await examSnapshot
       .where('class', isEqualTo: stuClass)
       .get();
-
+  
   for (var doc in querySnapshot.docs) {
     final examResultRef = doc.reference.collection('leave_histry');
-
+  
     final examResultSnapshot = await examResultRef.get();
-
+  
     for (var examDoc in examResultSnapshot.docs) {
       await examDoc.reference.delete();
     }
   
   }
     update(); 
+}  catch (e) {
+  log(e.toString());
+  throw CloudDataDeleteException('Error in deleting leave histry for class\'s, please try again later !');
+
+}
 
 
 }
@@ -451,6 +503,8 @@ Future<void> deleteAssignmentByTeacherClassSection({required String stuClass,req
 
   } catch (e) {
     log("Error deleting assignments: $e");
+        throw CloudDataDeleteException('Error in deleting updated student assignments by class and section, please try again later !');
+
   }
     update(); 
 
@@ -494,6 +548,8 @@ Future<void> deleteAssignmentByTeacherClass({required String stuClass}) async {
 
   } catch (e) {
     log("Error deleting assignments: $e");
+        throw CloudDataDeleteException('Error in deleting assignments for class\'s, please try again later !');
+
   }
     update(); 
 
@@ -503,58 +559,72 @@ Future<void> deleteAssignmentByTeacherClass({required String stuClass}) async {
 // delete the time_table
 
   Future<void>deleteTimeTableDataByClass({required String stuClass})async{
-    final examSnapshot = collectionVariable.timetableCollection;
-     final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-    for(String sec in ['A','B','C','D'])
+    try {
+  final examSnapshot = collectionVariable.timetableCollection;
+   final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+  for(String sec in ['A','B','C','D'])
+  {
+    String docId = '$stuClass$sec';
+     for(String day in days)
     {
-      String docId = '$stuClass$sec';
-       for(String day in days)
-      {
-       final docs = await examSnapshot.doc(docId).collection(day).get(); 
-      for(var doc in docs.docs)
-      {
-        await doc.reference.delete();
-      }
-      }
-         // **Check if any sub-collections exist under attendanceCollection**
-    final subCollections = await examSnapshot.doc(docId).firestore
-        .collectionGroup(examSnapshot.doc(docId).id)
-        .get();
+     final docs = await examSnapshot.doc(docId).collection(day).get(); 
+    for(var doc in docs.docs)
+    {
+      await doc.reference.delete();
+    }
+    }
+       // **Check if any sub-collections exist under attendanceCollection**
+  final subCollections = await examSnapshot.doc(docId).firestore
+      .collectionGroup(examSnapshot.doc(docId).id)
+      .get();
+  
+  if (subCollections.docs.isEmpty ) {
+    await examSnapshot.doc(docId).delete();
+    log("Deleted timetableCollection as no collections were left.");
+  }
+  }
+  update(); 
+}  catch (e) {
+  
+   log(e.toString());
+throw CloudDataDeleteException('Error in deleting time table for class\'s, please try again later !');
 
-    if (subCollections.docs.isEmpty ) {
-      await examSnapshot.doc(docId).delete();
-      log("Deleted timetableCollection as no collections were left.");
-    }
-    }
-    update(); 
+}
   
   }
 
 
   Future<void>deleteTimeTableDataByClassSection({required String stuClass,required String sec})async{
-    final examSnapshot = collectionVariable.timetableCollection;
-     final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-      String docId = '$stuClass$sec';
-      for(String day in days)
-      {
-       final docs = await examSnapshot.doc(docId).collection(day).get(); 
-      for(var doc in docs.docs)
-      {
-        await doc.reference.delete();
-      }
-      }
-       // **Check if any sub-collections exist under attendanceCollection**
-    final subCollections = await examSnapshot.doc(docId).firestore
-        .collectionGroup(examSnapshot.doc(docId).id)
-        .get();
-
-    if (subCollections.docs.isEmpty ) {
-      await examSnapshot.doc(docId).delete();
-      log("Deleted timetableCollection as no collections were left.");
+    try {
+  final examSnapshot = collectionVariable.timetableCollection;
+   final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
+    String docId = '$stuClass$sec';
+    for(String day in days)
+    {
+     final docs = await examSnapshot.doc(docId).collection(day).get(); 
+    for(var doc in docs.docs)
+    {
+      await doc.reference.delete();
     }
-    update(); 
+    }
+     // **Check if any sub-collections exist under attendanceCollection**
+  final subCollections = await examSnapshot.doc(docId).firestore
+      .collectionGroup(examSnapshot.doc(docId).id)
+      .get();
+  
+  if (subCollections.docs.isEmpty ) {
+    await examSnapshot.doc(docId).delete();
+    log("Deleted timetableCollection as no collections were left.");
+  }
+  update(); 
+}  catch (e) {
+  
+   log(e.toString());
+        throw CloudDataDeleteException('Error in deleting time table for class and section, please try again later !');
+
+}
  
   }
 
@@ -562,16 +632,22 @@ Future<void> deleteAssignmentByTeacherClass({required String stuClass}) async {
 // fees transaction hisrty delete
 Future<void> deleteFeesTransactionByClassSection({required String stuClass, required String stuSec}) async {
 
+  try {
   final examSnapshot = collectionVariable.feesDocCollection.collection("completedTransaction");
   final querySnapshot = await examSnapshot
       .where('class', isEqualTo: stuClass)
       .where('section', isEqualTo: stuSec)
       .get();
-
+  
   for (var doc in querySnapshot.docs) {
     await doc.reference.delete();
   }
     update(); 
+}  catch (e) {
+   log(e.toString());
+        throw CloudDataDeleteException('Error in deleting fee transaction histry for class and section, please try again later !');
+
+}
 
 }
  

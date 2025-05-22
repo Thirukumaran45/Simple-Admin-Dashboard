@@ -1,5 +1,7 @@
 import 'dart:developer' show log;
 
+import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
 import 'package:get/get.dart' show Get, GetxController, Inst;
@@ -52,7 +54,7 @@ Future<List<Map<String, dynamic>>> getFilteredStudents({
     return studentList;
   } catch (e) {
     log("error in fetching students in exam result updation: $e");
-    return [];
+    throw CloudDataReadException('Error in getting students for result updation, please try again later !');
   } finally {
     _isFetchingMore = false;
   }
@@ -66,29 +68,34 @@ Future<Map<String, dynamic>> getTotalAndIndividualSubjectMark({
   required String className,
   required String section,
 }) async {
+  try {
   final studentDocs = await collectionController.studentLoginCollection
       .where('class', isEqualTo: className)
       .where('section', isEqualTo: section)
       .limit(1)
       .get();
-
+  
   if (studentDocs.docs.isEmpty) {
     return {'total_mark': '0', 'outoff_mark': '0'};
   }
-
+  
   final studentId = studentDocs.docs.first.id;
   final examDoc = collectionController.studentLoginCollection
       .doc(studentId)
       .collection('exam_result')
       .doc(examType);
-
+  
   final docSnapshot = await examDoc.get();
   final data = docSnapshot.data() ?? {};
-
+  
   return {
     'total_mark': data['total_mark'] ?? '0',
     'outoff_mark': data['outoff_mark'] ?? '0',
   };
+}  catch (e) {
+  log('Error in getting total and individual subject mark $e');
+  throw CloudDataReadException('Error in getting total and individual subject mark, please try again later !');
+}
 }
 
   
@@ -99,23 +106,28 @@ Future<void> addUpdateTotalAndIndividualSubject({
   required String? totalMark,
   required String? outOffMark,
 }) async {
+  try {
   final doc = await collectionController.studentLoginCollection
       .where('class', isEqualTo: className)
       .where('section', isEqualTo: section)
       .get();
-
+  
   for (var data in doc.docs) {
     final studentId = data.id;
     final examDoc = collectionController.studentLoginCollection
         .doc(studentId)
         .collection('exam_result')
         .doc(examType);
-
+  
     await examDoc.set({
       'total_mark': totalMark ?? '0',
       'outoff_mark': outOffMark ?? '0',
     }, SetOptions(merge: true));
   }
+}  catch (e) {
+  log("error in add and updating the total and individual subject marks $e");
+  throw CloudDataWriteException("Error in updating the total and individual subject marks, please try again later !");
+}
 }
 
 
@@ -124,11 +136,12 @@ Future<void>updateResult({
   required String examType,
   required Map<String, dynamic> resultMark ,
 })async{
+  try {
   final examDoc = collectionController.studentLoginCollection
       .doc(studentId)
       .collection('exam_result')
       .doc(examType);
-
+  
   Map<String, dynamic> result = {};
   
   for (int i = 1; i <= 6; i++) {
@@ -141,6 +154,10 @@ Future<void>updateResult({
   await examDoc.set(
     result,SetOptions(merge: true)
   );    
+}  catch (e) {
+  log('Error in updating the exam result, please try again later !');
+  throw CloudDataUpdateException('Error in updating the exam result, please try again later !');
+}
 
 }
 String getGrade(int marks, int singleSubjectMark) {
@@ -169,28 +186,33 @@ final List<String> subjects = [
 
   final List<String> markPlaceholders = ["00", "00", "00", "00", "00", "00"];
   
+  try {
   final examDoc = collectionController.studentLoginCollection
       .doc(studentId)
       .collection('exam_result')
       .doc(examType);
-
+  
   final docSnapshot = await examDoc.get();
   final data = docSnapshot.data() ?? {}; 
-
+  
   Map<String, dynamic> result = {};
-
-for (int i = 0; i < 6; i++) {  // Fix: Use 0-based index
+  
+  for (int i = 0; i < 6; i++) {  // Fix: Use 0-based index
   result['sub${i + 1}'] = data['sub${i + 1}'] ?? subjects[i];
   result['sub${i + 1}_mark'] = data['sub${i + 1}_mark'] ?? markPlaceholders[i];
   result['sub${i + 1} grade'] = data['sub${i + 1}_grade'] ?? '';
-}
-
-
+  }
+  
+  
   result['total_mark'] = data['total_mark'] ?? '0';
   result['scored_mark'] = data['scored_mark'] ?? '0';
   result['outoff_mark'] = data['outoff_mark']??'0';
-
+  
   return result;
+}  catch (e) {
+  log('Errro in getting exam result $e');
+  throw CloudDataReadException('Error in getting exam result, please try again later !');
+}
 }
 
 }

@@ -1,6 +1,7 @@
 import 'dart:async' show Timer;
 import 'dart:convert' show jsonEncode;
 import 'dart:developer' show log;
+import 'package:admin_pannel/services/FirebaseException/pageException.dart' show PushNotificationException;
 import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
@@ -69,8 +70,8 @@ final FirebaseCollectionVariable collectionVariable = Get.find<FirebaseCollectio
    return accessServerKey;
 }  catch (e) {
   log('error in getting acces toekn $e');
+  throw PushNotificationException("Erron in getting server key, please try again later !");
 }
-return '';
   }
 
 
@@ -119,19 +120,20 @@ Map<String, dynamic> payload = {
     return response.statusCode == 200;
   } catch (e) {
     log("error in pushing notification $e");
-    return false;
+    throw PushNotificationException('Error in push notification , please try again later !');
   }
 }
 
 Future<void> feeUpdationPushNotificationToAll() async {
+  try {
   final docs = await collectionVariable.studentLoginCollection.get();
-
+  
   for (var doc in docs.docs) {
     final data = doc.data() as Map<String,dynamic>;
-
+  
     if (data[feesStatusField] == 'Pending') {
       final token = data[fcmTokenId]; // assuming each student doc has a token field
-
+  
       if (token != null && token.isNotEmpty) {
         await pushNotifications(
           title: 'School Fees Updated',
@@ -141,15 +143,20 @@ Future<void> feeUpdationPushNotificationToAll() async {
       }
     }
   }
+}  catch (e) {
+    throw PushNotificationException('Error in fees push notification to all, please try again later !');
+  
+}
 }
 
 Future<void> feeUpdationPushNotificationToSpecific({required String id}) async {
+  try {
   final docs = await collectionVariable.studentLoginCollection.doc(id).get();
-
+  
     final data = docs.data() as Map<String,dynamic>;
-
+  
       final token = data[fcmTokenId]; // assuming each student doc has a token field
-
+  
       if (token != null && token.isNotEmpty) {
         await pushNotifications(
           title: 'School Fees Updated',
@@ -157,22 +164,31 @@ Future<void> feeUpdationPushNotificationToSpecific({required String id}) async {
           token: token,
         );
       }
+}  catch (e) {
+      throw PushNotificationException('Error in fees push notification to student, please try again later !');
+
+}
 }
 
 Future<void> examFeesUpdationPushNotification({required String id}) async {
-    final docs = await collectionVariable.studentLoginCollection.doc(id).get();
-
-    final data = docs.data() as Map<String,dynamic>;
-
-      final token = data[fcmTokenId]; // assuming each student doc has a token field
-
-      if (token != null && token.isNotEmpty) {
-        await pushNotifications(
-          title: 'Exam Result Published',
-          body: 'Congrates ! Your Hard Work Has Paid Off Check Your Results',
-          token: token,
-        );
-      }
+    try {
+  final docs = await collectionVariable.studentLoginCollection.doc(id).get();
+  
+  final data = docs.data() as Map<String,dynamic>;
+  
+    final token = data[fcmTokenId]; // assuming each student doc has a token field
+  
+    if (token != null && token.isNotEmpty) {
+      await pushNotifications(
+        title: 'Exam Result Published',
+        body: 'Congrates ! Your Hard Work Has Paid Off Check Your Results',
+        token: token,
+      );
+    }
+}  catch (e) {
+      throw PushNotificationException('Error in exam update push notification to student, please try again later !');
+  
+}
    
 }
 }

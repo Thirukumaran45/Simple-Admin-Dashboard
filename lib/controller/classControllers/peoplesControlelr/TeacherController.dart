@@ -1,4 +1,6 @@
 import 'dart:developer'show log;
+import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../contant/constant.dart';
 import '../../../modules/teacherModels.dart';
@@ -51,6 +53,7 @@ void fetchTeacherData() async {
     }).toList().cast<Map<String, dynamic>>();
   } catch (e) { 
     log('Error in fetching the data: $e');
+    throw CloudDataReadException('Error in loading teachers details, please try again later !');
   }
   finally {
     _isFetchingMore = false;
@@ -73,7 +76,9 @@ Future<Teacherdetailmodel?> teacherDataRead({required String uid}) async {
     return Teacherdetailmodel.fromSnapshot(castedDoc);
   }  catch (e) {
     log('Error fetching teacher data: $e');
-    return null;
+    throw CloudDataReadException('Error in getting teachers details, please try again later !');
+
+     
   }
   
 }
@@ -112,7 +117,8 @@ Future<bool> updateTeacherDetails({
     return true; // Return success
   } catch (e) {
     log("Error updating teacher details: $e");
-    return false; // Return failure
+    throw CloudDataUpdateException('Error in updating teachers details, please try again later !');
+ 
   }
   
 }
@@ -150,7 +156,8 @@ Future<String> updateTeacherPhoto(String teacherId,) async {
             } else if (file != null) {
                 uploadTask = ref.putFile(file);
             } else {
-                throw Exception("No valid file selected.");
+           throw CloudDataUpdateException('Error in updating teachers photo, please try again later !');
+
             }
 
             TaskSnapshot snapshot = await uploadTask;
@@ -165,6 +172,8 @@ Future<String> updateTeacherPhoto(String teacherId,) async {
          update(); // Notify GetX listeners
     } catch (e) {
         log("Error updating teacher Photo: $e");
+           throw CloudDataUpdateException('Error in updating teachers photo, please try again later !');
+
     }
     return downloadUrl;
 }
@@ -179,7 +188,8 @@ Future<String?> getTeacherPhotoUrl(String teacherId) async {
   } catch (e) {
     log(
       'error in getting the downloads url $e'); 
-    return null; 
+           throw CloudDataReadException('Error in fetching teachers photo, please try again later !');
+
   }
 }
 
@@ -219,12 +229,10 @@ if(!context.mounted)return;
      update();
   } catch (e) {
     log(e.toString());
-if(!context.mounted)return;
-
-      await customSnackbar(context: context, text: "failed to create person $e");
+           throw CloudDataWriteException('Error in adding teachers details, please try again later !');
   }
-   update(); // Notify GetX listeners
 }
+
 Future<dynamic> addPhoto() async {
   try {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -244,16 +252,19 @@ Future<dynamic> addPhoto() async {
      update(); // Notify GetX listeners
   } catch (e) {
     log(e.toString());
+           throw CloudDataWriteException('Error in adding teachers photo, please try again later !');
+
   }
 }  
 
 Future<String> photoStorage({required String userId, required dynamic image}) async {
   String downloadUrl = '';
 
+  try {
   final ref = collectionControler.firebaseStorageRef.child("Teacher Photo/$userId");
-
+  
   UploadTask uploadTask;
-
+  
   if (kIsWeb && image is Uint8List) {
     // Web: Use putData for Uint8List
     uploadTask = ref.putData(image);
@@ -261,36 +272,48 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
     // Mobile: Use putFile for File
     uploadTask = ref.putFile(image);
   } else {
-    throw Exception("Invalid image format");
+        throw CloudDataWriteException('Error in updating teachers photo, please try again later !');
+  
   }
-
+  
   // Wait for upload to complete
   TaskSnapshot snapshot = await uploadTask;
-
+  
   // Get download URL
   downloadUrl = await snapshot.ref.getDownloadURL();
    update(); // Notify GetX listeners
   return downloadUrl;
+}  catch (e) {
+  log('error in photo storage $e');
+          throw CloudDataWriteException('Error in updating teachers photo, please try again later !');
+
+}
 }
 
 Future<void> updateNumberOfTeacher(bool isIncrement) async {
   
-final dataDoc = collectionControler.loginCollection.doc('teachers');
-final val = await dataDoc.get();
-
-if(val.exists)
-{
- await collectionControler.loginCollection.doc('teachers').update({
-    'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
-  });
+try {
+  final dataDoc = collectionControler.loginCollection.doc('teachers');
+  final val = await dataDoc.get();
+  
+  if(val.exists)
+  {
+   await collectionControler.loginCollection.doc('teachers').update({
+      'numberOfPeople': FieldValue.increment(isIncrement ? 1 : -1),
+    });
+  }
+  else
+  {
+     await collectionControler.loginCollection.doc('teachers').set({
+      'numberOfPeople': 1,
+    });
+  }
+   update(); 
+}  catch (e) {
+        throw CloudDataUpdateException('Error in updating Number of teachers , please try again later !');
+  
 }
-else
-{
-   await collectionControler.loginCollection.doc('teachers').set({
-    'numberOfPeople': 1,
-  });
-}
- update(); // Notify GetX listeners
+// Notify GetX listeners
 }
 
 
@@ -387,7 +410,8 @@ Future<bool> deleteTeacher({
   return true;
 }  catch (e) {
   log("error inn deleting :$e");
-  return false;
+        throw CloudDataDeleteException('Error in deleting teachers details, please try again later !');
+
 }
 
 }
@@ -397,25 +421,32 @@ Future<void>addAndUpdateClassInchargers({required String stuClass,
  required String phoneNo,
  required String email
 })async{
-String section = stuSec.toUpperCase();
-final data =  collectionControler.loginCollection.doc('teachers').collection('ClassIncharger');
-final isData = await data.doc("$stuClass$section").get();  
-if(isData.exists)
-{
-await data.doc('$stuClass$section').update({
-"name": name,
-"phoneNo":phoneNo,
-"email":email
-});
+try {
+  String section = stuSec.toUpperCase();
+  final data =  collectionControler.loginCollection.doc('teachers').collection('ClassIncharger');
+  final isData = await data.doc("$stuClass$section").get();  
+  if(isData.exists)
+  {
+  await data.doc('$stuClass$section').update({
+  "name": name,
+  "phoneNo":phoneNo,
+  "email":email
+  });
+  }
+  else{
+    await data.doc('$stuClass$section').set({
+  "name": name,
+  "phoneNo":phoneNo,
+  "email":email
+  });
+  }
+   update(); 
+}  catch (e) {
+  log('error in class incharger updation$e');
+        throw CloudDataWriteException('Error in updating class inchargers details, please try again later !');
+
 }
-else{
-  await data.doc('$stuClass$section').set({
-"name": name,
-"phoneNo":phoneNo,
-"email":email
-});
-}
- update(); // Notify GetX listeners
+// Notify GetX listeners
 }
 
 Future<void> fetchAllClassInchargeDetails(
@@ -448,6 +479,8 @@ Future<void> fetchAllClassInchargeDetails(
       }
     } catch (e) {
       log('Error fetching class incharge details: $e');
+        throw CloudDataReadException('Error in fetching class incharger details, please try again later !');
+
     }
   }
 }
