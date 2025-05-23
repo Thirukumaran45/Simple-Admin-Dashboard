@@ -94,7 +94,6 @@ void initializeList() async {
 void dispose() {
   filteredData.clear();
   _scrollController.dispose();
-  controller.dispose();
   super.dispose();
 }
 

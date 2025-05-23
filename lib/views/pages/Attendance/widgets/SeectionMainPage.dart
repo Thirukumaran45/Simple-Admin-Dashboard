@@ -30,7 +30,6 @@ class _ClassPageState extends State<ClassPage> {
   }
 @override
   void dispose() {
-      controler.dispose();
     super.dispose();
   }
   @override

@@ -93,7 +93,6 @@ Widget customFilterBox  ( { required String label, required Function(String)?  o
 @override
 void dispose() {
   filteredData.clear();
-  controler.dispose();
   _scrollController.dispose();
   super.dispose();
 }

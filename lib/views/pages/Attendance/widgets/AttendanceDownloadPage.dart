@@ -139,7 +139,6 @@ setState(() {
  @override
   void dispose() {
     filteredData.clear();
-    controler.dispose();
     _scrollController.dispose();
     super.dispose();
   }

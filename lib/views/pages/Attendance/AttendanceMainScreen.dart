@@ -14,12 +14,13 @@ class AttendanceMainScreen extends StatefulWidget {
 }
 
 class _AttendanceMainScreenState extends State<AttendanceMainScreen> {
-  final AttendanceController controler = Get.find();
+  late  AttendanceController controler ;
   late Future<Map<int, Map<String, String>>> futureAttendanceData;
 
   @override
   void initState() {
     super.initState();
+    controler = Get.find<AttendanceController>();
     // Fetch the attendance data using the Future provided by the controller.
     futureAttendanceData = controler.totalNumberOfPresentAndAbsent(context);
     
