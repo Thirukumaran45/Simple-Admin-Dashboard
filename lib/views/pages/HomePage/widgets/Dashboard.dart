@@ -32,7 +32,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
 Future<String?> _fetchSchoolName() async {
-  final schoolDetails = await controller.getSchoolDetails();
+  final schoolDetails = await controller.getSchoolDetails(context);
   return schoolDetails.schoolName;
 }
 

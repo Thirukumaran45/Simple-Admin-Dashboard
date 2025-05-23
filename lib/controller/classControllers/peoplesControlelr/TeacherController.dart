@@ -1,8 +1,7 @@
 import 'dart:developer'show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/utils/AppException.dart';
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
-import '../../../contant/constant.dart';
 import '../../../modules/teacherModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
 import 'package:flutter/material.dart';
@@ -20,14 +19,15 @@ class Teachercontroller extends GetxController{
 final int _limit = 18;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
+var _context;
   @override
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchTeacherData();
+    fetchTeacherData(_context);
   }
 
-void fetchTeacherData() async {
+void fetchTeacherData(dynamic context,) async {
   if (_isFetchingMore) return;
 
   _isFetchingMore = true;
@@ -62,7 +62,7 @@ void fetchTeacherData() async {
 }
  
 
-Future<Teacherdetailmodel?> teacherDataRead({required String uid}) async {
+Future<Teacherdetailmodel?> teacherDataRead(dynamic context,{required String uid}) async {
   try {
     final doc = await collectionControler.teacherLoginCollection.doc(uid).get();
     
@@ -83,7 +83,7 @@ Future<Teacherdetailmodel?> teacherDataRead({required String uid}) async {
   
 }
 
-Future<bool> updateTeacherDetails({
+Future<bool> updateTeacherDetails(dynamic context,{
   required String teacherProfile,
   required String teacherName,
   required String teacherEmail,
@@ -111,7 +111,7 @@ Future<bool> updateTeacherDetails({
       teacherIdFireld:userId,
       teacherrole:role
     });
-    fetchTeacherData();
+    fetchTeacherData(_context);
         update(); 
     log("teacher details updated successfully.");
     return true; // Return success
@@ -124,7 +124,7 @@ Future<bool> updateTeacherDetails({
 }
 
 
-Future<String> updateTeacherPhoto(String teacherId,) async {
+Future<String> updateTeacherPhoto(String teacherId,dynamic context,) async {
     String downloadUrl = '';
     final docRef = collectionControler.teacherLoginCollection.doc(teacherId);
 
@@ -179,7 +179,7 @@ Future<String> updateTeacherPhoto(String teacherId,) async {
 }
 
 
-Future<String?> getTeacherPhotoUrl(String teacherId) async {
+Future<String?> getTeacherPhotoUrl(dynamic context,String teacherId) async {
   try {
     final ref =collectionControler.firebaseStorageRef.child("Teacher Photo/$teacherId");
     final doc = await ref.getDownloadURL();
@@ -205,7 +205,7 @@ Future<void> registerTeacher({
   required String teacherSubjectHandling,
   required String userId,
   required String role,
-  required BuildContext context,
+  required dynamic context,
 }) async {
   try {
   
@@ -223,9 +223,9 @@ Future<void> registerTeacher({
       teacherIdFireld:userId,
       teacherrole:role
     });
-if(!context.mounted)return;
-      await customSnackbar(context: context, text: "Registration succesfull");
-      fetchTeacherData();
+    
+      if(!context.mounted)return;
+      fetchTeacherData(context);
      update();
   } catch (e) {
     log(e.toString());
@@ -233,7 +233,7 @@ if(!context.mounted)return;
   }
 }
 
-Future<dynamic> addPhoto() async {
+Future<dynamic> addPhoto(dynamic context,) async {
   try {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom, // Custom type for specific extensions
@@ -257,7 +257,7 @@ Future<dynamic> addPhoto() async {
   }
 }  
 
-Future<String> photoStorage({required String userId, required dynamic image}) async {
+Future<String> photoStorage(dynamic context,{required String userId, required dynamic image}) async {
   String downloadUrl = '';
 
   try {
@@ -290,7 +290,7 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 }
 }
 
-Future<void> updateNumberOfTeacher(bool isIncrement) async {
+Future<void> updateNumberOfTeacher(dynamic context,bool isIncrement) async {
   
 try {
   final dataDoc = collectionControler.loginCollection.doc('teachers');
@@ -318,7 +318,7 @@ try {
 
 
 
-Future<bool> deleteTeacher({
+Future<bool> deleteTeacher(dynamic context,{
   required String teacherId,
 }) async {
   try {
@@ -402,7 +402,8 @@ Future<bool> deleteTeacher({
     }
   }
   }
-  await updateNumberOfTeacher(false);
+ 
+  await updateNumberOfTeacher(_context,false);
    teacherData .removeWhere((staff) => staff['id'] == teacherId);
 
    update(); // Notify GetX listeners
@@ -416,7 +417,7 @@ Future<bool> deleteTeacher({
 
 }
 
-Future<void>addAndUpdateClassInchargers({required String stuClass,
+Future<void>addAndUpdateClassInchargers(dynamic context,{required String stuClass,
  required String stuSec, required String name,
  required String phoneNo,
  required String email
@@ -449,7 +450,7 @@ try {
 // Notify GetX listeners
 }
 
-Future<void> fetchAllClassInchargeDetails(
+Future<void> fetchAllClassInchargeDetails(dynamic context,
     List<List<TextEditingController>> nameControllers,
     List<List<TextEditingController>> phoneNumberControllers,
     List<List<TextEditingController>> emailControllers,

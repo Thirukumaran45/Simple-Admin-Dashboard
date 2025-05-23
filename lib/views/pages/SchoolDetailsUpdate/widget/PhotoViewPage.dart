@@ -26,7 +26,7 @@ class _PhotoviewpageState extends State<Photoviewpage> {
     initializeFunction();
   }
 Future<void> handlePhotoUpdate() async {
-  String newPhotoUrl = await  controller.updateSchoolPhorilfePhoto();
+  String newPhotoUrl = await  controller.updateSchoolPhorilfePhoto(context,);
   
   if (newPhotoUrl.isNotEmpty&&mounted) { 
     setState(() {
@@ -37,7 +37,7 @@ Future<void> handlePhotoUpdate() async {
 
 Future<void> initializeFunction() async {
 
-   String? photoUrl = await controller.getSchoolPhotoUrl();
+   String? photoUrl = await controller.getSchoolPhotoUrl(context,);
 
    if (!mounted) return; // ✅ Check before updating UI
    setState(() {
@@ -67,7 +67,7 @@ Widget build(BuildContext context) {
           Row(
             children: [
               customIconTextButton(Colors.red, onPressed: () async {
-                bool val = await controller.deleteSchoolPhoto();
+                bool val = await controller.deleteSchoolPhoto(context,);
                 if (val) {
                   if (!context.mounted) return;
                   bool isUpdate = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Succesfully deleted, back to the page?");

@@ -97,7 +97,8 @@ class _StudentBonafiedState extends State<StudentBonafied> {
                        customIconTextButton(Colors.red, onPressed: ()async{
                          if (_formKey.currentState!.validate()) {
                         await customSnackbar(context: context, text: "Donloaded Succesfully");
-                        await PdfApi().openPdf(academicYear:yearController.text,fileName: nameController.text, studentName: nameController.text,parentName: parentNameController.text, studentClass: classController.text, dob: dobController.text, academicType:selectedOption );
+                        if(!context.mounted)return;
+                        await PdfApi().openPdf(context: context,academicYear:yearController.text,fileName: nameController.text, studentName: nameController.text,parentName: parentNameController.text, studentClass: classController.text, dob: dobController.text, academicType:selectedOption );
 
                               }
                           

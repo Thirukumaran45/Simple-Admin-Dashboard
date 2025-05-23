@@ -40,7 +40,7 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
    }
 
 Future<void> handlePhotoUpdate(String studentId) async {
-  String newPhotoUrl = await  controller.updateOfficialsPhoto(studentId );
+  String newPhotoUrl = await  controller.updateOfficialsPhoto(context,studentId);
   
   if (newPhotoUrl.isNotEmpty) { 
     setState(() {
@@ -49,12 +49,13 @@ Future<void> handlePhotoUpdate(String studentId) async {
   }
 }
   Future<void>initializeFunction()async{
-  teacherDetails = await controller.officialDataRead(uid: widget.uid);
+  teacherDetails = await controller.officialDataRead(context,uid: widget.uid);
    if (teacherDetails == null) {
       return;
     }
 
-    String? photoUrl = await controller.getOfficialsPhotoUrl(teacherDetails!.Id);
+    // ignore: use_build_context_synchronously
+    String? photoUrl = await controller.getOfficialsPhotoUrl(context,teacherDetails!.Id);
     
     setState(() {
        assetImage = photoUrl ?? teacherDetails?.principalProfile;
@@ -196,7 +197,8 @@ Future<void> handlePhotoUpdate(String studentId) async {
                               onPressed: () async{
                                 if (isEdited) {
                               await CustomDialogs().showCustomDialog(context, "Higher Official details Updated Succecfully");
-                                bool isUpdated = await controller.updateOfficialDetails(
+                                // ignore: use_build_context_synchronously
+                                bool isUpdated = await controller.updateOfficialDetails(context,
                     principalAddress: homeAddressController.text.toString(),
                      principalEmail: emailController.text.toString(),
                      principalName: firstNameController.text.toUpperCase(),
@@ -205,7 +207,8 @@ Future<void> handlePhotoUpdate(String studentId) async {
                    principalRole: role.text,
                    principalPhoneNumber: phoneNumberController.text.toString(),
                    );
-                   if(isUpdated) await customSnackbar(context: context, text: "Higher Official  Detials Changed updated succesfully");
+                  if(!context.mounted)return;
+                   if(isUpdated) await customSnackbar(context: context, text: "Higher Official  Detials changed and updated succesfully");
                    
                                   setState(() {
                                     isEdited = false;
@@ -228,7 +231,9 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             child: ElevatedButton(
                               onPressed: ()async {
                                  await  customSnackbar(context: context, text: "Downloaded Succesfully");
-                                   await PdfOfficialsDetails().openPdf(fileName: firstNameController.text, nameController: firstNameController,
+                                 if(!context.mounted)return;
+
+                                   await PdfOfficialsDetails().openPdf(context: context,fileName: firstNameController.text, nameController: firstNameController,
                                   phoneNumberController: phoneNumberController, 
                                      emailController: emailController,
                                     homeAddressController: homeAddressController, roleController: role, assetImage: assetImage);

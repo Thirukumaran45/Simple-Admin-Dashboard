@@ -30,7 +30,7 @@ class CustomfieldState extends State<Customfield> {
     if (isLoading) return;
     setState(() => isLoading = true);
 
-    final images = await widget.controller.getGalleryImages(isInitial: isInitial);
+    final images = await widget.controller.getGalleryImages(context,isInitial: isInitial);
     if (!mounted) return;
 
     setState(() {
@@ -52,9 +52,10 @@ class CustomfieldState extends State<Customfield> {
   }
 
  Future<void> uploadImage() async {
-   final pickedImage = await widget.controller.addPhoto();
+   final pickedImage = await widget.controller.addPhoto(context,);
    if (pickedImage != null) {
-     await widget.controller.uploadImageGallery(image: pickedImage);
+    if(!context.mounted)return;
+     await widget.controller.uploadImageGallery(context,image: pickedImage);
      if (mounted) {  
      setState(() {
        fetchGalleryImages(isInitial: true); 
@@ -67,7 +68,7 @@ class CustomfieldState extends State<Customfield> {
 Future<void> deleteImage(int index) async {
   if (index < schoolPhotos.length) {
     String imageUrl = schoolPhotos[index];
-    await widget.controller.deleteImageFromGallery(imageUrl: imageUrl);
+    await widget.controller.deleteImageFromGallery(context,imageUrl: imageUrl);
     if (mounted) { 
       setState(() => schoolPhotos.removeAt(index));
     }

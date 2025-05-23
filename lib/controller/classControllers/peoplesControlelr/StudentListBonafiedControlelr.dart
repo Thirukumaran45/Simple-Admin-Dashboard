@@ -1,5 +1,6 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart' show CloudDataReadException;
+import 'package:admin_pannel/utils/AppException.dart' show CloudDataReadException;
+
 
 import '../../../contant/ConstantVariable.dart';
 import '../../../services/FireBaseServices/CollectionVariable.dart';
@@ -14,15 +15,15 @@ late FirebaseCollectionVariable collectionControler;
 final int _limit = 18;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
-
+var _context;
   @override
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchStudentData();
+    fetchStudentData(_context);
   }
  
-  void fetchStudentData() async {
+  void fetchStudentData(dynamic context,) async {
      if (_isFetchingMore) return;
 
   _isFetchingMore = true;

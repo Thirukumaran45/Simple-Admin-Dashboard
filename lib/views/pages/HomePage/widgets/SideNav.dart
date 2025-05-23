@@ -39,7 +39,7 @@ class _sideNavState extends State<SideNav> {
   } 
 
   Future<void> initializeFunction() async {
-   String? photoUrl = await controller.getSchoolPhotoUrl();
+   String? photoUrl = await controller.getSchoolPhotoUrl(context);
 
    if (!mounted) return; // ✅ Check before updating UI
    setState(() {

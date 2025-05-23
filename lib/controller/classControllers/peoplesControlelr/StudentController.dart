@@ -1,10 +1,10 @@
 import 'dart:developer'show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/utils/AppException.dart';
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../modules/studentModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
-import 'package:flutter/material.dart';
+
 import 'package:get/get.dart' ;
 import '../../../contant/ConstantVariable.dart';
 import 'dart:io';
@@ -19,15 +19,15 @@ class StudentController extends GetxController {
 final int _limit = 18;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
-
+var _context;
   @override
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchStudentData();
+    fetchStudentData(_context);
   }
  
-  void fetchStudentData() async {
+  void fetchStudentData(dynamic context,) async {
      if (_isFetchingMore) return;
 
   _isFetchingMore = true;
@@ -58,7 +58,7 @@ bool _isFetchingMore = false;
   }
   }
 
-Future<StudentdetailsModel?> studentDataRead({required String uid}) async {
+Future<StudentdetailsModel?> studentDataRead(dynamic context,{required String uid}) async {
   try {
     final doc = await collectionControler.studentLoginCollection.doc(uid).get();
     
@@ -80,7 +80,7 @@ Future<StudentdetailsModel?> studentDataRead({required String uid}) async {
   
 }
 
-Future<bool> updateStudentDetails({
+Future<bool> updateStudentDetails(dynamic context,{
   required String uid,
   required String name,
   required String studentClass,
@@ -116,7 +116,7 @@ Future<bool> updateStudentDetails({
       feesStatusField:feesStatus,
       profilePhotfield: profilePhotoUrl, // Update photo URL
     });
-       fetchStudentData();
+       fetchStudentData(_context);
         update(); 
 
     log("Student details updated successfully.");
@@ -129,7 +129,7 @@ Future<bool> updateStudentDetails({
 }
 
 
-Future<String> updateStudentPhoto(String studentId,) async {
+Future<String> updateStudentPhoto(dynamic context,String studentId,) async {
     String downloadUrl = '';
 
     final docRef = collectionControler.studentLoginCollection.doc(studentId);
@@ -184,7 +184,7 @@ Future<String> updateStudentPhoto(String studentId,) async {
 }
 
 
-Future<String?> getStudentPhotoUrl(String studentId) async {
+Future<String?> getStudentPhotoUrl(dynamic context,String studentId) async {
   try {
     final ref =collectionControler.firebaseStorageRef.child("Student photo/$studentId");
     final doc = await ref.getDownloadURL();
@@ -213,7 +213,7 @@ Future<void> registerUser({
   required String stuAddress,
   required dynamic stupicUrl,
   required String userId,
-  required BuildContext context,
+  required dynamic context,
 }) async {
   try {
   
@@ -240,8 +240,8 @@ Future<void> registerUser({
       totalAttendanceDays:''
     });
 
-    
-
+    if(!context.mounted)return;
+      fetchStudentData(context);
         update(); // Notify GetX listeners
 
   } catch (e) {
@@ -252,7 +252,7 @@ Future<void> registerUser({
    
   }
 }
-Future<dynamic> addPhoto() async {
+Future<dynamic> addPhoto(dynamic context,) async {
   try {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom, // Custom type for specific extensions
@@ -276,7 +276,7 @@ Future<dynamic> addPhoto() async {
   }
 }  
 
-Future<String> photoStorage({required String userId, required dynamic image}) async {
+Future<String> photoStorage(dynamic context,{required String userId, required dynamic image}) async {
   String downloadUrl = '';
 
   try {
@@ -308,7 +308,7 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 }
 }
 
-Future<void> updateNumberOfStudent(bool isIncrement) async {
+Future<void> updateNumberOfStudent(dynamic context,bool isIncrement) async {
 
 
 try {
@@ -339,7 +339,7 @@ try {
 
 
 
-Future<bool> deleteStudent({
+Future<bool> deleteStudent(dynamic context,{
   required String studentId,
   required String stuClass,
   required String stuSec,
@@ -368,7 +368,7 @@ Future<bool> deleteStudent({
     if ((await remainderRef.listAll()).items.isNotEmpty) {
       await remainderRef.delete();
     }
-   await updateNumberOfStudent(false);
+   await updateNumberOfStudent(_context,false);
    studentData .removeWhere((staff) => staff['id'] == studentId);
 
         update(); // Notify GetX listeners

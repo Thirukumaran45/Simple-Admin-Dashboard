@@ -45,7 +45,7 @@ void initState() {
 _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.getFilteredStudents(
+    controller.getFilteredStudents(context,
       className: widget.stuClass,section: widget.section
     );
   }
@@ -59,7 +59,7 @@ _scrollController.addListener(() {
 
 
 void initStudent() async {
-  List<Map<String, dynamic>> studentData = await controller.getFilteredStudents(
+  List<Map<String, dynamic>> studentData = await controller.getFilteredStudents(context,
     className: widget.stuClass,
     section: widget.section,
   );
@@ -71,7 +71,7 @@ void initStudent() async {
 }
 
 Future<void> fetchDetails() async {
-  final data = await controller.getTotalAndIndividualSubjectMark(
+  final data = await controller.getTotalAndIndividualSubjectMark(context,
     className: widget.stuClass,
     examType: widget.examName,
     section: widget.section,
@@ -177,7 +177,7 @@ void dispose() {
                           if (showTotalSaveButton)
                             ElevatedButton(
                               onPressed: ()async {
-                                await controller.addUpdateTotalAndIndividualSubject(
+                                await controller.addUpdateTotalAndIndividualSubject(context,
                                   className: widget.stuClass,
                                   examType: widget.examName,
                                   outOffMark: singleSubjectMarkController.text.toString(),
@@ -224,7 +224,7 @@ void dispose() {
                           if (showSingleSaveButton)
                              ElevatedButton(
                               onPressed: ()async {
-                                await controller.addUpdateTotalAndIndividualSubject(
+                                await controller.addUpdateTotalAndIndividualSubject(context,
                                   className: widget.stuClass,
                                   examType: widget.examName,
                                   outOffMark: singleSubjectMarkController.text.toString(),

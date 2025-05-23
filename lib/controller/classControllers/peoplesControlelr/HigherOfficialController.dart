@@ -1,10 +1,10 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/utils/AppException.dart';
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../modules/higherOfficialModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'
     show DocumentSnapshot, FieldValue, Query;
-import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import '../../../contant/ConstantVariable.dart';
 import 'dart:io';
@@ -17,22 +17,18 @@ class Higherofficialcontroller extends GetxController {
   final RxList<Map<String, dynamic>> officialData =
       <Map<String, dynamic>>[].obs;
   late FirebaseCollectionVariable collectionControler;
-  DocumentSnapshot? lastDocument; // NEW: Track last document
-  bool isFetching = false; // NEW: Prevent multiple fetches
-  final int pageSize = 10; // NEW: Load 10 at a time
-
+  final int _limit = 15;
+  DocumentSnapshot? _lastDocument;
+  bool _isFetchingMore = false;
+ var _context;
   @override
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchMoreOfficials();
+    fetchMoreOfficials(_context);
   }
 
-  final int _limit = 10;
-  DocumentSnapshot? _lastDocument;
-  bool _isFetchingMore = false;
-
-  void fetchMoreOfficials() async {
+  void fetchMoreOfficials(dynamic context,) async {
     if (_isFetchingMore) return;
 
     _isFetchingMore = true;
@@ -71,7 +67,7 @@ class Higherofficialcontroller extends GetxController {
     }
   }
 
-  Future<Principaldetailmodel?> officialDataRead({required String uid}) async {
+  Future<Principaldetailmodel?> officialDataRead(dynamic context,{required String uid}) async {
     try {
       final doc =
           await collectionControler.officialLoginCollection.doc(uid).get();
@@ -92,7 +88,7 @@ class Higherofficialcontroller extends GetxController {
     }
   }
 
-  Future<bool> updateOfficialDetails({
+  Future<bool> updateOfficialDetails(dynamic context,{
     required String principalName,
     required String principalEmail,
     required String principalPhoneNumber,
@@ -112,9 +108,8 @@ class Higherofficialcontroller extends GetxController {
         principalId: userId,
         principalRoleField: principalRole,
       });
-      fetchMoreOfficials();
+      fetchMoreOfficials(_context);
       update();
-
       log("Officials details updated successfully.");
       return true; // Return success
     } catch (e) {
@@ -124,7 +119,7 @@ class Higherofficialcontroller extends GetxController {
     }
   }
 
-  Future<String> updateOfficialsPhoto(
+  Future<String> updateOfficialsPhoto(dynamic context,
     String officialId,
   ) async {
     String downloadUrl = '';
@@ -180,7 +175,7 @@ class Higherofficialcontroller extends GetxController {
     return downloadUrl;
   }
 
-  Future<String?> getOfficialsPhotoUrl(String officialsId) async {
+  Future<String?> getOfficialsPhotoUrl(dynamic context,String officialsId) async {
     try {
       final ref = collectionControler.firebaseStorageRef
           .child("Higher Official Photo/$officialsId");
@@ -203,7 +198,7 @@ class Higherofficialcontroller extends GetxController {
     required String principalProfile,
     required String userId,
     required String principalRole,
-    required BuildContext context,
+    required dynamic context,
   }) async {
     try {
       await collectionControler.officialLoginCollection.doc(userId).set({
@@ -215,7 +210,8 @@ class Higherofficialcontroller extends GetxController {
         principalId: userId,
         principalRoleField: principalRole,
       });
-      fetchMoreOfficials();
+      if(!context.mounted)return;
+      fetchMoreOfficials(context);
       update(); // Notify GetX listeners
     } catch (e) {
       log(e.toString());
@@ -225,7 +221,7 @@ class Higherofficialcontroller extends GetxController {
     update(); // Notify GetX listeners
   }
 
-  Future<dynamic> addPhoto() async {
+  Future<dynamic> addPhoto(dynamic context,) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom, // Custom type for specific extensions
@@ -248,7 +244,7 @@ class Higherofficialcontroller extends GetxController {
     update(); // Notify GetX listeners
   }
 
-  Future<String> photoStorage(
+  Future<String> photoStorage(dynamic context,
       {required String userId, required dynamic image}) async {
     String downloadUrl = '';
 
@@ -283,7 +279,7 @@ class Higherofficialcontroller extends GetxController {
 }
   }
 
-  Future<void> updateNumberOfOfficials(bool isIncrement) async {
+  Future<void> updateNumberOfOfficials(dynamic context,bool isIncrement) async {
     try {
   final dataDoc = collectionControler.loginCollection.doc('officials');
   final val = await dataDoc.get();
@@ -305,7 +301,7 @@ class Higherofficialcontroller extends GetxController {
 
   }
 
-  Future<bool> deleteOfficials({
+  Future<bool> deleteOfficials(dynamic context,{
     required String officialId,
   }) async {
     try {
@@ -343,7 +339,7 @@ class Higherofficialcontroller extends GetxController {
           }
         }
       }
-      await updateNumberOfOfficials(false);
+      await updateNumberOfOfficials(_context,false);
       officialData.removeWhere((staff) => staff['id'] == officialId);
 
       update(); // Notify GetX listeners

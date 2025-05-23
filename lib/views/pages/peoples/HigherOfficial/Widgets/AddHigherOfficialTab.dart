@@ -42,7 +42,7 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
   }
 
 Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto();
+  final pickedImage = await controller. addPhoto(context);
   if (pickedImage != null && mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
@@ -169,11 +169,14 @@ Future<void> profileFuntion() async {
        bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
      if(val)
      {
+  if(!context.mounted)return;
      CustomDialogs().showLoadingDialogInSec(context, 10);
       final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
      String userId = user!.id;
-     final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
+     // ignore: use_build_context_synchronously
+     final url = await controller.photoStorage(context,image: updatePhotoUrl,userId: userId);
      String name = '${firstNameController.text} ${lastNameController.text}';
+  if(!context.mounted)return;
   await  controller.registerOfficials(
      userId: userId,
        context: context,
@@ -185,7 +188,9 @@ Future<void> profileFuntion() async {
      principalRole: "Higher Official",
 
      );
-     await controller.updateNumberOfOfficials(true);
+     if(!context.mounted)return;
+     await controller.updateNumberOfOfficials(context,true);
+     // ignore: use_build_context_synchronously
      customPopNavigation(context, '/manage-higher-official');
      }
      } else

@@ -38,7 +38,7 @@ late TextEditingController firstNameController;
     initializeFunction();
     }
 Future<void> handlePhotoUpdate(String studentId) async {
-  String newPhotoUrl = await  controller.updateStaffsPhoto(studentId );
+  String newPhotoUrl = await  controller.updateStaffsPhoto(context,studentId );
   
   if (newPhotoUrl.isNotEmpty) { 
     setState(() {
@@ -49,12 +49,13 @@ Future<void> handlePhotoUpdate(String studentId) async {
 
 
   Future<void>initializeFunction()async{
-  teacherDetails = await controller.staffDataRead(uid: widget.uid);
+  teacherDetails = await controller.staffDataRead(context,uid: widget.uid);
    if (teacherDetails == null) {
       return;
     }
 
-    String? photoUrl = await controller.getStaffsPhotoUrl(teacherDetails!.Id);
+    // ignore: use_build_context_synchronously
+    String? photoUrl = await controller.getStaffsPhotoUrl(context,teacherDetails!.Id);
     
     setState(() {
        assetImage = photoUrl ?? teacherDetails?.staffProfile;
@@ -191,7 +192,8 @@ void dispose() {
                           onPressed: () async{
                             if (isEdited) {
                      await CustomDialogs().showCustomDialog(context, "Staff details Updated Succecfully");
-       bool isUpdated = await controller.updateStaffDetails(
+       // ignore: use_build_context_synchronously
+       bool isUpdated = await controller.updateStaffDetails(context,
                     staffAddress: homeAddressController.text.toString(),
                      staffEmail: emailController.text.toString(),
                      staffName: firstNameController.text.toUpperCase(),
@@ -200,7 +202,8 @@ void dispose() {
                    staffrole: role.text,
                    staffPhoneNumber: phoneNumberController.text.toString(),
                    );
-                   if(isUpdated) await customSnackbar(context: context, text: "Higher Official  Detials Changed updated succesfully");
+                   if(!context.mounted)return;
+                   if(isUpdated) await customSnackbar(context: context, text: "Staff  Detials Changed, updated succesfully");
                      setState(() {
                                 isEdited = false;
                               });   }
@@ -221,7 +224,8 @@ void dispose() {
                         child: ElevatedButton(
                           onPressed: ()async {
                          await customSnackbar(context: context, text: "Downloaded Succesfully");
-                         await PdfStaffDetails().openPdf(fileName: firstNameController.text, 
+                   if(!context.mounted)return;
+                         await PdfStaffDetails().openPdf(context: context,fileName: firstNameController.text, 
                          nameController: firstNameController, phoneNumberController: phoneNumberController, emailController: emailController,
                           homeAddressController: homeAddressController,assetImage: assetImage, role: role);
                           },

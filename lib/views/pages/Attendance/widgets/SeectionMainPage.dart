@@ -25,7 +25,7 @@ class _ClassPageState extends State<ClassPage> {
   void initState() {
     super.initState();
    controler = Get.find<AttendanceController>();
-    futureAttendanceData = controler.getSectionWiseTotalPresentAndAbsent(stuClass: widget.classNumber);
+    futureAttendanceData = controler.getSectionWiseTotalPresentAndAbsent(context,stuClass: widget.classNumber);
    
   }
 @override

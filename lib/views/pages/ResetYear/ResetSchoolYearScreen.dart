@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import '../../../contant/CustomNavigation.dart';
 import '../../../controller/classControllers/schoolDetailsController/schooResetController.dart';
 import '../../widget/CustomDialogBox.dart';
@@ -23,14 +25,14 @@ late SchoolResetYearController controller;
 
 Future<void> deleteAllData(BuildContext context,String stuClass) async {
 
-await controller.deleteAttendanceDataByClass(stuClass);
-await controller.deleteRemainderChatDataByClass(stuClass: stuClass);
-await controller.deleteExamDataByClass(stuClass: stuClass);
-await controller.deleteAssignmentByClass(stuClass: stuClass);
-await controller.deleteLeaveHistryByClass(stuClass: stuClass);
-await controller.deleteAssignmentByTeacherClass(stuClass: stuClass);
-await controller.deleteTimeTableDataByClass(stuClass: stuClass);
-await controller.deleteSchoolChatData();
+await controller.deleteAttendanceDataByClass(context,stuClass);
+await controller.deleteRemainderChatDataByClass(context,stuClass: stuClass);
+await controller.deleteExamDataByClass(context,stuClass: stuClass);
+await controller.deleteAssignmentByClass(context,stuClass: stuClass);
+await controller.deleteLeaveHistryByClass(context,stuClass: stuClass);
+await controller.deleteAssignmentByTeacherClass(context,stuClass: stuClass);
+await controller.deleteTimeTableDataByClass(context,stuClass: stuClass);
+await controller.deleteSchoolChatData(context,);
 
 }
 

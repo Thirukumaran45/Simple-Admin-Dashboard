@@ -41,33 +41,33 @@ Map<int, Future<void> Function()> getDeletionFunctionsMap({
   required String section,
 }) {
   return {
-    0: () => controller.deleteAttendanceDataByClassSection(stuClass, section),
-    1: () => controller.deleteRemainderChatDataByClassSection(
+    0: () => controller.deleteAttendanceDataByClassSection(context,stuClass, section),
+    1: () => controller.deleteRemainderChatDataByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
         ),
-    2: () => controller.deleteExamDataByClassSection(
+    2: () => controller.deleteExamDataByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
         ),
-    3: () => controller.deleteAssignmentByClassSection(
+    3: () => controller.deleteAssignmentByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
         ),
-    4: () => controller.deleteLeaveHistrytByClassSection(
+    4: () => controller.deleteLeaveHistrytByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
         ),
-    5: () => controller.deleteAssignmentByTeacherClassSection(
+    5: () => controller.deleteAssignmentByTeacherClassSection(context,
           stuClass: stuClass,
           stuSec: section,
         ),
-    6: () => controller.deleteTimeTableDataByClassSection(
+    6: () => controller.deleteTimeTableDataByClassSection(context,
           stuClass: stuClass,
           sec: section,
         ),
-    7: () => controller.deleteSchoolChatData(),
-    8:()=>controller.deleteFeesTransactionByClassSection(stuClass: stuClass, stuSec: section),
+    7: () => controller.deleteSchoolChatData(context,),
+    8:()=>controller.deleteFeesTransactionByClassSection(context,stuClass: stuClass, stuSec: section),
   };
 }
 

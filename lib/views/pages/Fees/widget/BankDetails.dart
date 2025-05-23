@@ -31,7 +31,7 @@ void initState() {
 
 
 void loadAllBankData() async {
-  final list = await controller.fetchAllBankDetails();
+  final list = await controller.fetchAllBankDetails(context);
   setState(() {
     isChanged = false;
     bankDetails = list;
@@ -68,7 +68,7 @@ void loadAllBankData() async {
 
   void saveChanges()async {
     
-    await controller.addAndUpdateBankDetailsToFirestore(
+    await controller.addAndUpdateBankDetailsToFirestore(context,
       apiControllers: apiControllers,
       bankControllers: bankControllers,
     );

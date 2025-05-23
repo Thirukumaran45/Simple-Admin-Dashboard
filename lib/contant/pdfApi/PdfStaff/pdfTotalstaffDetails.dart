@@ -10,6 +10,7 @@ class PdfTotalStaffDetails {
 
    Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
+    required context,
     required List<Map<String, dynamic>> staff,
   }) async {
     final font1 = await fontBold();
@@ -17,7 +18,7 @@ class PdfTotalStaffDetails {
     final pdf = pw.Document();
 
     // Fetch watermark image URL
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
 
     pdf.addPage(
@@ -135,10 +136,11 @@ class PdfTotalStaffDetails {
   }
 
    Future<void> openPdf({
+    required context,
     required String fileName,
     required List<Map<String, dynamic>> staff,
   }) async {
-    final pdfData = await generateStudentDetailsSheet(
+    final pdfData = await generateStudentDetailsSheet(context: context,
       fileName: fileName,
       staff: staff,
     );

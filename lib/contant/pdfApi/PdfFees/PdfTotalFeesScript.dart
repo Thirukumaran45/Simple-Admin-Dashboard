@@ -11,12 +11,14 @@ class PdfTotalFeesScript {
    Future<Uint8List> generateFeesTransactionSheet({
     required String fileName,
     required List<Map<String, dynamic>> transactions,
+    required context,
+
   }) async {
     final font1 = await fontBold();
     final font2 = await fontMedium();
     final pdf = pw.Document();
 
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
     pdf.addPage(
       pw.MultiPage(
@@ -85,9 +87,10 @@ class PdfTotalFeesScript {
 
    Future<void> openPdf({
     required String fileName,
+    required context,
     required List<Map<String, dynamic>> transactions,
   }) async {
-    final pdfData = await generateFeesTransactionSheet(
+    final pdfData = await generateFeesTransactionSheet(context: context,
       fileName: fileName,
       transactions: transactions,
     );

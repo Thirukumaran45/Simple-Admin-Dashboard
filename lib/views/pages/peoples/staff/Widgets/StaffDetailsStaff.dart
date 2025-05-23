@@ -46,7 +46,7 @@ final ScrollController _scrollController = ScrollController();
   _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchStaffData();
+    controller.fetchStaffData(context);
   }
 });
 
@@ -114,7 +114,8 @@ void dispose() {        // Properly dispose of the GetX Worker
                   icon: Icons.download_sharp,
                   onPressed:() async{
                     await customSnackbar(context: context, text: "Downloaded Succesfully");
-                    await PdfTotalStaffDetails().openPdf(fileName: "Working Staff Details $todayDateTime",staff: filteredData);
+                    if(!context.mounted)return;
+                    await PdfTotalStaffDetails().openPdf(context: context,fileName: "Working Staff Details $todayDateTime",staff: filteredData);
                     applyFilters();},
                   text: "Download"),
             ],
@@ -182,7 +183,9 @@ void dispose() {        // Properly dispose of the GetX Worker
                           onPressed: ()async {
                           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
-                            await controller.deleteStaffs(staffId: staff['id']!,);
+                           if(!context.mounted)return;
+
+                            await controller.deleteStaffs(context,staffId: staff['id']!,);
                            ever(controller.staffData, (_) {
                             setState(() {
                               filteredData = List.from(controller.staffData);

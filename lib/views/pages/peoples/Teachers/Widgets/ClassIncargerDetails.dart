@@ -34,7 +34,7 @@ class _ClassInchargerDetailsState extends State<ClassInchargerDetails> {
     nameControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
     phoneNumberControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
     emailControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
-   controller.fetchAllClassInchargeDetails(nameControllers, phoneNumberControllers, emailControllers);
+   controller.fetchAllClassInchargeDetails(context,nameControllers, phoneNumberControllers, emailControllers);
   
   }
 
@@ -117,7 +117,7 @@ class _ClassInchargerDetailsState extends State<ClassInchargerDetails> {
       String email = emailControllers[classIndex][i].text.trim();
 
       if (name.isNotEmpty && phoneNo.isNotEmpty && email.isNotEmpty) {
-        await controller.addAndUpdateClassInchargers(
+        await controller.addAndUpdateClassInchargers(context,
           stuClass: stuClass,
           stuSec: stuSec,
           name: name,

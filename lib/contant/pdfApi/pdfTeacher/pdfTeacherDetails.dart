@@ -13,6 +13,7 @@ class PdfTeacherDetails {
 
    Future<Uint8List> generateStudentDetailsSheet({
     required String fileName,
+    required context,
     required String nameController,
     required String graduateDegree,
     required String subjectHandling,
@@ -28,7 +29,7 @@ class PdfTeacherDetails {
     final pdf = pw.Document();
     
     // Get the watermark image URL from the controller
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
 
     pdf.addPage(
@@ -126,6 +127,7 @@ class PdfTeacherDetails {
     required TextEditingController homeAddressController,
     required TextEditingController yearofExperience,
     required TextEditingController subjectHandling,
+    required context,
     required String? assetImage, // Now it's a String (URL)
   }) async {
     Uint8List? imageBytes;
@@ -142,7 +144,7 @@ class PdfTeacherDetails {
     }
 
     final pdfData = await generateStudentDetailsSheet(
-      fileName: fileName,
+      fileName: fileName, context: context,
       nameController: nameController.text,
       emailController: emailController.text,
       homeAddressController: homeAddressController.text,

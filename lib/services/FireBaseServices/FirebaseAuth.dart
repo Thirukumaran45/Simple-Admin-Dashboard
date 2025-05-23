@@ -1,5 +1,5 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/utils/AppException.dart';
 import 'AuthUserModule.dart';
 import 'CollectionVariable.dart';
 import 'package:firebase_auth/firebase_auth.dart';

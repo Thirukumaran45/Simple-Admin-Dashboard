@@ -33,7 +33,7 @@ class _TeacherDetailsTabState extends State<TeacherDetailsTab> {
     _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchTeacherData();
+    controller.fetchTeacherData(context);
   }
 });
 
@@ -112,8 +112,8 @@ void dispose() {
                   onPressed: ()async{
                     applyFilters();
                    await  customSnackbar(context: context, text: "Donloaded Succesfully");
-
-                   await  PdfTotalTeacherDetails().openPdf(fileName: "Teacher Details - $todayDateTime",teacher: filteredData);
+                   if(!context.mounted)return;
+                   await  PdfTotalTeacherDetails().openPdf(context: context,fileName: "Teacher Details - $todayDateTime",teacher: filteredData);
                     
                     
                     },
@@ -203,7 +203,8 @@ void dispose() {
                             // Implement view more functionality
                            bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
-                            await controller.deleteTeacher(teacherId: teacher['id']!,);
+                   if(!context.mounted)return;
+                            await controller.deleteTeacher(context,teacherId: teacher['id']!,);
                            ever(controller.teacherData, (_) {
                             setState(() {
                               filteredData = List.from(controller.teacherData);

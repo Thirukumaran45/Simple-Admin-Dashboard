@@ -18,12 +18,13 @@ class PdfOfficialsDetails {
     required String phoneNumber,
     required String emailController,
     required String homeAddressController,
+    required context,
     Uint8List? photo,
   }) async {
     final font1 = await fontBold();
     final font2 = await fontMedium();
     final pdf = pw.Document();
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
 
     pdf.addPage(
@@ -119,6 +120,7 @@ class PdfOfficialsDetails {
     required TextEditingController emailController,
     required TextEditingController homeAddressController,
     required String? assetImage, // Now it's a String (URL)
+    required context,
 
   }) async {
     Uint8List? imageBytes;
@@ -135,7 +137,7 @@ class PdfOfficialsDetails {
     }
 
     final pdfData = await generateStudentDetailsSheet(
-      fileName: fileName,
+      fileName: fileName,context: context,
       nameController: nameController.text,
       emailController: emailController.text,
       homeAddressController: homeAddressController.text,

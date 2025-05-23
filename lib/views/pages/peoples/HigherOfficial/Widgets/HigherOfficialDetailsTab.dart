@@ -34,7 +34,7 @@ final ScrollController _scrollController = ScrollController();
   _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchMoreOfficials();
+    controller.fetchMoreOfficials(context);
   }
 });
 
@@ -109,8 +109,10 @@ void dispose() {        // Properly dispose of the GetX Worker
               customIconTextButton(primaryGreenColors,
                   icon: Icons.download_sharp,
                   onPressed:() async{
-                 await   customSnackbar(context: context, text: "Downloaded Succesfullly");
-                   await  PdfTotalOfficialDetails().openPdf(fileName: "Higher Official Details $todayDateTime",officials:filteredData );
+                  await   customSnackbar(context: context, text: "Downloaded Succesfullly");
+                    if(!context.mounted)return;
+
+                   await  PdfTotalOfficialDetails().openPdf(context: context,fileName: "Higher Official Details $todayDateTime",officials:filteredData );
                     applyFilters();},
                   text: "Download"),
             ],
@@ -203,7 +205,8 @@ void dispose() {        // Properly dispose of the GetX Worker
                           ),
                           onPressed: ()async {           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
-                            await controller.deleteOfficials(officialId: teacher['id']!,);
+                           if(!context.mounted)return;
+                            await controller.deleteOfficials(context,officialId: teacher['id']!,);
                            ever(controller.officialData, (_) {
                             setState(() {
                               filteredData = List.from(controller.officialData);

@@ -50,7 +50,7 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
 
   }
 Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto();
+  final pickedImage = await controller. addPhoto(context);
   if (pickedImage != null&&mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
@@ -247,12 +247,16 @@ Future<void> profileFuntion() async {
        bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the teacher ?');
    if(val)
    {
+            if(!context.mounted)return;
+
      CustomDialogs().showLoadingDialogInSec(context, 10);
 
        final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
      String userId = user!.id;
-     final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
+     // ignore: use_build_context_synchronously
+     final url = await controller.photoStorage(context,image: updatePhotoUrl,userId: userId);
      String name = '${firstNameController.text} ${lastNameController.text}';
+                   if(!context.mounted)return;
   await  controller.registerTeacher(
      userId: userId,
        context: context,
@@ -267,7 +271,8 @@ Future<void> profileFuntion() async {
       teacherSubjectHandling: "",
       yearofexperience: yearOfExperienceController.text
      );
-     await controller.updateNumberOfTeacher(true);
+                   if(!context.mounted)return;
+     await controller.updateNumberOfTeacher(context,true);
     
       customPopNavigation(context, '/manage-teacher');
 

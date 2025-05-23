@@ -53,6 +53,7 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
 // load more when scrolling:
 Future<void> _loadMoreStudents() async {
   final more = await controler.fetchPagedStudents(
+    context,
     stuClass    : widget.classNUmber,
     stuSec      : widget.section,
   dateFilter  : selectedDate!,
@@ -69,9 +70,11 @@ Future<void> _loadMoreStudents() async {
 
  
 void initializeList() async {
-  List<String> monthVal = await controler.fetchUniqueMonthValuesAll();
+  List<String> monthVal = await controler.fetchUniqueMonthValuesAll(context,);
   List<String> dateVal = await controler.getAttendanceDates();
-  String name = await controler.getTeacherName(sec: widget.section, stuClass: widget.classNUmber);
+ 
+  // ignore: use_build_context_synchronously
+  String name = await controler.getTeacherName(context,sec: widget.section, stuClass: widget.classNUmber);
 
   setState(() {
     month = monthVal.toSet().toList(); // Remove duplicates
@@ -86,7 +89,9 @@ void initializeList() async {
       selectedDate = controler.gettoadayDate();
     }
   });
-final data = await controler.fetchPagedStudents(
+
+// ignore: use_build_context_synchronously
+final data = await controler.fetchPagedStudents(context,
   stuClass    : widget.classNUmber,
   stuSec      : widget.section,
   dateFilter  : selectedDate!,
@@ -158,11 +163,9 @@ _buildDropdown(
   selectedDate,
   date,
   (value) async {
-    // 1️⃣ update the filter
     setState(() => selectedDate = value);
 
-    // 2️⃣ fetch fresh data from Firestore (reset pagination!)
-    final fresh = await controler.fetchPagedStudents(
+    final fresh = await controler.fetchPagedStudents(context,
       stuClass    : widget.classNUmber,
       stuSec      : widget.section,
       dateFilter  : selectedDate!,
@@ -170,7 +173,6 @@ _buildDropdown(
       reset       : true,
     );
 
-    // 3️⃣ update state + re-apply your in-memory filter
     setState(() {
       studentData = fresh;
       applyFilters();
@@ -185,7 +187,7 @@ _buildDropdown(
   month,
   (value) async {
     setState(() => selectedMonth = value);
-    final fresh = await controler.fetchPagedStudents(
+    final fresh = await controler.fetchPagedStudents(context,
       stuClass    : widget.classNUmber,
       stuSec      : widget.section,
       dateFilter  : selectedDate!,
@@ -229,7 +231,7 @@ _buildDropdown(
   onPressed: () async {
     setState(() {});
 
-    final fresh = await controler.fetchPagedStudents(
+    final fresh = await controler.fetchPagedStudents(context,
       stuClass    : widget.classNUmber,
       stuSec      : widget.section,
       dateFilter  : selectedDate!,
@@ -246,8 +248,9 @@ _buildDropdown(
 ),
  customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:()async{
                   await customSnackbar(context: context, text: "Donloaded Succesfully");
+                    if(!context.mounted)return;
                 await PdfAttendance().openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,
-                studentClass: widget.classNUmber,students:filteredData,teacherName: teacherName  );
+                studentClass: widget.classNUmber,students:filteredData,teacherName: teacherName,context: context,  );
                 applyFilters();
               } , text: "Download"),
             ],
@@ -336,7 +339,7 @@ _buildDropdown(
                                   child: ElevatedButton(
                                     onPressed: () async{
                                       saveAttendance(index);
-                                      await controler.updateAttendance(stuClass: widget.classNUmber
+                                      await controler.updateAttendance(context,stuClass: widget.classNUmber
                                       , sec: widget.section, status: 
                                       filteredData[index]['attendanceStatus']);
                                     },

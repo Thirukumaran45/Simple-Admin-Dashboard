@@ -68,7 +68,7 @@ class _StudentResultState extends State<StudentResult> {
   // but intentionally leaves out assigning any grade fields.
 Future<void> _fetchExamResult() async {
   final result = await controller.getResult(
-    studentId: widget.id,
+    studentId: widget.id,context,
     examType: widget.examName,
   );
 
@@ -279,10 +279,11 @@ for (int i = 1; i <= subjects.length; i++) {
     resultMark['scored_mark'] = scoredMark.toString();
     // Show dialog and update the result
     
-    await notificationControlelr.examFeesUpdationPushNotification(id: widget.id);
+    await notificationControlelr.examFeesUpdationPushNotification(context,id: widget.id);
     if(!context.mounted)return;
     await CustomDialogs().showCustomDialog(context, "Student Exam Result Published ");
-    await controller.updateResult(
+     if(!context.mounted)return;
+    await controller.updateResult(context,
       studentId: widget.id,
       examType: widget.examName,
       resultMark: resultMark,

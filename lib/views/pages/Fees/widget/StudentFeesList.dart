@@ -30,7 +30,7 @@ late Worker studentDataWorker;
   }
 
 void initializeData() async {
-  await controller.fetchStudentData(stuClass: widget.stuClass, stuSec: widget.section);
+  await controller.fetchStudentData(context,stuClass: widget.stuClass, stuSec: widget.section);
   
   if (mounted) {
     setState(() {

@@ -15,6 +15,7 @@ class PdfStudentDetails {
     required String fileName,
     required String nameController,
     required String classController,
+    required context,
     required String sectionController,
     required String fatherNameController,
     required String fatherPhoneController,
@@ -32,7 +33,7 @@ class PdfStudentDetails {
     final pdf = pw.Document();
 
     // Fetch watermark image
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null
         ? await networkImage(watermarkImageUrl)
         : null;
@@ -143,6 +144,7 @@ class PdfStudentDetails {
     required TextEditingController homeAddressController,
     required TextEditingController totalFeesController,
     required TextEditingController pendingFeesController,
+    required context,
     required String? assetImage, // Now it's a String (URL)
   }) async {
     Uint8List? imageBytes;
@@ -159,7 +161,7 @@ class PdfStudentDetails {
     }
 
     final pdfData = await generateStudentDetailsSheet(
-      fileName: fileName,
+      fileName: fileName,context: context,
       nameController: nameController.text,
       classController: classController.text,
       sectionController: sectionController.text,

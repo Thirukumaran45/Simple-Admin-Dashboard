@@ -21,7 +21,7 @@ class _AttendanceMainScreenState extends State<AttendanceMainScreen> {
   void initState() {
     super.initState();
     // Fetch the attendance data using the Future provided by the controller.
-    futureAttendanceData = controler.totalNumberOfPresentAndAbsent();
+    futureAttendanceData = controler.totalNumberOfPresentAndAbsent(context);
     
   }
 

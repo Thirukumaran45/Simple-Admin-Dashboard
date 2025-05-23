@@ -63,7 +63,7 @@ notificationControlelr = Get.find<PushNotificationControlelr>();
 }
 
 void fetchStudentFees() async {
-  final data = await controller.getStudentFeesDetails(id: widget.id);
+  final data = await controller.getStudentFeesDetails(context,id: widget.id);
 
   allocatedFeeController.text = data['allocatedAmount'];
 
@@ -90,13 +90,15 @@ void fetchStudentFees() async {
   }
 
 void saveFees() async {
-  await controller.addAndUpdateStudentFeesDetails(
+  await controller.addAndUpdateStudentFeesDetails(context,
     id: widget.id,
     allocateddAmount: allocatedFeeController.text,
     feeNameControllers: feeNameControllers,
     feeAmountControllers: feeAmountControllers,
   );
-  await controller.fetchStudentData(stuClass: widget.stuClass, stuSec: widget.stuSec);
+
+  // ignore: use_build_context_synchronously
+  await controller.fetchStudentData(context,stuClass: widget.stuClass, stuSec: widget.stuSec);
   setState(() {
     isSaveButtonVisible = false;
   });
@@ -211,7 +213,8 @@ void saveFees() async {
                           onPressed: ()
                         async  {
                           
-                         await notificationControlelr.feeUpdationPushNotificationToSpecific(id: widget.id);
+                         await notificationControlelr.feeUpdationPushNotificationToSpecific(context,id: widget.id);
+                          if(!context.mounted)return;
                          isSaveButtonVisible? await CustomDialogs().showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
                             saveFees();
                           },
@@ -386,7 +389,7 @@ else
        const   Text("Download Fees Recipt", style:  TextStyle(fontSize: 15, color: Colors.black)),
           TextButton(onPressed: (){
 
-             PdfSinglescript().openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A", fees: fees,);
+             PdfSinglescript().openPdf(context: context,studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A", fees: fees,);
 
           }, child: Row(
             children: [Icon(Icons.download, color: primaryGreenColors,size: 25,), Text(" Download", style:  TextStyle(fontSize: 16, color:primaryGreenColors, fontWeight: FontWeight.bold) ,)],

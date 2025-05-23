@@ -9,13 +9,14 @@ class PdfTotalOfficialDetails {
   SchooldetailsController controller = Get.find<SchooldetailsController>();
 
   Future<Uint8List> generateStudentDetailsSheet({
+    required context,
     required String fileName,
     required List<Map<String, dynamic>> officials,
   }) async {
     final font1 = await fontBold();
     final font2 = await fontMedium();
     final pdf = pw.Document();
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null
         ? await networkImage(watermarkImageUrl)
         : null;
@@ -95,10 +96,11 @@ class PdfTotalOfficialDetails {
   }
 
   Future<void> openPdf({
+    required context,
     required String fileName,
     required List<Map<String, dynamic>> officials,
   }) async {
-    final pdfData = await generateStudentDetailsSheet(
+    final pdfData = await generateStudentDetailsSheet(context: context,
       fileName: fileName,
       officials: officials,
     );

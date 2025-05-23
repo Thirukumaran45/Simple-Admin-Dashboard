@@ -1,7 +1,9 @@
 import 'dart:developer' show log;
 import 'dart:io';
 
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
+import 'package:admin_pannel/utils/AppException.dart';
+
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../services/FireBaseServices/FirebaseAuth.dart';
@@ -18,6 +20,7 @@ String? email;
 QueryDocumentSnapshot? lastVisibleImage;
 late FirebaseCollectionVariable collectionVariable;
 late FirebaseAuthUser authcntrl;
+
 @override
   void onInit() {
     super.onInit();
@@ -32,7 +35,7 @@ void initializeEmail()=>currrentUserEmail();
    email = adminEmail;
   }
 
-Future<bool> addAndUpdateSchoolDetails({
+Future<bool> addAndUpdateSchoolDetails(dynamic context,{
   required String schoolName,
   required String chatbotApi,
   required String studentPassKey,
@@ -78,14 +81,14 @@ try {
 }
 
 
-Future<SchooldetailsModels>getSchoolDetails()async{
+Future<SchooldetailsModels>getSchoolDetails(dynamic context,)async{
 
   final dataset = collectionVariable.schoolDetails;
   final docVal = await dataset.get();
   return SchooldetailsModels.fromSnapshot(docVal); 
 }
 
-Future<String>updateSchoolPhorilfePhoto()async
+Future<String>updateSchoolPhorilfePhoto(dynamic context,)async
 {
  String downloadUrl = '';
  final dataset =   collectionVariable.schoolDetails;
@@ -127,7 +130,7 @@ Future<String>updateSchoolPhorilfePhoto()async
             await dataset.update({
               "schoolPhotoUrl"  : downloadUrl,
             });
-
+           
         } else {
             log("No file selected.");
         }
@@ -142,7 +145,7 @@ Future<String>updateSchoolPhorilfePhoto()async
 }
 
 
-Future<String?> getSchoolPhotoUrl( ) async {
+Future<String?> getSchoolPhotoUrl(dynamic context, ) async {
   try {
     final ref = collectionVariable.firebaseStorageRef.child("SchoolDetails/ProfilePhoto");
     final doc = await ref.getDownloadURL();
@@ -157,7 +160,7 @@ Future<String?> getSchoolPhotoUrl( ) async {
   }
 }
 
-Future<bool> deleteSchoolPhoto() async {
+Future<bool> deleteSchoolPhoto(dynamic context,) async {
   try {
     final schoolPhotoRef = collectionVariable.firebaseStorageRef.child("SchoolDetails/ProfilePhoto");
     await schoolPhotoRef.delete(); // Attempt to delete the file
@@ -169,7 +172,7 @@ Future<bool> deleteSchoolPhoto() async {
 
   }
 }
-Future<void> uploadImageGallery({required dynamic image}) async {
+Future<void> uploadImageGallery(dynamic context,{required dynamic image}) async {
   try {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     dynamic ref = collectionVariable.firebaseStorageRef.child('gallery').child(fileName);
@@ -190,6 +193,8 @@ Future<void> uploadImageGallery({required dynamic image}) async {
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
     await collectionVariable.galleryCollection.add({'url': downloadUrl});
     update();
+       if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Image is uploaded to the gallery");
   } catch (e) {
     log('Error uploading image: $e');
       throw CloudDataUpdateException('Error in updating school photo, please try again later !');
@@ -197,7 +202,7 @@ Future<void> uploadImageGallery({required dynamic image}) async {
   }
 }
 
-Future<dynamic> addPhoto() async {
+Future<dynamic> addPhoto(dynamic context,) async {
   try {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom, // Custom type for specific extensions
@@ -212,6 +217,8 @@ Future<dynamic> addPhoto() async {
         return File(result.files.first.path!);
       }
     } 
+       if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Image is added succesfully");
   } catch (e) {
     log(e.toString());
       throw CloudDataWriteException('Error in adding school photo, please try again later !');
@@ -221,15 +228,17 @@ Future<dynamic> addPhoto() async {
 
 }  
 
-Future<void> deleteImageFromGallery({
+Future<void> deleteImageFromGallery(dynamic context,{
 
   required String imageUrl,
 }) async {
   try {
-    await deleteById(imageUrl);
+    await deleteById(context,imageUrl);
     // Corrected `refFromURL` usage
     dynamic ref = collectionVariable.firebaseStorageInstance.refFromURL(imageUrl);
     await ref.delete();
+       if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Deleted the image from the gallery !!!");
   } catch (e) {
     log('Error deleting image: $e');
       throw CloudDataDeleteException('Error in deleting image from gallery, please try again later !');
@@ -238,7 +247,7 @@ Future<void> deleteImageFromGallery({
 }
 
 
-Future<List<String>> getGalleryImages({bool isInitial = false}) async {
+Future<List<String>> getGalleryImages(dynamic context,{bool isInitial = false}) async {
   List<String> imageUrls = [];
   try {
     Query query = collectionVariable.galleryCollection.limit(4);
@@ -264,7 +273,7 @@ Future<List<String>> getGalleryImages({bool isInitial = false}) async {
 }
 
 
-Future<String?> deleteById(String imageUrl) async {
+Future<String?> deleteById(dynamic context,String imageUrl) async {
   try {
     final querySnapshot = await collectionVariable.galleryCollection
         .where('url', isEqualTo: imageUrl)
@@ -274,11 +283,12 @@ Future<String?> deleteById(String imageUrl) async {
       String docId = querySnapshot.docs.first.id;
 
       await collectionVariable.galleryCollection.doc(docId).delete();
-
+     
       return docId; // Return the deleted document ID
     } else {
       return ""; // Return null if no matching document is found
     }
+    
   } catch (e) {
     log("Error deleting image: $e");
       throw CloudDataDeleteException('Error in deleting school photo, please try again later !');

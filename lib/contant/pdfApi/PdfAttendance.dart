@@ -12,6 +12,7 @@ class PdfAttendance {
    Future<Uint8List> generateAttendanceSheet({
     required String date,
     required String studentClass,
+    required context,
     required String section,
     required String teacherName,
     required int presentCount,
@@ -21,7 +22,7 @@ class PdfAttendance {
     final font1 = await fontBold();
     final font2 = await fontMedium();
     final pdf = pw.Document();
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
 
     pdf.addPage(
@@ -136,10 +137,11 @@ class PdfAttendance {
     required String section,
     required String teacherName,
     required int presentCount,
+    required context,
     required int absentCount,
     required List<Map<String, dynamic>> students,
   }) async {
-    final pdfData = await generateAttendanceSheet(
+    final pdfData = await generateAttendanceSheet(context: context,
       date: date,
       studentClass: studentClass,
       section: section,

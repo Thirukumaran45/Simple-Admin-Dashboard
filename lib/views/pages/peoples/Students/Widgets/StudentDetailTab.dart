@@ -33,7 +33,7 @@ void initState() {
   _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controler.fetchStudentData();
+    controler.fetchStudentData(context);
   }
 });
 
@@ -274,7 +274,8 @@ DataCell(
    onPressed: () async {
   bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
   if (val) {
-    await controler.deleteStudent(studentId: student['id']!, stuClass: student['class'], stuSec: student['section']);
+                   if(!context.mounted)return;
+    await controler.deleteStudent(context,studentId: student['id']!, stuClass: student['class'], stuSec: student['section']);
    ever(controler.studentData, (_) {
     setState(() {
       filteredData = List.from(controler.studentData);

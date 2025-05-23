@@ -33,7 +33,7 @@ class _SectionWiseFeesUpdationState extends State<SectionWiseFeesUpdation> {
       summary[className] = {};
 
       for (String section in ['A', 'B', 'C', 'D']) {
-        final result = await controller.getFeesSummary(
+        final result = await controller.getFeesSummary(context,
           sectedClass: className,
           section: section,
         );

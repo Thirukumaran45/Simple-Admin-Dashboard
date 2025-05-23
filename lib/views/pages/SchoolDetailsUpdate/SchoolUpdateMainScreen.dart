@@ -1,4 +1,6 @@
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer' show log;
 import '../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'widget/customfield.dart';
@@ -68,7 +70,7 @@ void initState() {
 
 Future<void>getSchoolDetails()async{
 
-  final schoolDetails = await detailsController.getSchoolDetails();
+  final schoolDetails = await detailsController.getSchoolDetails(context,);
   setState(() {
    schoolName = schoolDetails.schoolName;
    chatbotAi = schoolDetails.chatbotApi;
@@ -128,7 +130,7 @@ setState(() {
   
 Future<bool> addAndUpdateDetails()async{ 
   
-   final isupdate = await detailsController.addAndUpdateSchoolDetails(
+   final isupdate = await detailsController.addAndUpdateSchoolDetails(context,
     schoolName: schoolNameController.text,
     chatbotApi: schoolChatBOtApi.text,
     studentPassKey: studentPassKeyController.text,
@@ -216,7 +218,7 @@ Future<bool> addAndUpdateDetails()async{
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                   onPressed: () async {
-  final isupdate = await detailsController.addAndUpdateSchoolDetails(
+  final isupdate = await detailsController.addAndUpdateSchoolDetails(context,
     schoolName: schoolNameController.text,
     chatbotApi: schoolChatBOtApi.text,
     studentPassKey: studentPassKeyController.text,
@@ -330,6 +332,7 @@ Widget _buildPasskeyRow(List<String> passkeys) {
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                 onPressed: () async {
 final isupdate = await addAndUpdateDetails(); 
+
   isupdate?CustomDialogs().showCustomDialog(context, "School Details Updated Succesfully"):
   CustomDialogs().showCustomDialog(context, "Something went wrong, please check the details !");
   setState(() {

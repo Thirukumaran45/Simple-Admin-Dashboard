@@ -16,14 +16,15 @@ class PdfApi {
     required String studentName,
     required String studentClass,
     required String academicYear,
+    required context,
     required String parentName,
   }) async {
     final font1 = await fontBold();
     final font2 = await fontMedium();
     final pdf = pw.Document();
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
-    final schoolDetails = await controller.getSchoolDetails();
+    final schoolDetails = await controller.getSchoolDetails(context);
     String schoolName = schoolDetails.schoolName.toUpperCase();
     pdf.addPage(
       pw.MultiPage(
@@ -94,11 +95,12 @@ class PdfApi {
     required String fileName,
     required String studentName,
     required String studentClass,
+    required context,
     required String academicYear,
     required String parentName,
   }) async {
     bool isCurrentAcademic = academicType == "Current Academic" ? true : false;
-    final pdfData = await generateParagraph(
+    final pdfData = await generateParagraph(context: context,
       isCurrentAcademic,
       fileName: fileName,
       studentName: studentName,

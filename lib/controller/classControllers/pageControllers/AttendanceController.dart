@@ -1,5 +1,7 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart' ;
+import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
+import 'package:admin_pannel/utils/AppException.dart' ;
+
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
 import 'package:get/get.dart' show Get, GetxController, Inst ;
@@ -53,7 +55,7 @@ Future<List<String>> getAttendanceDates() async {
 }
 
 
-Future<List<String>> fetchUniqueMonthValuesAll() async {
+Future<List<String>> fetchUniqueMonthValuesAll(dynamic context) async {
   
 final List<String> listDate = await getAttendanceDates();
   Set<String> monthValues = {};
@@ -87,7 +89,7 @@ for( String date in listDate){
   return monthValues.toList();
 }
 
-Future<void> updateAttendance({required String stuClass, required String sec, required String status}) async {
+Future<void> updateAttendance(dynamic context,{required String stuClass, required String sec, required String status}) async {
   try {
   final String date = gettoadayDate();
   
@@ -108,6 +110,9 @@ Future<void> updateAttendance({required String stuClass, required String sec, re
       "Today Attendance": status,
     });
   }
+  if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Attendance status as been changed !!!");
+
        update();
 
 }  catch (e) {
@@ -117,7 +122,7 @@ Future<void> updateAttendance({required String stuClass, required String sec, re
 
 }
 
-Future<String> getTeacherName({required String stuClass, required String sec}) async {
+Future<String> getTeacherName(dynamic context,{required String stuClass, required String sec}) async {
   try {
     final String date = gettoadayDate();
     final docRef = collectionControler.attendanceCollection.collection(date).doc("$stuClass$sec");
@@ -141,7 +146,7 @@ Future<String> getTeacherName({required String stuClass, required String sec}) a
 }
 
 /// in AttendanceController.dart
-Future<List<Map<String, dynamic>>> fetchPagedStudents({
+Future<List<Map<String, dynamic>>> fetchPagedStudents(dynamic context,{
   required String stuClass,
   required String stuSec,
   required String dateFilter,     // ← new
@@ -204,7 +209,7 @@ Future<List<Map<String, dynamic>>> fetchPagedStudents({
  
 
 
-Future<Map<int, Map<String, String>>> totalNumberOfPresentAndAbsent() async {
+Future<Map<int, Map<String, String>>> totalNumberOfPresentAndAbsent(dynamic context,) async {
 
 final String date = gettoadayDate();
 
@@ -255,7 +260,7 @@ final String date = gettoadayDate();
 }
 }
 
-Future<Map<String, Map<String, String>>> getSectionWiseTotalPresentAndAbsent({required String stuClass})async{
+Future<Map<String, Map<String, String>>> getSectionWiseTotalPresentAndAbsent(dynamic context,{required String stuClass})async{
 final String date = gettoadayDate();
 
   Map<String, Map<String, String>> sectionWiseAttendance = {};

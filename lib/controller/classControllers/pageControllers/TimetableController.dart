@@ -2,7 +2,9 @@
 
 import 'dart:developer' show log;
 
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
+import 'package:admin_pannel/utils/AppException.dart';
+
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show SetOptions,DocumentSnapshot;
@@ -17,15 +19,15 @@ final List<String> periods = ["Period 1", "Period 2", "Period 3", "Period 4", "P
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
   final RxList<String> teachers = <String>[].obs ;
-
+ var _context;
   @override
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>(); 
-    fetchTeachers();
+    fetchTeachers(_context);
   }
 
-Future<void> fetchTeachers() async {
+Future<void> fetchTeachers(dynamic context,) async {
   try {
   final docs = await collectionControler.teacherLoginCollection.get();
   teachers.clear(); 
@@ -45,7 +47,7 @@ Future<void> fetchTeachers() async {
 }
 
 
-Future<void> saveTimetableToFirestore({
+Future<void> saveTimetableToFirestore(dynamic context,{
   required String stuClaa,
   required String stuSec,
   required String? subject,
@@ -71,6 +73,8 @@ Future<void> saveTimetableToFirestore({
         "endTime": endTime,
       }, SetOptions(merge: true)); 
       update();
+        if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Time table have been changed !");
 }  catch (e) {
   log("erorr in add and update funtion $e");
         throw CloudDataWriteException("Error in updating class timetable, please try again later !");
@@ -81,7 +85,7 @@ Future<void> saveTimetableToFirestore({
 }
 
 
-Future<DocumentSnapshot<Map<String, dynamic>> >loadTimetableCollection({required String classSection,
+Future<DocumentSnapshot<Map<String, dynamic>> >loadTimetableCollection(dynamic context,{required String classSection,
 required String day,
 required String period
 })async{

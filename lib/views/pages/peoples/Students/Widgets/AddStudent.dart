@@ -59,7 +59,7 @@ late StudentController controller ;
     super.initState();
   }
 Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto();
+  final pickedImage = await controller. addPhoto(context);
   if (pickedImage != null &&mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
@@ -275,12 +275,15 @@ Future<void> profileFuntion() async {
     bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the student');
    if(val)
    {
+    if(!context.mounted)return;
      CustomDialogs().showLoadingDialogInSec(context, 10);
 
      final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
    String userId = user!.id;
-   final url = await controller.photoStorage(image: updatePhotoUrl,userId: userId);
+   // ignore: use_build_context_synchronously
+   final url = await controller.photoStorage(context,image: updatePhotoUrl,userId: userId);
    String name = '${firstNameController.text} ${lastNameController.text}';
+     if(!context.mounted)return;
 await  controller.registerUser(
    userId: userId,
      context: context,
@@ -298,8 +301,10 @@ await  controller.registerUser(
      sturollNo: rollNumberController.text, stupicUrl: url
   
    );
-   await controller.updateNumberOfStudent(true);
+                   if(!context.mounted)return;
+   await controller.updateNumberOfStudent(context,true);
    
+    // ignore: use_build_context_synchronously
     customPopNavigation(context, '/manage-student');
    }
    }

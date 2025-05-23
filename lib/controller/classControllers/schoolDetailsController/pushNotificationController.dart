@@ -1,9 +1,10 @@
 import 'dart:async' show Timer;
 import 'dart:convert' show jsonEncode;
 import 'dart:developer' show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart' show PushNotificationException;
-import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
+import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
+import 'package:admin_pannel/utils/AppException.dart' show PushNotificationException;
 
+import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../contant/ConstantVariable.dart' show feesStatusField, fcmTokenId;
 import 'package:get/get.dart' show BoolExtension, Get, GetxController, Inst, RxT;
@@ -13,10 +14,15 @@ import 'package:googleapis_auth/auth_io.dart' show clientViaServiceAccount, Serv
 class PushNotificationControlelr extends GetxController{
 
 var isCooldown = false.obs;
-  var remainingTime = const Duration(minutes: 5).obs;
-  Timer? _timer;
-
-  void startCooldown() {
+var remainingTime = const Duration(minutes: 5).obs;
+Timer? _timer;
+late FirebaseCollectionVariable collectionVariable ;
+@override
+  void onInit() {
+    super.onInit();
+    collectionVariable = Get.find<FirebaseCollectionVariable>();
+  }
+  void startCooldown(dynamic context) {
     if (isCooldown.value) return; // prevent restarting if already on cooldown
 
     isCooldown.value = true;
@@ -38,12 +44,12 @@ var isCooldown = false.obs;
     super.onClose();
   }
 
-final FirebaseCollectionVariable collectionVariable = Get.find<FirebaseCollectionVariable>();
+
 
   static String baseUrlKey = dotenv.env['BASE_URL'] ?? '';
 
 
-  Future<String> getServerKeyToekn()async{
+  Future<String> getServerKeyToekn(dynamic context)async{
    try {
  final serviceAccountJson = {
   "type": dotenv.env['TYPE'],
@@ -76,7 +82,7 @@ final FirebaseCollectionVariable collectionVariable = Get.find<FirebaseCollectio
 
 
 
-Future<bool> pushNotifications({
+Future<bool> pushNotifications(dynamic context,{
   required String title,
   required body,
   required token,
@@ -100,7 +106,7 @@ Map<String, dynamic> payload = {
 };
 
 
-    final String serverKey = await getServerKeyToekn();
+    final String serverKey = await getServerKeyToekn(context);
     String baseUrl = baseUrlKey;
 
     String dataNotifications = jsonEncode(payload);
@@ -124,7 +130,7 @@ Map<String, dynamic> payload = {
   }
 }
 
-Future<void> feeUpdationPushNotificationToAll() async {
+Future<void> feeUpdationPushNotificationToAll(dynamic context) async {
   try {
   final docs = await collectionVariable.studentLoginCollection.get();
   
@@ -135,7 +141,8 @@ Future<void> feeUpdationPushNotificationToAll() async {
       final token = data[fcmTokenId]; // assuming each student doc has a token field
   
       if (token != null && token.isNotEmpty) {
-        await pushNotifications(
+        if(!context.mounted)return;
+        await pushNotifications(context,
           title: 'School Fees Updated',
           body: 'Hurry up! please pay your pending school fees',
           token: token,
@@ -143,13 +150,15 @@ Future<void> feeUpdationPushNotificationToAll() async {
       }
     }
   }
+   if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Fee's update notification as succesfully sent !!!");
 }  catch (e) {
     throw PushNotificationException('Error in fees push notification to all, please try again later !');
   
 }
 }
 
-Future<void> feeUpdationPushNotificationToSpecific({required String id}) async {
+Future<void> feeUpdationPushNotificationToSpecific(dynamic context,{required String id}) async {
   try {
   final docs = await collectionVariable.studentLoginCollection.doc(id).get();
   
@@ -158,19 +167,22 @@ Future<void> feeUpdationPushNotificationToSpecific({required String id}) async {
       final token = data[fcmTokenId]; // assuming each student doc has a token field
   
       if (token != null && token.isNotEmpty) {
-        await pushNotifications(
+        if(!context.mounted)return;
+        await pushNotifications(context,
           title: 'School Fees Updated',
           body: 'Hurry up ! please pay your pending school fees',
           token: token,
         );
       }
+         if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Fee's update notification as succesfully sent !!!");
 }  catch (e) {
       throw PushNotificationException('Error in fees push notification to student, please try again later !');
 
 }
 }
 
-Future<void> examFeesUpdationPushNotification({required String id}) async {
+Future<void> examFeesUpdationPushNotification(dynamic context,{required String id}) async {
     try {
   final docs = await collectionVariable.studentLoginCollection.doc(id).get();
   
@@ -179,12 +191,14 @@ Future<void> examFeesUpdationPushNotification({required String id}) async {
     final token = data[fcmTokenId]; // assuming each student doc has a token field
   
     if (token != null && token.isNotEmpty) {
-      await pushNotifications(
+      if(!context.mounted)return;
+      await pushNotifications(context,
         title: 'Exam Result Published',
         body: 'Congrates ! Your Hard Work Has Paid Off Check Your Results',
         token: token,
       );
-    }
+    }   if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Exam results are published succesfully !!!");
 }  catch (e) {
       throw PushNotificationException('Error in exam update push notification to student, please try again later !');
   

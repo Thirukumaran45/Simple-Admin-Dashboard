@@ -73,7 +73,7 @@ class _HomepageState extends State<Homepage> {
               children: [
                 Expanded(
                     flex: 1, child: buildLineChart(onPressed: () async{
-                      notificationControlelr.feeUpdationPushNotificationToAll();
+                      notificationControlelr.feeUpdationPushNotificationToAll(context);
                     },)),
                 const SizedBox(width: 20),
                 Expanded(

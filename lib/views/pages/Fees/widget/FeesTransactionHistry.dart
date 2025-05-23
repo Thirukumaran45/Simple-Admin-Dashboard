@@ -37,7 +37,7 @@ void initState() {
   _scrollController.addListener(() {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchTransactionHistry();
+    controller.fetchTransactionHistry(context);
   }
 });
 
@@ -58,8 +58,9 @@ void initState() {
   }
 
 void initializeList() async {
-  List<String> monthVal = await controller.fetchUniqueMonthValuesAll();
-  List<String> dateVal = await controller.fetchUniqueDateValuesAll();
+  List<String> monthVal = await controller.fetchUniqueMonthValuesAll(context);
+  // ignore: use_build_context_synchronously
+  List<String> dateVal = await controller.fetchUniqueDateValuesAll(context);
 
   setState(() {
     month = monthVal.map((e) => e.toString()).toSet().toList();
@@ -138,7 +139,7 @@ void dispose() {
               ),
               customIconTextButton(Colors.blue, icon: Icons.search, onPressed: applyFilters, text: "Search"),
               customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:(){
-               PdfTotalFeesScript().openPdf(fileName: 'Transaction Histry $selectedDate',transactions: filteredData);
+                PdfTotalFeesScript().openPdf(context: context,fileName: 'Transaction Histry $selectedDate',transactions: filteredData);
                applyFilters();
               } , text: "Download"),
             ],
@@ -221,7 +222,7 @@ else
        const   Text("Download Fees Recipt", style:  TextStyle(fontSize: 15, color: Colors.black)),
           TextButton(onPressed: (){
             
-           PdfSinglescript().openPdf(studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A", fees: fees,);
+           PdfSinglescript().openPdf(context: context,studentName: fees['studentName']??'N/A', studentClass: "${fees['class']} ", section: '${fees['section']}', studentId: fees['studentId'] ?? "N/A", paidAmount: "₹${fees['paidAmount']}", balanceAmount: "₹${fees['balanceAmount']}", totalAllocatedAmount: "₹${fees['totalAmount']}", paymentDate: fees['paymentDate'] ?? "N/A", paymentMonth: fees['paymentMonth'] ?? "N/A", transactionId:  fees['transactionId'] ?? "N/A", fees: fees,);
 
           }, child: Row(
             children: [Icon(Icons.download, color: primaryGreenColors,size: 25,), Text(" Download", style:  TextStyle(fontSize: 16, color:primaryGreenColors, fontWeight: FontWeight.bold) ,)],

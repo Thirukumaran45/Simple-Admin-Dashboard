@@ -1,10 +1,10 @@
 import 'dart:developer'show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/utils/AppException.dart';
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../modules/staffModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
-import 'package:flutter/material.dart';
+
 import 'package:get/get.dart' ;
 import '../../../contant/ConstantVariable.dart';
 import 'dart:io';
@@ -17,7 +17,7 @@ import 'package:flutter/foundation.dart' show Uint8List,kIsWeb;
 class StaffController extends GetxController{
    late FirebaseCollectionVariable collectionControler;
 late dynamic snapshot;
- 
+ var _context;
 final int _limit = 18;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
@@ -28,11 +28,11 @@ bool _isFetchingMore = false;
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
-    fetchStaffData();
+    fetchStaffData(_context);
   }
 
 
-void fetchStaffData() async {
+void fetchStaffData(dynamic context,) async {
   if (_isFetchingMore) return;
 
   _isFetchingMore = true;
@@ -70,7 +70,7 @@ void fetchStaffData() async {
   }
 }
 
-Future<Stafffdetailsmodel?> staffDataRead({required String uid}) async {
+Future<Stafffdetailsmodel?> staffDataRead(dynamic context,{required String uid}) async {
   try {
     final doc = await collectionControler.staffLoginCollection.doc(uid).get();
     
@@ -90,7 +90,7 @@ Future<Stafffdetailsmodel?> staffDataRead({required String uid}) async {
   }
 }
 
-Future<bool> updateStaffDetails({
+Future<bool> updateStaffDetails(dynamic context,{
 required String  staffName ,
 required String  staffEmail ,
 required String  staffPhoneNumber,
@@ -110,7 +110,7 @@ required String  staffrole,
       stafflId :userId,
       staffroleField :staffrole
     });
-       fetchStaffData();
+       fetchStaffData(_context);
         update();  // Notify GetX listeners
 
     log("Staffs details updated successfully.");
@@ -122,7 +122,7 @@ required String  staffrole,
 }
 
 
-Future<String> updateStaffsPhoto(String staffId,) async {
+Future<String> updateStaffsPhoto(dynamic context,String staffId,) async {
     String downloadUrl = '';
     final docRef = collectionControler.staffLoginCollection.doc(staffId);
 
@@ -178,7 +178,7 @@ Future<String> updateStaffsPhoto(String staffId,) async {
 }
 
 
-Future<String?> getStaffsPhotoUrl(String staffsId) async {
+Future<String?> getStaffsPhotoUrl(dynamic context,String staffsId) async {
   try {
     final ref =collectionControler.firebaseStorageRef.child("Staff Photo/$staffsId");
     final doc = await ref.getDownloadURL();
@@ -201,7 +201,7 @@ required String  staffAddress,
 required String  staffProfile ,
 required String  userId ,
 required String  staffrole,
-  required BuildContext context,
+  required dynamic context,
 }) async {
   try {
   
@@ -215,7 +215,7 @@ required String  staffrole,
       stafflId :userId,
       staffroleField :staffrole
     });
-         fetchStaffData();
+         fetchStaffData(_context);
         update(); // Notify GetX listeners
 
   } catch (e) {
@@ -224,7 +224,7 @@ required String  staffrole,
  
   }
 }
-Future<dynamic> addPhoto() async {
+Future<dynamic> addPhoto(dynamic context,) async {
   try {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom, // Custom type for specific extensions
@@ -248,7 +248,7 @@ Future<dynamic> addPhoto() async {
   }
 }  
 
-Future<String> photoStorage({required String userId, required dynamic image}) async {
+Future<String> photoStorage(dynamic context,{required String userId, required dynamic image}) async {
   String downloadUrl = '';
 
   try {
@@ -281,7 +281,7 @@ Future<String> photoStorage({required String userId, required dynamic image}) as
 }
 }
 
-Future<void> updateNumberOfStaffs(bool isIncrement) async {
+Future<void> updateNumberOfStaffs(dynamic context,bool isIncrement) async {
   
 try {
   final dataDoc = collectionControler.loginCollection.doc('staffs');
@@ -310,7 +310,7 @@ try {
 
 
 
-Future<bool> deleteStaffs({
+Future<bool> deleteStaffs(dynamic context,{
   required String staffId,
 }) async {
   try {
@@ -331,7 +331,7 @@ Future<bool> deleteStaffs({
     await announcementRef.delete();
   }
   
-   await updateNumberOfStaffs(false);
+   await updateNumberOfStaffs(_context,false);
     // Remove the deleted staff from the observable list
     staffData.removeWhere((staff) => staff['id'] == staffId);
         update(); // Notify GetX listeners

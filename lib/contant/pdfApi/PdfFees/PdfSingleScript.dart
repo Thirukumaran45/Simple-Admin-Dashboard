@@ -20,11 +20,12 @@ class PdfSinglescript {
     required String paymentDate,
     required String paymentMonth,
     required String transactionId,
+    required context
   }) async {
     final font1 = await fontBold();
     final font2 = await fontMedium();
     final pdf = pw.Document();
-    String? watermarkImageUrl = await controller.getSchoolPhotoUrl();
+    String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
     final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
 
     pdf.addPage(
@@ -166,10 +167,12 @@ class PdfSinglescript {
     required String paymentDate,
     required String paymentMonth,
     required String transactionId,
+    required context,
   }) async {
     final pdfData = await generateParagraph(
       studentName: studentName,
       studentClass: studentClass,
+      context: context,
       section: section,
       fees: fees,
       studentId: studentId,

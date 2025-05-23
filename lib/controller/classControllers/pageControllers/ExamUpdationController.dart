@@ -1,6 +1,8 @@
 import 'dart:developer' show log;
 
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
+import 'package:admin_pannel/utils/AppException.dart';
+
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
@@ -18,7 +20,7 @@ bool _isFetchingMore = false;
     collectionController = Get.find<FirebaseCollectionVariable>();
   }
 
-Future<List<Map<String, dynamic>>> getFilteredStudents({
+Future<List<Map<String, dynamic>>> getFilteredStudents(dynamic context,{
   required String className,
   required String section,
 }) async {
@@ -63,7 +65,7 @@ Future<List<Map<String, dynamic>>> getFilteredStudents({
 
 
 
-Future<Map<String, dynamic>> getTotalAndIndividualSubjectMark({
+Future<Map<String, dynamic>> getTotalAndIndividualSubjectMark(dynamic context,{
   required String examType,
   required String className,
   required String section,
@@ -99,7 +101,7 @@ Future<Map<String, dynamic>> getTotalAndIndividualSubjectMark({
 }
 
   
-Future<void> addUpdateTotalAndIndividualSubject({
+Future<void> addUpdateTotalAndIndividualSubject(dynamic context,{
   required String className, 
   required String section,  
   required String examType,
@@ -124,6 +126,8 @@ Future<void> addUpdateTotalAndIndividualSubject({
       'outoff_mark': outOffMark ?? '0',
     }, SetOptions(merge: true));
   }
+  if(!context.mounted)return;
+                  await   customSnackbar(context: context, text: "Subject mark and Total mark as been updated succesfullly");
 }  catch (e) {
   log("error in add and updating the total and individual subject marks $e");
   throw CloudDataWriteException("Error in updating the total and individual subject marks, please try again later !");
@@ -131,7 +135,7 @@ Future<void> addUpdateTotalAndIndividualSubject({
 }
 
 
-Future<void>updateResult({
+Future<void>updateResult(dynamic context,{
   required String studentId,
   required String examType,
   required Map<String, dynamic> resultMark ,
@@ -154,6 +158,9 @@ Future<void>updateResult({
   await examDoc.set(
     result,SetOptions(merge: true)
   );    
+  if(!context.mounted)return;
+  await   customSnackbar(context: context, text: "Result Updated Succesfullly");
+
 }  catch (e) {
   log('Error in updating the exam result, please try again later !');
   throw CloudDataUpdateException('Error in updating the exam result, please try again later !');
@@ -171,7 +178,7 @@ String getGrade(int marks, int singleSubjectMark) {
   return 'E'; // If percentage < 50
 }
 
-Future<Map<String, dynamic>> getResult({
+Future<Map<String, dynamic>> getResult(dynamic context,{
   required String studentId,
   required String examType,
 }) async {

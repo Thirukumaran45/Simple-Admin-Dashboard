@@ -1,5 +1,7 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
+import 'package:admin_pannel/utils/AppException.dart';
+
 
 import '../../../contant/ConstantVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query, SetOptions;
@@ -18,14 +20,14 @@ DocumentSnapshot? _studentlastDocument;
 DocumentSnapshot? _histrylastDocument;
 bool _isFetchingMoreStudent = false;
 bool _isFetchingMoreHisrty = false;
-
+var _context ;
 @override
   void onInit() {
     super.onInit();
-    fetchTransactionHistry();
+    fetchTransactionHistry(_context);
   }
 
-    Future<void> fetchStudentData({required String stuClass,required String stuSec}) async {
+    Future<void> fetchStudentData(dynamic context,{required String stuClass,required String stuSec}) async {
     
       if (_isFetchingMoreStudent) return;
 
@@ -83,7 +85,7 @@ bool _isFetchingMoreHisrty = false;
     return DateFormat('MMMM yyyy').format(currentMonth);
   }
   
-Future<List<Map<String, String>>> fetchAllBankDetails() async {
+Future<List<Map<String, String>>> fetchAllBankDetails(dynamic context,) async {
   try {
     final snapshot = await collectionVariable.schoolDetails.collection('feeDetails').doc('bankDetails').get();
     final data = snapshot.data() ?? {};
@@ -118,7 +120,7 @@ Future<List<Map<String, String>>> fetchAllBankDetails() async {
 }
 
 
-Future<void> addAndUpdateBankDetailsToFirestore(
+Future<void> addAndUpdateBankDetailsToFirestore(dynamic context,
   {
   required  List<TextEditingController> bankControllers,
   required  List<TextEditingController> apiControllers,}
@@ -136,7 +138,8 @@ Future<void> addAndUpdateBankDetailsToFirestore(
         },
       } , SetOptions(merge: true) );
      }
-     
+       if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Updated the bank details succesfully");
     update(); 
   } catch (e) {
     log("Error updating bank details: $e");
@@ -145,7 +148,7 @@ Future<void> addAndUpdateBankDetailsToFirestore(
 }
 
 
-Future<void> fetchTransactionHistry() async {
+Future<void> fetchTransactionHistry(dynamic context,) async {
   List<Map<String, dynamic>> tempList = [];
  if (_isFetchingMoreHisrty) return;
 
@@ -196,7 +199,7 @@ Future<void> fetchTransactionHistry() async {
 }
 
  
-Future<List<String>> fetchUniqueMonthValuesAll() async {
+Future<List<String>> fetchUniqueMonthValuesAll(dynamic context,) async {
   // Use a Set to avoid duplicates.
 
   Set<String> monthValues = {};
@@ -220,7 +223,7 @@ Future<List<String>> fetchUniqueMonthValuesAll() async {
   return monthValues.toList();
 }
   
-Future<List<String>> fetchUniqueDateValuesAll() async {
+Future<List<String>> fetchUniqueDateValuesAll(dynamic context,) async {
   Set<String> dateValues = {};
       try {
         var snapshot = await collectionVariable.feesDocCollection.collection("completedTransaction")
@@ -244,7 +247,7 @@ Future<List<String>> fetchUniqueDateValuesAll() async {
   return dateValues.toList();
 }
 
-Future<Map<String, String>> getFeesSummary({
+Future<Map<String, String>> getFeesSummary(dynamic context,{
   required String sectedClass,
   required String section,
 }) async {
@@ -275,7 +278,7 @@ Future<Map<String, String>> getFeesSummary({
   }
 }
 
-Future<void> addAndUpdateStudentFeesDetails({
+Future<void> addAndUpdateStudentFeesDetails(dynamic context,{
   required String id,
   required String allocateddAmount,
   required List<TextEditingController> feeNameControllers,
@@ -295,6 +298,8 @@ Future<void> addAndUpdateStudentFeesDetails({
   await collectionVariable.studentLoginCollection
       .doc(id)
       .set(feeMap, SetOptions(merge: true));
+        if(!context.mounted)return;
+   await   customSnackbar(context: context, text: "Updated student fees details !");
 }  catch (e) {
         throw CloudDataWriteException("Error in updating the fees details, please try again later !");
   
@@ -302,7 +307,7 @@ Future<void> addAndUpdateStudentFeesDetails({
 }
 
 
-Future<Map<String, dynamic>> getStudentFeesDetails({
+Future<Map<String, dynamic>> getStudentFeesDetails(dynamic context,{
   required String id,
 }) async {
   try {

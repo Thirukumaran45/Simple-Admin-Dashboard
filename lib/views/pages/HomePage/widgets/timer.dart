@@ -21,7 +21,7 @@ class AutomatedButtonWithTimer extends StatelessWidget {
               ? null
               : () {
                   onPressed();
-                  controller.startCooldown();
+                  controller.startCooldown(context);
                 },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),

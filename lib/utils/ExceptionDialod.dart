@@ -1,7 +1,7 @@
 import 'package:admin_pannel/views/widget/CustomeColors.dart' show primaryGreenColors;
 import 'package:flutter/material.dart';
 
-class ExceptionDialod {
+class ExceptionDialog {
 
   Future<void> showCustomDialog(
     BuildContext context,

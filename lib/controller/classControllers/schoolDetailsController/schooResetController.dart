@@ -1,6 +1,7 @@
 import 'dart:developer' show log;
 
-import 'package:admin_pannel/services/FirebaseException/pageException.dart';
+import 'package:admin_pannel/utils/AppException.dart';
+
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show FieldValue;
@@ -10,7 +11,7 @@ class SchoolResetYearController extends GetxController
 {
 late FirebaseCollectionVariable collectionVariable;
 List<String> collectionNames=[];
-
+var _context;
   @override
   void onInit() {
     super.onInit();
@@ -19,14 +20,14 @@ List<String> collectionNames=[];
   }
 
   void initializeList() async {
-    collectionNames = await getAttendanceDates();
+    collectionNames = await getAttendanceDates(_context);
     log(collectionNames.toString());
     update(); 
   }
 
 //delete funtion for fireabse storage
 
-Future<void> deleteStorageDirectory(String directoryPath) async {
+Future<void> deleteStorageDirectory(dynamic context,String directoryPath) async {
   try {
     final storage = collectionVariable.firebaseStorageInstance;
     final  dirRef = storage.ref(directoryPath);
@@ -37,7 +38,8 @@ Future<void> deleteStorageDirectory(String directoryPath) async {
     }
 
     for (var folderRef in result.prefixes) {
-      await deleteStorageDirectory(folderRef.fullPath);
+      if(!context.mounted)return;
+      await deleteStorageDirectory(context,folderRef.fullPath);
     }
 
   } catch (e) {
@@ -51,7 +53,7 @@ Future<void> deleteStorageDirectory(String directoryPath) async {
 
 
 //delete the attendance data 
-Future<List<String>> getAttendanceDates() async {
+Future<List<String>> getAttendanceDates(dynamic context,) async {
   try {
     final overallDaysDoc = await collectionVariable.attendanceCollection.get();
 
@@ -76,7 +78,7 @@ Future<List<String>> getAttendanceDates() async {
   return [];
 }
 
-Future<void> deleteAttendanceDataByClass(String className) async {
+Future<void> deleteAttendanceDataByClass(dynamic context,String className) async {
   try {
     bool isAnyCollectionLeft = false;
 
@@ -131,7 +133,7 @@ Future<void> deleteAttendanceDataByClass(String className) async {
 }
 
 
-Future<void> deleteAttendanceDataByClassSection( String className, String section) async {
+Future<void> deleteAttendanceDataByClassSection(dynamic context, String className, String section) async {
   try {
     bool isAnyCollectionLeft = false;
 
@@ -190,7 +192,7 @@ Future<void> deleteAttendanceDataByClassSection( String className, String sectio
 
 //delete the reaminder by class and section wise 
 
-Future<void> deleteRemainderChatDataByClassSection({
+Future<void> deleteRemainderChatDataByClassSection(dynamic context,{
   required String stuClass,
   required String stuSec,
 }) async {
@@ -208,7 +210,8 @@ Future<void> deleteRemainderChatDataByClassSection({
     
 
     String storagePath = 'RemainderChatPost/$stuClass/$stuSec/';
-    await deleteStorageDirectory(storagePath);
+    if(!context.mounted)return;
+    await deleteStorageDirectory(context,storagePath);
 
     log(' Storage files deleted successfully!');
 
@@ -221,7 +224,7 @@ Future<void> deleteRemainderChatDataByClassSection({
 
 }
 
-Future<void> deleteRemainderChatDataByClass({
+Future<void> deleteRemainderChatDataByClass(dynamic context,{
   required String stuClass,
 }) async {
   try {
@@ -239,7 +242,8 @@ Future<void> deleteRemainderChatDataByClass({
     
 
     String storagePath = 'RemainderChatPost/$stuClass/$stuSec/';
-    await deleteStorageDirectory(storagePath);
+    if(!context.mounted)return;
+    await deleteStorageDirectory(context,storagePath);
   }
     log(' Storage files deleted successfully!');
 
@@ -256,7 +260,7 @@ Future<void> deleteRemainderChatDataByClass({
 
 // delete the annoucement chat 
 
-  Future<void>deleteSchoolChatData()async{
+  Future<void>deleteSchoolChatData(dynamic context,)async{
 
   try {
     final  schoolChatCollection = collectionVariable.announcementCollection;
@@ -268,7 +272,8 @@ Future<void> deleteRemainderChatDataByClass({
     }
     
     String storagePath = 'AnnouncementChatPost/';
-    await deleteStorageDirectory(storagePath);
+    if(!context.mounted)return;
+    await deleteStorageDirectory(context,storagePath);
 
     log(' Storage files deleted successfully!');
 
@@ -283,7 +288,7 @@ Future<void> deleteRemainderChatDataByClass({
 
 
 //delete exam result by class and sec
-Future<void> deleteExamDataByClass({required String stuClass}) async {
+Future<void> deleteExamDataByClass(dynamic context,{required String stuClass}) async {
 
   try {
   final examSnapshot = collectionVariable.studentLoginCollection;
@@ -310,7 +315,7 @@ Future<void> deleteExamDataByClass({required String stuClass}) async {
 
 }
 
-Future<void> deleteExamDataByClassSection({required String stuClass, required String stuSec}) async {
+Future<void> deleteExamDataByClassSection(dynamic context,{required String stuClass, required String stuSec}) async {
 
   try {
   final examSnapshot = collectionVariable.studentLoginCollection;
@@ -340,7 +345,7 @@ Future<void> deleteExamDataByClassSection({required String stuClass, required St
 
 
 //delete exam result by class and sec
-Future<void> deleteAssignmentByClassSection({required String stuClass, required String stuSec}) async {
+Future<void> deleteAssignmentByClassSection(dynamic context,{required String stuClass, required String stuSec}) async {
 
   try {
   final examSnapshot = collectionVariable.studentLoginCollection;
@@ -361,7 +366,8 @@ Future<void> deleteAssignmentByClassSection({required String stuClass, required 
   }
   
     String storagePath = 'assignments/$stuClass/$stuSec/';
-    await deleteStorageDirectory(storagePath);
+    if(!context.mounted)return;
+    await deleteStorageDirectory(context,storagePath);
   
     update(); 
 }  catch (e) {
@@ -372,7 +378,7 @@ Future<void> deleteAssignmentByClassSection({required String stuClass, required 
 
 }
 
-Future<void> deleteAssignmentByClass({required String stuClass, }) async {
+Future<void> deleteAssignmentByClass(dynamic context,{required String stuClass, }) async {
 
   try {
   final examSnapshot = collectionVariable.studentLoginCollection;
@@ -392,7 +398,8 @@ Future<void> deleteAssignmentByClass({required String stuClass, }) async {
   }
   for(String stuSec in ['A','B','C','D']){
    String storagePath = 'assignments/$stuClass/$stuSec/';
-    await deleteStorageDirectory(storagePath);
+    if(!context.mounted)return;
+    await deleteStorageDirectory(context,storagePath);
   }
     update(); 
 }  catch (e) {
@@ -407,7 +414,7 @@ Future<void> deleteAssignmentByClass({required String stuClass, }) async {
 
 //delete leave histry
 
-Future<void> deleteLeaveHistrytByClassSection({required String stuClass, required String stuSec}) async {
+Future<void> deleteLeaveHistrytByClassSection(dynamic context,{required String stuClass, required String stuSec}) async {
 
   try {
   final examSnapshot = collectionVariable.studentLoginCollection;
@@ -435,7 +442,7 @@ Future<void> deleteLeaveHistrytByClassSection({required String stuClass, require
 
 }
 
-Future<void> deleteLeaveHistryByClass({required String stuClass, }) async {
+Future<void> deleteLeaveHistryByClass(dynamic context,{required String stuClass, }) async {
 
   try {
   final examSnapshot = collectionVariable.studentLoginCollection;
@@ -465,7 +472,7 @@ Future<void> deleteLeaveHistryByClass({required String stuClass, }) async {
 //delete teacher 
 
 
-Future<void> deleteAssignmentByTeacherClassSection({required String stuClass,required String stuSec}) async {
+Future<void> deleteAssignmentByTeacherClassSection(dynamic context,{required String stuClass,required String stuSec}) async {
   try {
     final querySnapshot =await  collectionVariable.teacherLoginCollection.get();
 
@@ -511,7 +518,7 @@ Future<void> deleteAssignmentByTeacherClassSection({required String stuClass,req
 }
 
 
-Future<void> deleteAssignmentByTeacherClass({required String stuClass}) async {
+Future<void> deleteAssignmentByTeacherClass(dynamic context,{required String stuClass}) async {
   try {
     final querySnapshot =await  collectionVariable.teacherLoginCollection.get();
 
@@ -558,7 +565,7 @@ Future<void> deleteAssignmentByTeacherClass({required String stuClass}) async {
 
 // delete the time_table
 
-  Future<void>deleteTimeTableDataByClass({required String stuClass})async{
+  Future<void>deleteTimeTableDataByClass(dynamic context,{required String stuClass})async{
     try {
   final examSnapshot = collectionVariable.timetableCollection;
    final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -595,7 +602,7 @@ throw CloudDataDeleteException('Error in deleting time table for class\'s, pleas
   }
 
 
-  Future<void>deleteTimeTableDataByClassSection({required String stuClass,required String sec})async{
+  Future<void>deleteTimeTableDataByClassSection(dynamic context,{required String stuClass,required String sec})async{
     try {
   final examSnapshot = collectionVariable.timetableCollection;
    final List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -630,7 +637,7 @@ throw CloudDataDeleteException('Error in deleting time table for class\'s, pleas
 
 
 // fees transaction hisrty delete
-Future<void> deleteFeesTransactionByClassSection({required String stuClass, required String stuSec}) async {
+Future<void> deleteFeesTransactionByClassSection(dynamic context,{required String stuClass, required String stuSec}) async {
 
   try {
   final examSnapshot = collectionVariable.feesDocCollection.collection("completedTransaction");

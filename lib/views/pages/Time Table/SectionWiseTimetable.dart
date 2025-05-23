@@ -47,7 +47,7 @@ Future<void> loadTimetableFromFirestore() async {
   for (var day in days) {
     for (var period in timetableContrl.periods) {
       
-        dynamic snapshot = await timetableContrl.loadTimetableCollection(
+        dynamic snapshot = await timetableContrl.loadTimetableCollection(context,
           classSection: classSection,
           day: day,
           period: period,
@@ -201,7 +201,7 @@ void dispose() {
     String? subject = timetable[day]![period]?.text ?? '';
     String teacher = selectedTeachers[day]![period] ?? '';
 
-    timetableContrl.saveTimetableToFirestore(
+    timetableContrl.saveTimetableToFirestore(context,
       stuClaa: widget.stuClass,
       stuSec: widget.stuSec,
       subject: subject,
