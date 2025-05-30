@@ -1,7 +1,27 @@
+import 'package:admin_pannel/utils/AppException.dart';
 import 'package:admin_pannel/views/widget/CustomeColors.dart' show primaryGreenColors;
 import 'package:flutter/material.dart';
 
 class ExceptionDialog {
+
+
+Future<T?> handleExceptionDialog<T>(
+  BuildContext context,
+  Future<T> Function() action,
+)async
+{
+try{
+  return await action();
+}
+on AppException catch(e)   
+{
+  await showCustomDialog(context,e.message);
+}
+catch(e){
+  await showCustomDialog(context, "An unexpected error occured, please try again later !");
+}
+return null;
+}
 
   Future<void> showCustomDialog(
     BuildContext context,

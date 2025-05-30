@@ -1,4 +1,5 @@
-abstract class AuthProvider{
+abstract class AttendanceProvider{
+
 
   
 }
