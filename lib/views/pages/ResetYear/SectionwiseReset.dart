@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../contant/CustomNavigation.dart';
 import '../../../controller/classControllers/schoolDetailsController/schooResetController.dart';
 import '../../widget/CustomDialogBox.dart';
@@ -41,33 +43,33 @@ Map<int, Future<void> Function()> getDeletionFunctionsMap({
   required String section,
 }) {
   return {
-    0: () => controller.deleteAttendanceDataByClassSection(context,stuClass, section),
-    1: () => controller.deleteRemainderChatDataByClassSection(context,
+    0: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteAttendanceDataByClassSection(context,stuClass, section)),
+    1: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteRemainderChatDataByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
-        ),
-    2: () => controller.deleteExamDataByClassSection(context,
+        )),
+    2: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteExamDataByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
-        ),
-    3: () => controller.deleteAssignmentByClassSection(context,
+        )),
+    3: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteAssignmentByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
-        ),
-    4: () => controller.deleteLeaveHistrytByClassSection(context,
+        )),
+    4: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteLeaveHistrytByClassSection(context,
           stuClass: stuClass,
           stuSec: section,
-        ),
-    5: () => controller.deleteAssignmentByTeacherClassSection(context,
+        )),
+    5: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteAssignmentByTeacherClassSection(context,
           stuClass: stuClass,
           stuSec: section,
-        ),
-    6: () => controller.deleteTimeTableDataByClassSection(context,
+        )),
+    6: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteTimeTableDataByClassSection(context,
           stuClass: stuClass,
           sec: section,
-        ),
-    7: () => controller.deleteSchoolChatData(context,),
-    8:()=>controller.deleteFeesTransactionByClassSection(context,stuClass: stuClass, stuSec: section),
+        )),
+    7: () async => await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteSchoolChatData(context,)),
+    8:() async =>await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.deleteFeesTransactionByClassSection(context,stuClass: stuClass, stuSec: section)),
   };
 }
 

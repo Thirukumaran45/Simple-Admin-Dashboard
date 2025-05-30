@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -31,10 +33,10 @@ final ScrollController _scrollController = ScrollController();
   void initState() {
     super.initState();
      controller = Get.find<Higherofficialcontroller>();
-  _scrollController.addListener(() {
+  _scrollController.addListener(() async{
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchMoreOfficials(context);
+    await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.fetchMoreOfficials(context));
   }
 });
 
@@ -206,7 +208,7 @@ void dispose() {        // Properly dispose of the GetX Worker
                           onPressed: ()async {           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
                            if(!context.mounted)return;
-                            await controller.deleteOfficials(context,officialId: teacher['id']!,);
+                            await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.deleteOfficials(context,officialId: teacher['id']!,));
                            ever(controller.officialData, (_) {
                             setState(() {
                               filteredData = List.from(controller.officialData);

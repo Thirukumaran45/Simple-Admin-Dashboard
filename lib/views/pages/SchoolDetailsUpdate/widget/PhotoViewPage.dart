@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import '../../../widget/CustomDialogBox.dart';
@@ -26,9 +28,9 @@ class _PhotoviewpageState extends State<Photoviewpage> {
     initializeFunction();
   }
 Future<void> handlePhotoUpdate() async {
-  String newPhotoUrl = await  controller.updateSchoolPhorilfePhoto(context,);
+  String? newPhotoUrl = await ExceptionDialog().handleExceptionDialog(context, ()async=> await  controller.updateSchoolPhorilfePhoto(context,));
   
-  if (newPhotoUrl.isNotEmpty&&mounted) { 
+  if (newPhotoUrl!.isNotEmpty&&mounted) { 
     setState(() {
       assetImage = newPhotoUrl; 
     });
@@ -37,7 +39,7 @@ Future<void> handlePhotoUpdate() async {
 
 Future<void> initializeFunction() async {
 
-   String? photoUrl = await controller.getSchoolPhotoUrl(context,);
+   String? photoUrl =await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.getSchoolPhotoUrl(context,));
 
    if (!mounted) return; // ✅ Check before updating UI
    setState(() {
@@ -67,8 +69,8 @@ Widget build(BuildContext context) {
           Row(
             children: [
               customIconTextButton(Colors.red, onPressed: () async {
-                bool val = await controller.deleteSchoolPhoto(context,);
-                if (val) {
+                bool? val = await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteSchoolPhoto(context,));
+                if (val!) {
                   if (!context.mounted) return;
                   bool isUpdate = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Succesfully deleted, back to the page?");
                   if (!context.mounted) return;

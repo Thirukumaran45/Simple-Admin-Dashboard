@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
 import 'package:admin_pannel/utils/AppException.dart';
-
-
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../contant/ConstantVariable.dart';
@@ -30,8 +28,9 @@ late FirebaseAuthUser authcntrl;
   }
 
 void initializeEmail()=>currrentUserEmail();
+
   Future<void > currrentUserEmail ()async{
-    String adminEmail = await authcntrl.getCurrentUserEmail();
+    String? adminEmail =   await authcntrl.getCurrentUserEmail();
    email = adminEmail;
   }
 

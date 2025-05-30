@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/pageControllers/FessController.dart';
 import '../../../widget/CustomDialogBox.dart';
@@ -31,10 +33,10 @@ void initState() {
 
 
 void loadAllBankData() async {
-  final list = await controller.fetchAllBankDetails(context);
+  final list =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.fetchAllBankDetails(context));
   setState(() {
     isChanged = false;
-    bankDetails = list;
+    bankDetails = list!;
 
     // Initialize controllers after getting bank details
     bankControllers = bankDetails.map((e) => TextEditingController(text: e['bankName'])).toList();
@@ -68,10 +70,10 @@ void loadAllBankData() async {
 
   void saveChanges()async {
     
-    await controller.addAndUpdateBankDetailsToFirestore(context,
+   await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.addAndUpdateBankDetailsToFirestore(context,
       apiControllers: apiControllers,
       bankControllers: bankControllers,
-    );
+    ));
     setState(() => isChanged = false);
   }
   @override

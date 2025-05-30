@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import '../../widgets/CustomeTextField.dart';
@@ -42,7 +44,7 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
   }
 
 Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto(context);
+  final pickedImage = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller. addPhoto(context));
   if (pickedImage != null && mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
@@ -171,27 +173,26 @@ Future<void> profileFuntion() async {
      {
   if(!context.mounted)return;
      CustomDialogs().showLoadingDialogInSec(context, 10);
-      final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+      final user = await ExceptionDialog().handleExceptionDialog(context, ()async=>await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context));
      String userId = user!.id;
      // ignore: use_build_context_synchronously
-     final url = await controller.photoStorage(context,image: updatePhotoUrl,userId: userId);
+     final url =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));
      String name = '${firstNameController.text} ${lastNameController.text}';
   if(!context.mounted)return;
-  await  controller.registerOfficials(
+   await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerOfficials(
      userId: userId,
        context: context,
      principalAddress: addresscontrl.text,
      principalEmail: emailController.text,
      principalName: name.toUpperCase(),
      principalPhoneNumber: officialMobileController.text,
-     principalProfile: url,
+     principalProfile: url!,
      principalRole: "Higher Official",
 
-     );
+     ));
      if(!context.mounted)return;
-     await controller.updateNumberOfOfficials(context,true);
-     // ignore: use_build_context_synchronously
-     customPopNavigation(context, '/manage-higher-official');
+      await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfOfficials(context,true));     // ignore: use_build_context_synchronously
+      customPopNavigation(context, '/manage-higher-official');
      }
      } else
      {

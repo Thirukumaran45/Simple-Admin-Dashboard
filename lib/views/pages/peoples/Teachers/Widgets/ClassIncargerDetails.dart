@@ -1,3 +1,4 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
 import '../../../../../contant/CustomNavigation.dart';
 import '../../../../widget/CustomeColors.dart';
@@ -34,10 +35,14 @@ class _ClassInchargerDetailsState extends State<ClassInchargerDetails> {
     nameControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
     phoneNumberControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
     emailControllers = List.generate(12, (_) => List.generate(4, (_) => TextEditingController()));
-   controller.fetchAllClassInchargeDetails(context,nameControllers, phoneNumberControllers, emailControllers);
-  
+    initfuntion();
   }
 
+void initfuntion()async{
+   await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.fetchAllClassInchargeDetails(context,nameControllers, phoneNumberControllers,
+    emailControllers)
+  );
+}
 
   @override
   void dispose() {
@@ -117,13 +122,13 @@ class _ClassInchargerDetailsState extends State<ClassInchargerDetails> {
       String email = emailControllers[classIndex][i].text.trim();
 
       if (name.isNotEmpty && phoneNo.isNotEmpty && email.isNotEmpty) {
-        await controller.addAndUpdateClassInchargers(context,
+        await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.addAndUpdateClassInchargers(context,
           stuClass: stuClass,
           stuSec: stuSec,
           name: name,
           phoneNo: phoneNo,
           email: email,
-        );
+        ));
       }
     }
     

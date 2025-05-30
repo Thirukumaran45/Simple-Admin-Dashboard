@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../services/FireBaseServices/FirebaseAuth.dart' ;
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
@@ -32,8 +34,8 @@ class _LandingPageState extends State<LandingPage> {
   }
 
 Future<String?> _fetchSchoolName() async {
-  final schoolDetails = await controller.getSchoolDetails(context);
-  return schoolDetails.schoolName;
+  final schoolDetails =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.getSchoolDetails(context));
+  return schoolDetails!.schoolName;
 }
 
   Widget _buildHeader() {
@@ -81,8 +83,7 @@ Future<String?> _fetchSchoolName() async {
     if (valu == true) {
       if(!context.mounted)return;
       customPopNavigation(context, '/adminLogin');
-      await collectionVar.signOutAccount(); // Sign out the user
-    
+     await ExceptionDialog().handleExceptionDialog(context, ()async=> await collectionVar.signOutAccount());
      
     }
 

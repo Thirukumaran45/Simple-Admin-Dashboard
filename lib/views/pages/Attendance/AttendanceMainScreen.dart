@@ -1,5 +1,7 @@
 
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../contant/CustomNavigation.dart';
 import '../../../controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:flutter/material.dart';
@@ -15,22 +17,22 @@ class AttendanceMainScreen extends StatefulWidget {
 
 class _AttendanceMainScreenState extends State<AttendanceMainScreen> {
   late  AttendanceController controler ;
-  late Future<Map<int, Map<String, String>>> futureAttendanceData;
+  late Future<Map<int, Map<String, String>>?> futureAttendanceData;
 
   @override
   void initState() {
     super.initState();
     controler = Get.find<AttendanceController>();
-    // Fetch the attendance data using the Future provided by the controller.
-    futureAttendanceData = controler.totalNumberOfPresentAndAbsent(context);
-    
+    futureAttendanceData =  ExceptionDialog().handleExceptionDialog(context, ()async =>controler.totalNumberOfPresentAndAbsent(context));
+  
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: FutureBuilder<Map<int, Map<String, String>>>(
+      body: FutureBuilder<Map<int, Map<String, String>>?>(
         future: futureAttendanceData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

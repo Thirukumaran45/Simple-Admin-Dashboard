@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StudentController.dart';
 import '../../../../../modules/studentModels.dart';
@@ -47,9 +49,9 @@ class _StudentEditDownloadState extends State<StudentEditDownload> {
 
 
 Future<void> handlePhotoUpdate(String studentId) async {
-  String newPhotoUrl = await  controller.updateStudentPhoto(context,studentId );
+  String? newPhotoUrl = await ExceptionDialog().handleExceptionDialog(context, ()async=> await  controller.updateStudentPhoto(context,studentId ));
   
-  if (newPhotoUrl.isNotEmpty) { 
+  if (newPhotoUrl!.isNotEmpty) { 
     setState(() {
       assetImage = newPhotoUrl; // Update UI with new photo URL
     });
@@ -57,14 +59,14 @@ Future<void> handlePhotoUpdate(String studentId) async {
 }
 Future<void> initializeFunction() async {
   
-    studentDetails = await controller.studentDataRead(context,uid: widget.uid);
+    studentDetails = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.studentDataRead(context,uid: widget.uid));
 
     if (studentDetails == null) {
       return;
     }
 
     // ignore: use_build_context_synchronously
-    String? photoUrl = await controller.getStudentPhotoUrl(context,studentDetails!.stdentId);
+    String? photoUrl =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.getStudentPhotoUrl(context,studentDetails!.stdentId));
     
     setState(() {
       assetImage = photoUrl ?? studentDetails?.profilePhot;
@@ -239,7 +241,7 @@ Future<void> initializeFunction() async {
                     String name = studentNameController.text.toUpperCase();
                    if(!context.mounted)return;
                      
-                  bool isUpdated = await controller.updateStudentDetails(
+                  bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateStudentDetails(
                     context,
                     address: homeAddressController.text.toString(),
                     dob: dobController.text.toString(),
@@ -256,8 +258,8 @@ Future<void> initializeFunction() async {
                      totalFee: totalFeesController.text.toString(),
                      uid: widget.uid, 
                      rollNo: rollNumberController.text.toString(),
-                   );
-                   if(isUpdated) await customSnackbar(context: context, text: "Student Detials changed and updated succesfully");
+                   ));
+                   if(isUpdated!) await customSnackbar(context: context, text: "Student Detials changed and updated succesfully");
                                   setState(() {
                                     isEdited = false;
                                   });

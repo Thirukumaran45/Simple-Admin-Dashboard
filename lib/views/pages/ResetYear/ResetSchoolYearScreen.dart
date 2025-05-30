@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../contant/CustomNavigation.dart';
 import '../../../controller/classControllers/schoolDetailsController/schooResetController.dart';
 import '../../widget/CustomDialogBox.dart';
@@ -25,14 +27,14 @@ late SchoolResetYearController controller;
 
 Future<void> deleteAllData(BuildContext context,String stuClass) async {
 
-await controller.deleteAttendanceDataByClass(context,stuClass);
-await controller.deleteRemainderChatDataByClass(context,stuClass: stuClass);
-await controller.deleteExamDataByClass(context,stuClass: stuClass);
-await controller.deleteAssignmentByClass(context,stuClass: stuClass);
-await controller.deleteLeaveHistryByClass(context,stuClass: stuClass);
-await controller.deleteAssignmentByTeacherClass(context,stuClass: stuClass);
-await controller.deleteTimeTableDataByClass(context,stuClass: stuClass);
-await controller.deleteSchoolChatData(context,);
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteAttendanceDataByClass(context,stuClass));
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteRemainderChatDataByClass(context,stuClass: stuClass));
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteExamDataByClass(context,stuClass: stuClass));
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteAssignmentByClass(context,stuClass: stuClass));
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteLeaveHistryByClass(context,stuClass: stuClass));
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteAssignmentByTeacherClass(context,stuClass: stuClass));
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteTimeTableDataByClass(context,stuClass: stuClass));
+await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteSchoolChatData(context,));
 
 }
 

@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import '../../../../../modules/higherOfficialModels.dart';
@@ -40,22 +42,22 @@ class _StudentEditDownloadState extends State<HigherOfficialEditDownload> {
    }
 
 Future<void> handlePhotoUpdate(String studentId) async {
-  String newPhotoUrl = await  controller.updateOfficialsPhoto(context,studentId);
+  final newPhotoUrl = await ExceptionDialog().handleExceptionDialog(context, ()async=> await  controller.updateOfficialsPhoto(context,studentId));
   
-  if (newPhotoUrl.isNotEmpty) { 
+  if (newPhotoUrl!.isNotEmpty) { 
     setState(() {
       assetImage = newPhotoUrl; // Update UI with new photo URL
     });
   }
 }
   Future<void>initializeFunction()async{
-  teacherDetails = await controller.officialDataRead(context,uid: widget.uid);
+  teacherDetails =  await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.officialDataRead(context,uid: widget.uid));
    if (teacherDetails == null) {
       return;
     }
 
     // ignore: use_build_context_synchronously
-    String? photoUrl = await controller.getOfficialsPhotoUrl(context,teacherDetails!.Id);
+    String? photoUrl = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.getOfficialsPhotoUrl(context,teacherDetails!.Id));
     
     setState(() {
        assetImage = photoUrl ?? teacherDetails?.principalProfile;
@@ -198,7 +200,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                                 if (isEdited) {
                               await CustomDialogs().showCustomDialog(context, "Higher Official details Updated Succecfully");
                                 // ignore: use_build_context_synchronously
-                                bool isUpdated = await controller.updateOfficialDetails(context,
+                                bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateOfficialDetails(context,
                     principalAddress: homeAddressController.text.toString(),
                      principalEmail: emailController.text.toString(),
                      principalName: firstNameController.text.toUpperCase(),
@@ -206,9 +208,9 @@ Future<void> handlePhotoUpdate(String studentId) async {
                     userId: widget.uid, 
                    principalRole: role.text,
                    principalPhoneNumber: phoneNumberController.text.toString(),
-                   );
+                   ));
                   if(!context.mounted)return;
-                   if(isUpdated) await customSnackbar(context: context, text: "Higher Official  Detials changed and updated succesfully");
+                   if(isUpdated!) await customSnackbar(context: context, text: "Higher Official  Detials changed and updated succesfully");
                    
                                   setState(() {
                                     isEdited = false;

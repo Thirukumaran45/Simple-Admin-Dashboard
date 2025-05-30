@@ -11,20 +11,29 @@ class FirebaseAuthUser extends GetxController{
 
   
 
-  Future<Authuser?> signinUser({required String email, required String password, required BuildContext context}) async {
+ Future<Authuser?> signinUser({
+  required String email,
+  required String password,
+  required BuildContext context,
+}) async {
   try {
     final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    
-   await checkBackendEmail(email);  
-    return Authuser(id: userCredential.user!.uid, email: userCredential.user!.email!);
-  }  
-   on FirebaseAuthException catch (e) {
-  throw ServerException('Error ${e.toString()}');
-}catch (e) {
-   throw ServerException('Error in sign in user, please try again later !');
+
+    final isValidAdmin = await checkBackendEmail(email);
+
+    if (!isValidAdmin) {
+      throw ServerException('Unauthorized email, Please contact the administrator !');
+    }
+
+    return Authuser(
+      id: userCredential.user!.uid,
+      email: userCredential.user!.email!,
+    );
+  } on FirebaseAuthException catch (e) {
+    throw ServerException('Oops, Error ${e.code}');
   }
 }
 
@@ -61,7 +70,7 @@ Future<Authuser?> createUser({required String email, required String password, r
   }
   on FirebaseAuthException catch(e){
    log("Firebase Auth Error: ${e.code}");
-  throw ServerException('Error ${e.code} !');
+  throw ServerException('Oops, Error ${e.code} !');
    
 }
  catch (e) {
@@ -72,7 +81,7 @@ Future<Authuser?> createUser({required String email, required String password, r
     try {
   await FirebaseAuth.instance.signOut();
 } on FirebaseAuthException catch (e) {
-  throw ServerException('Error ${e.code} !');
+  throw ServerException('Oops, Error ${e.code} !');
 }  catch (e) {
   throw ServerException('Error in sign out, please try again later !');
 }

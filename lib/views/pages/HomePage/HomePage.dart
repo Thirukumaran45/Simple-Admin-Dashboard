@@ -1,4 +1,5 @@
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/pushNotificationController.dart';
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
 
 import 'widgets/barGraph.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class _HomepageState extends State<Homepage> {
               children: [
                 Expanded(
                     flex: 1, child: buildLineChart(onPressed: () async{
-                      notificationControlelr.feeUpdationPushNotificationToAll(context);
+                    await ExceptionDialog().handleExceptionDialog(context, ()async=>  notificationControlelr.feeUpdationPushNotificationToAll(context));
                     },)),
                 const SizedBox(width: 20),
                 Expanded(

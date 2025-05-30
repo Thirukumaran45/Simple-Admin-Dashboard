@@ -1,4 +1,6 @@
- import '../../../../contant/CustomNavigation.dart';
+ import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
+import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/pageControllers/ExamUpdationController.dart';
 import '../../../../controller/classControllers/schoolDetailsController/pushNotificationController.dart';
 import '../../../widget/CustomDialogBox.dart';
@@ -67,17 +69,17 @@ class _StudentResultState extends State<StudentResult> {
   // updates each subject and mark controller from the returned result,
   // but intentionally leaves out assigning any grade fields.
 Future<void> _fetchExamResult() async {
-  final result = await controller.getResult(
+  final result =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.getResult(
     studentId: widget.id,context,
     examType: widget.examName,
-  );
+  ));
 
   if (!mounted) return; // Prevent calling setState on a disposed widget
 
   setState(() {
     for (int i = 1; i <= subjects.length; i++) {
       _subjectControllers['sub$i']!.text =
-          result['sub$i'] ?? subjects[i - 1];
+          result!['sub$i'] ?? subjects[i - 1];
       _marksControllers['mark$i']!.text =
           result['sub${i}_mark'] ?? markPlaceholders[i - 1];
     }
@@ -283,11 +285,11 @@ for (int i = 1; i <= subjects.length; i++) {
     if(!context.mounted)return;
     await CustomDialogs().showCustomDialog(context, "Student Exam Result Published ");
      if(!context.mounted)return;
-    await controller.updateResult(context,
+   await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.updateResult(context,
       studentId: widget.id,
       examType: widget.examName,
       resultMark: resultMark,
-    );
+    ));
     setState(() {
       _isEdited = false;
     });

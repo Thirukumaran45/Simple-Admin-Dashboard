@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StafffController.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -43,10 +45,10 @@ final ScrollController _scrollController = ScrollController();
     
   });
 
-  _scrollController.addListener(() {
+  _scrollController.addListener(() async{
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchStaffData(context);
+    await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.fetchStaffData(context));
   }
 });
 
@@ -185,7 +187,7 @@ void dispose() {        // Properly dispose of the GetX Worker
                           if (val) {
                            if(!context.mounted)return;
 
-                            await controller.deleteStaffs(context,staffId: staff['id']!,);
+                            await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.deleteStaffs(context,staffId: staff['id']!,));
                            ever(controller.staffData, (_) {
                             setState(() {
                               filteredData = List.from(controller.staffData);

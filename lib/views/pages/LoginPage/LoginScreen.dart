@@ -1,5 +1,7 @@
 
-import '../../../services/FireBaseServices/CollectionVariable.dart';
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:admin_pannel/utils/ExceptionDialod.dart' show ExceptionDialog;
 import '../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../contant/CustomNavigation.dart';
 import '../../widget/CustomeColors.dart';
@@ -51,7 +53,6 @@ class _BodyState extends State<Body> {
   String? emailError;
   String? passwordError;
  late FirebaseAuthUser controller ;
- late FirebaseCollectionVariable collectioncontrolelr;
   // Function to validate email format
   bool isValidEmail(String email) {
     final RegExp emailRegex =
@@ -64,7 +65,6 @@ class _BodyState extends State<Body> {
   void initState() {
     super.initState();
     controller = Get.find<FirebaseAuthUser>();
-    collectioncontrolelr = Get.find<FirebaseCollectionVariable>();
      emailController = TextEditingController();
   passwordController = TextEditingController();
   
@@ -73,7 +73,6 @@ class _BodyState extends State<Body> {
 @override
   void dispose() {
     controller.dispose();
-    collectioncontrolelr.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -227,9 +226,19 @@ class _BodyState extends State<Body> {
 
                     // Proceed if no errors
                     if (emailError == null && passwordError == null) {
-                      await controller.signinUser(email: emailController.text,password: passwordController.text, context: context);
-                       customNvigation(context, '/home');
-                    }
+                      final result = await ExceptionDialog().handleExceptionDialog(
+    context,
+    () async => await controller.signinUser(
+      email: emailController.text,
+      password: passwordController.text,
+      context: context,
+    ),
+  );
+
+  // If result is not null, sign-in was successful, navigate to home
+  if (result != null) {
+    customNvigation(context, '/home');
+  }}
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,

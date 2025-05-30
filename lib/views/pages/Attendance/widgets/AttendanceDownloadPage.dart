@@ -1,4 +1,8 @@
 
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/constant.dart';
 import '../../../../controller/classControllers/pageControllers/AttendanceController.dart';
 import '../../../../contant/CustomNavigation.dart';
@@ -52,15 +56,15 @@ class _AttendanceDownloadPageState extends State<AttendanceDownloadPage> {
    } 
 // load more when scrolling:
 Future<void> _loadMoreStudents() async {
-  final more = await controler.fetchPagedStudents(
+  List<Map<String, dynamic>>? more = await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.fetchPagedStudents(
     context,
     stuClass    : widget.classNUmber,
     stuSec      : widget.section,
   dateFilter  : selectedDate!,
   monthFilter : selectedMonth!,
     reset: false,
-  );
-  if (more.isNotEmpty) {
+  ));
+  if (more!.isNotEmpty) {
     setState(() {
       studentData.addAll(more);
       applyFilters(); // you can even remove this now if you trust Firestore to give only filtered data
@@ -70,16 +74,16 @@ Future<void> _loadMoreStudents() async {
 
  
 void initializeList() async {
-  List<String> monthVal = await controler.fetchUniqueMonthValuesAll(context,);
-  List<String> dateVal = await controler.getAttendanceDates();
+  List<String>? monthVal = await ExceptionDialog().handleExceptionDialog(context, ()async =>  await controler.fetchUniqueMonthValuesAll(context,));
+  List<String>? dateVal = await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.getAttendanceDates());
  
-  // ignore: use_build_context_synchronously
-  String name = await controler.getTeacherName(context,sec: widget.section, stuClass: widget.classNUmber);
+  String? name = await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.getTeacherName(context,sec: widget.section, stuClass: widget.classNUmber));
+
 
   setState(() {
-    month = monthVal.toSet().toList(); // Remove duplicates
-    date = dateVal.toSet().toList();
-    teacherName = name;
+    month = monthVal!.toSet().toList(); // Remove duplicates
+    date = dateVal!.toSet().toList();
+    teacherName = name!;
 
     // Ensure default selection exists
     if (month.contains(controler.gettodaymonth())) {
@@ -90,18 +94,16 @@ void initializeList() async {
     }
   });
 
-// ignore: use_build_context_synchronously
-final data = await controler.fetchPagedStudents(context,
+List<Map<String, dynamic>>? data =  await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.fetchPagedStudents(context,
   stuClass    : widget.classNUmber,
   stuSec      : widget.section,
   dateFilter  : selectedDate!,
   monthFilter : selectedMonth!,
   reset       : true,            // <-- reset pagination on a new filter
-);
-
+));
 setState(() {
   // Assuming the data is a List<Map<String, dynamic>>, you can directly assign it to studentData
-  studentData = data;  // Assign the fetched data directly without checking for containsKey
+  studentData = data!;  // Assign the fetched data directly without checking for containsKey
   applyFilters();
 });
 
@@ -164,16 +166,16 @@ _buildDropdown(
   (value) async {
     setState(() => selectedDate = value);
 
-    final fresh = await controler.fetchPagedStudents(context,
+    final fresh = await ExceptionDialog().handleExceptionDialog(context, ()async =>await controler.fetchPagedStudents(context,
       stuClass    : widget.classNUmber,
       stuSec      : widget.section,
       dateFilter  : selectedDate!,
       monthFilter : selectedMonth!,
       reset       : true,
-    );
+    ));
 
     setState(() {
-      studentData = fresh;
+      studentData = fresh!;
       applyFilters();
     });
   },
@@ -186,15 +188,15 @@ _buildDropdown(
   month,
   (value) async {
     setState(() => selectedMonth = value);
-    final fresh = await controler.fetchPagedStudents(context,
+    final fresh =await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.fetchPagedStudents(context,
       stuClass    : widget.classNUmber,
       stuSec      : widget.section,
       dateFilter  : selectedDate!,
       monthFilter : selectedMonth!,
       reset       : true,
-    );
+    ));
     setState(() {
-      studentData = fresh;
+      studentData = fresh!;
       applyFilters();
     });
   },
@@ -230,16 +232,16 @@ _buildDropdown(
   onPressed: () async {
     setState(() {});
 
-    final fresh = await controler.fetchPagedStudents(context,
+    final fresh = await ExceptionDialog().handleExceptionDialog(context, ()async =>await controler.fetchPagedStudents(context,
       stuClass    : widget.classNUmber,
       stuSec      : widget.section,
       dateFilter  : selectedDate!,
       monthFilter : selectedMonth!,
       reset       : true,
-    );
+    ));
 
     setState(() {
-      studentData = fresh;
+      studentData = fresh!;
       applyFilters();
     });
   },
@@ -338,9 +340,9 @@ _buildDropdown(
                                   child: ElevatedButton(
                                     onPressed: () async{
                                       saveAttendance(index);
-                                      await controler.updateAttendance(context,stuClass: widget.classNUmber
+                                     await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.updateAttendance(context,stuClass: widget.classNUmber
                                       , sec: widget.section, status: 
-                                      filteredData[index]['attendanceStatus']);
+                                      filteredData[index]['attendanceStatus']));
                                     },
                                     style: ElevatedButton.styleFrom(backgroundColor:const Color.fromARGB(255, 38, 153, 42)),
                                     child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.white)),

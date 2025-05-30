@@ -1,5 +1,7 @@
 
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../controller/classControllers/pageControllers/FessController.dart';
 import '../../../../contant/pdfApi/PdfFees/PdfSingleScript.dart';
 import '../../../../controller/classControllers/schoolDetailsController/pushNotificationController.dart';
@@ -63,9 +65,9 @@ notificationControlelr = Get.find<PushNotificationControlelr>();
 }
 
 void fetchStudentFees() async {
-  final data = await controller.getStudentFeesDetails(context,id: widget.id);
+  final data =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.getStudentFeesDetails(context,id: widget.id));
 
-  allocatedFeeController.text = data['allocatedAmount'];
+  allocatedFeeController.text = data!['allocatedAmount'];
 
   List<TextEditingController> nameCtrls = data['feeNameControllers'];
   List<TextEditingController> amountCtrls = data['feeAmountControllers'];
@@ -78,7 +80,7 @@ void fetchStudentFees() async {
 
 
  Future<List<Map<String, dynamic>>> getMatchedFees() async {
-  await Future.delayed(const Duration(seconds: 15));
+  await Future.delayed(const Duration(seconds: 8));
   final filteredData = List<Map<String, dynamic>>.from(controller.feesData);
   return filteredData.where((fees) => fees['studentId'] == widget.id).toList();
 }
@@ -90,15 +92,15 @@ void fetchStudentFees() async {
   }
 
 void saveFees() async {
-  await controller.addAndUpdateStudentFeesDetails(context,
+  await ExceptionDialog().handleExceptionDialog(context,()async=>await controller.addAndUpdateStudentFeesDetails(context,
     id: widget.id,
     allocateddAmount: allocatedFeeController.text,
     feeNameControllers: feeNameControllers,
     feeAmountControllers: feeAmountControllers,
-  );
+  ));
 
   // ignore: use_build_context_synchronously
-  await controller.fetchStudentData(context,stuClass: widget.stuClass, stuSec: widget.stuSec);
+  await ExceptionDialog().handleExceptionDialog(context,()async=>await controller.fetchStudentData(context,stuClass: widget.stuClass, stuSec: widget.stuSec));
   setState(() {
     isSaveButtonVisible = false;
   });

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer' show log;
 import 'SchoolWebSite/websiteMainScreen.dart';
 import 'SchoolWebSite/widgets/userAuthRedirect.dart';
@@ -17,29 +18,32 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 // import 'package:connectivity_plus/connectivity_plus.dart' show Connectivity, ConnectivityResult;
 
 
-void main() async {
+void main()  {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
 
-  try {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-      apiKey: "AIzaSyA_TZd03d0e_JhU3SIAdgvVch2-NnxnGYc",
-      authDomain: "school-5b7f0.firebaseapp.com",
-      projectId: "school-5b7f0",
-      storageBucket: "school-5b7f0.appspot.com",
-      messagingSenderId: "715457715420",
-      appId: "1:715457715420:web:953fb67940b828e00ea819",
-  measurementId: "G-GGQVTBJGYG"
-      ),
-    );
-   await dotenv.load(fileName: ".env");
-
-    log("Firebase initialized successfully");
-  } catch (e) {
-    log("Error initializing Firebase: $e");
-  }
-
+  runZonedGuarded(() async{
+    try {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+        apiKey: "AIzaSyA_TZd03d0e_JhU3SIAdgvVch2-NnxnGYc",
+        authDomain: "school-5b7f0.firebaseapp.com",
+        projectId: "school-5b7f0",
+        storageBucket: "school-5b7f0.appspot.com",
+        messagingSenderId: "715457715420",
+        appId: "1:715457715420:web:953fb67940b828e00ea819",
+    measurementId: "G-GGQVTBJGYG"
+        ),
+      );
+     await dotenv.load(fileName: ".env");
+    
+      log("Firebase initialized successfully");
+    } catch (e) {
+      log("Error initializing Firebase: $e");
+    }
+  },(error, stackTrace) {
+    log("Zone Error: $error");
+  });
    initializeGetController();
   runApp(const MyApp());
 }

@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
 import '../../widgets/CustomeTextField.dart';
@@ -50,7 +52,7 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
 
   }
 Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto(context);
+  final pickedImage = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller. addPhoto(context));
   if (pickedImage != null&&mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
@@ -251,13 +253,14 @@ Future<void> profileFuntion() async {
 
      CustomDialogs().showLoadingDialogInSec(context, 10);
 
-       final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+       final user =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await authControlelr.createUser(email: emailController.text,
+       password: passwordController.text, context: context));
      String userId = user!.id;
      // ignore: use_build_context_synchronously
-     final url = await controller.photoStorage(context,image: updatePhotoUrl,userId: userId);
+     final url = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));
      String name = '${firstNameController.text} ${lastNameController.text}';
                    if(!context.mounted)return;
-  await  controller.registerTeacher(
+         await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerTeacher(
      userId: userId,
        context: context,
       collegedegree: graduateDegreeController.text,
@@ -267,13 +270,14 @@ Future<void> profileFuntion() async {
       teacherEmail: emailController.text,
       teacherName: name.toUpperCase(),
       teacherPhoneNumber: teacherMobileController.text,
-      teacherProfile: url,
+      teacherProfile: url!,
       teacherSubjectHandling: "",
       yearofexperience: yearOfExperienceController.text
-     );
+     ));
                    if(!context.mounted)return;
-     await controller.updateNumberOfTeacher(context,true);
+      await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfTeacher(context,true));
     
+      // ignore: use_build_context_synchronously
       customPopNavigation(context, '/manage-teacher');
 
    }

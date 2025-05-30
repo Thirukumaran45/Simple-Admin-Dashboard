@@ -1,7 +1,7 @@
-
-// ignore_for_file: use_build_context_synchronously
-
+// ignore_for_file: use_build_context_synchronousl, use_build_context_synchronously
 import 'dart:developer' show log;
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import 'widget/customfield.dart';
 import '../../widget/CustomDialogBox.dart';
@@ -70,9 +70,9 @@ void initState() {
 
 Future<void>getSchoolDetails()async{
 
-  final schoolDetails = await detailsController.getSchoolDetails(context,);
+  final schoolDetails =await ExceptionDialog().handleExceptionDialog(context, ()async=> await detailsController.getSchoolDetails(context,));
   setState(() {
-   schoolName = schoolDetails.schoolName;
+   schoolName = schoolDetails!.schoolName;
    chatbotAi = schoolDetails.chatbotApi;
    studentPasskey = schoolDetails.studentPassKey;
    teacherPasskey = schoolDetails.teacherPassKey;
@@ -130,17 +130,17 @@ setState(() {
   
 Future<bool> addAndUpdateDetails()async{ 
   
-   final isupdate = await detailsController.addAndUpdateSchoolDetails(context,
+   final isupdate =await ExceptionDialog().handleExceptionDialog(context, ()async=> await detailsController.addAndUpdateSchoolDetails(context,
     schoolName: schoolNameController.text,
     chatbotApi: schoolChatBOtApi.text,
     studentPassKey: studentPassKeyController.text,
     teacherPassKey: teacherPassKeyController.text,
     higherOfficialPassKey: officialPassKeyController.text,
     staffPassKey: staffPassKeyController.text,
-  );
+  ));
 
 
-  return isupdate;
+  return isupdate!;
 }  
 
 @override
@@ -218,15 +218,15 @@ Future<bool> addAndUpdateDetails()async{
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                   onPressed: () async {
-  final isupdate = await detailsController.addAndUpdateSchoolDetails(context,
+  final isupdate = await ExceptionDialog().handleExceptionDialog(context, ()async=>await detailsController.addAndUpdateSchoolDetails(context,
     schoolName: schoolNameController.text,
     chatbotApi: schoolChatBOtApi.text,
     studentPassKey: studentPassKeyController.text,
     teacherPassKey: teacherPassKeyController.text,
     higherOfficialPassKey: officialPassKeyController.text,
     staffPassKey: staffPassKeyController.text,
-  );
-  log(isupdate ? "Updated the function" : "Not updating");
+  ));
+  log(isupdate! ? "Updated the function" : "Not updating");
   setState(() {
     if (label == "School Name") {
       isEditingSchoolName = false;

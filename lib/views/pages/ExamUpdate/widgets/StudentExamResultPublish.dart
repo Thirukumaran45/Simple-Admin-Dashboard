@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/pageControllers/ExamUpdationController.dart';
 import '../../../widget/CustomeButton.dart';
@@ -42,12 +44,12 @@ void initState() {
   // Now add the listeners
   totalSubjectMarkController.addListener(() => checkSaveButtonVisibility(true));
   singleSubjectMarkController.addListener(() => checkSaveButtonVisibility(false));
-_scrollController.addListener(() {
+_scrollController.addListener(()async {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.getFilteredStudents(context,
+   await ExceptionDialog().handleExceptionDialog(context,()async=> controller.getFilteredStudents(context,
       className: widget.stuClass,section: widget.section
-    );
+    ));
   }
 });
 
@@ -59,26 +61,26 @@ _scrollController.addListener(() {
 
 
 void initStudent() async {
-  List<Map<String, dynamic>> studentData = await controller.getFilteredStudents(context,
+  List<Map<String, dynamic>>? studentData = await ExceptionDialog().handleExceptionDialog(context,()async=>await controller.getFilteredStudents(context,
     className: widget.stuClass,
     section: widget.section,
-  );
+  ));
 
   setState(() {
-    students = studentData;
+    students = studentData!;
      filteredStudents = studentData; 
   });
 }
 
 Future<void> fetchDetails() async {
-  final data = await controller.getTotalAndIndividualSubjectMark(context,
+  final data = await ExceptionDialog().handleExceptionDialog(context,()async=>await controller.getTotalAndIndividualSubjectMark(context,
     className: widget.stuClass,
     examType: widget.examName,
     section: widget.section,
-  );
+  ));
 
   setState(() {
-    totalMark = data["total_mark"];
+    totalMark = data!["total_mark"];
     overallMark = data["outoff_mark"];
     totalSubjectMarkController.text = totalMark ?? '0';
     singleSubjectMarkController.text = overallMark ?? '0';
@@ -177,13 +179,13 @@ void dispose() {
                           if (showTotalSaveButton)
                             ElevatedButton(
                               onPressed: ()async {
-                                await controller.addUpdateTotalAndIndividualSubject(context,
+                             await ExceptionDialog().handleExceptionDialog(context,()async=>   await controller.addUpdateTotalAndIndividualSubject(context,
                                   className: widget.stuClass,
                                   examType: widget.examName,
                                   outOffMark: singleSubjectMarkController.text.toString(),
                                   section: widget.section,
                                   totalMark:totalSubjectMarkController.text.toString(), 
-                                );
+                                ));
                                 setState(() {
                                   showTotalSaveButton = false;
                                 });
@@ -224,13 +226,13 @@ void dispose() {
                           if (showSingleSaveButton)
                              ElevatedButton(
                               onPressed: ()async {
-                                await controller.addUpdateTotalAndIndividualSubject(context,
+                               await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.addUpdateTotalAndIndividualSubject(context,
                                   className: widget.stuClass,
                                   examType: widget.examName,
                                   outOffMark: singleSubjectMarkController.text.toString(),
                                   section: widget.section,
                                   totalMark:totalSubjectMarkController.text.toString(), 
-                                );
+                               ));
                                 setState(() {
                                   showSingleSaveButton = false;
                                 });

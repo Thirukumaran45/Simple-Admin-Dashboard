@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StafffController.dart';
 import '../../../../../modules/staffModels.dart';
@@ -38,9 +40,9 @@ late TextEditingController firstNameController;
     initializeFunction();
     }
 Future<void> handlePhotoUpdate(String studentId) async {
-  String newPhotoUrl = await  controller.updateStaffsPhoto(context,studentId );
+  String? newPhotoUrl =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.updateStaffsPhoto(context,studentId ));
   
-  if (newPhotoUrl.isNotEmpty) { 
+  if (newPhotoUrl!.isNotEmpty) { 
     setState(() {
       assetImage = newPhotoUrl; // Update UI with new photo URL
     });
@@ -49,13 +51,13 @@ Future<void> handlePhotoUpdate(String studentId) async {
 
 
   Future<void>initializeFunction()async{
-  teacherDetails = await controller.staffDataRead(context,uid: widget.uid);
+  teacherDetails =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.staffDataRead(context,uid: widget.uid));
    if (teacherDetails == null) {
       return;
     }
 
     // ignore: use_build_context_synchronously
-    String? photoUrl = await controller.getStaffsPhotoUrl(context,teacherDetails!.Id);
+    String? photoUrl =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.getStaffsPhotoUrl(context,teacherDetails!.Id));
     
     setState(() {
        assetImage = photoUrl ?? teacherDetails?.staffProfile;
@@ -193,7 +195,7 @@ void dispose() {
                             if (isEdited) {
                      await CustomDialogs().showCustomDialog(context, "Staff details Updated Succecfully");
        // ignore: use_build_context_synchronously
-       bool isUpdated = await controller.updateStaffDetails(context,
+       bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateStaffDetails(context,
                     staffAddress: homeAddressController.text.toString(),
                      staffEmail: emailController.text.toString(),
                      staffName: firstNameController.text.toUpperCase(),
@@ -201,9 +203,9 @@ void dispose() {
                     userId: widget.uid, 
                    staffrole: role.text,
                    staffPhoneNumber: phoneNumberController.text.toString(),
-                   );
+                   ));
                    if(!context.mounted)return;
-                   if(isUpdated) await customSnackbar(context: context, text: "Staff  Detials Changed, updated succesfully");
+                   if(isUpdated!) await customSnackbar(context: context, text: "Staff  Detials Changed, updated succesfully");
                      setState(() {
                                 isEdited = false;
                               });   }

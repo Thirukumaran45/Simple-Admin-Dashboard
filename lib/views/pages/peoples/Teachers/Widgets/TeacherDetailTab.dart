@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -30,10 +32,10 @@ class _TeacherDetailsTabState extends State<TeacherDetailsTab> {
   void initState() {
     super.initState();
     controller = Get.find<Teachercontroller>();
-    _scrollController.addListener(() {
+    _scrollController.addListener(() async{
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchTeacherData(context);
+    await ExceptionDialog().handleExceptionDialog(context, ()async=>controller.fetchTeacherData(context));
   }
 });
 
@@ -204,7 +206,7 @@ void dispose() {
                            bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
                    if(!context.mounted)return;
-                            await controller.deleteTeacher(context,teacherId: teacher['id']!,);
+                           await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.deleteTeacher(context,teacherId: teacher['id']!,));
                            ever(controller.teacherData, (_) {
                             setState(() {
                               filteredData = List.from(controller.teacherData);

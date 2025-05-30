@@ -2,7 +2,7 @@ import 'dart:async' show Timer;
 import 'dart:convert' show jsonEncode;
 import 'dart:developer' show log;
 import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
-import 'package:admin_pannel/utils/AppException.dart' show PushNotificationException;
+import 'package:admin_pannel/utils/AppException.dart' show CloudDataWriteException, PushNotificationException;
 
 import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 import '../../../services/FireBaseServices/CollectionVariable.dart';
@@ -22,20 +22,24 @@ late FirebaseCollectionVariable collectionVariable ;
     super.onInit();
     collectionVariable = Get.find<FirebaseCollectionVariable>();
   }
-  void startCooldown(dynamic context) {
-    if (isCooldown.value) return; // prevent restarting if already on cooldown
-
-    isCooldown.value = true;
-    remainingTime.value = const Duration(minutes: 5);
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (remainingTime.value.inSeconds <= 1) {
-        timer.cancel();
-        isCooldown.value = false;
-      } else {
-        remainingTime.value -= const Duration(seconds: 1);
-      }
-    });
+  Future<void> startCooldown(dynamic context) async{
+    try {
+  if (isCooldown.value) return; // prevent restarting if already on cooldown
+  
+  isCooldown.value = true;
+  remainingTime.value = const Duration(minutes: 5);
+  
+  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    if (remainingTime.value.inSeconds <= 1) {
+      timer.cancel();
+      isCooldown.value = false;
+    } else {
+      remainingTime.value -= const Duration(seconds: 1);
+    }
+  });
+}  catch (e) {
+   throw CloudDataWriteException("Error in starting the timer, please try again later !");
+}
   }
 
   @override

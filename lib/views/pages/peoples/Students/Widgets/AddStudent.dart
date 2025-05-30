@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StudentController.dart';
 import '../../widgets/CustomeTextField.dart';
@@ -59,7 +61,7 @@ late StudentController controller ;
     super.initState();
   }
 Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto(context);
+  final pickedImage =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller. addPhoto(context));
   if (pickedImage != null &&mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
@@ -278,13 +280,14 @@ Future<void> profileFuntion() async {
     if(!context.mounted)return;
      CustomDialogs().showLoadingDialogInSec(context, 10);
 
-     final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+     final user =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await authControlelr.createUser(email: emailController.text,
+     password: passwordController.text, context: context));
    String userId = user!.id;
    // ignore: use_build_context_synchronously
-   final url = await controller.photoStorage(context,image: updatePhotoUrl,userId: userId);
+   final url = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));
    String name = '${firstNameController.text} ${lastNameController.text}';
      if(!context.mounted)return;
-await  controller.registerUser(
+        await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerUser(
    userId: userId,
      context: context,
      stuAddress: addresscontrl.text,
@@ -298,11 +301,11 @@ await  controller.registerUser(
      stufatherNo: fatherMobileController.text,
      stumotherName: motherNameController.text,
      stumotherNo: motherMobileController.text,
-     sturollNo: rollNumberController.text, stupicUrl: url
+     sturollNo: rollNumberController.text, stupicUrl: url!
   
-   );
+   ));
                    if(!context.mounted)return;
-   await controller.updateNumberOfStudent(context,true);
+    await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfStudent(context,true));
    
     // ignore: use_build_context_synchronously
     customPopNavigation(context, '/manage-student');

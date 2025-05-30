@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../contant/CustomNavigation.dart';
 import '../../../controller/classControllers/pageControllers/TimetableController.dart';
 import '../../widget/CustomDialogBox.dart';
@@ -47,11 +49,11 @@ Future<void> loadTimetableFromFirestore() async {
   for (var day in days) {
     for (var period in timetableContrl.periods) {
       
-        dynamic snapshot = await timetableContrl.loadTimetableCollection(context,
+        dynamic snapshot =await ExceptionDialog().handleExceptionDialog(context, ()async=> await timetableContrl.loadTimetableCollection(context,
           classSection: classSection,
           day: day,
           period: period,
-        );
+        ));
 
         if (snapshot.exists) {
           var data = snapshot.data();
@@ -188,7 +190,7 @@ void dispose() {
               height: 40,
               width: 140,
               child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async{
       if (isChanged) {
         CustomDialogs().showLoadingDialogInSec(context, 7);
 
@@ -201,7 +203,7 @@ void dispose() {
     String? subject = timetable[day]![period]?.text ?? '';
     String teacher = selectedTeachers[day]![period] ?? '';
 
-    timetableContrl.saveTimetableToFirestore(context,
+   await ExceptionDialog().handleExceptionDialog(context, ()async=> await timetableContrl.saveTimetableToFirestore(context,
       stuClaa: widget.stuClass,
       stuSec: widget.stuSec,
       subject: subject,
@@ -210,7 +212,7 @@ void dispose() {
       endTime: endTime,      // ✅ Same for all days per period
       day: day,
       period: period,
-    );
+    ));
   }
 }
 

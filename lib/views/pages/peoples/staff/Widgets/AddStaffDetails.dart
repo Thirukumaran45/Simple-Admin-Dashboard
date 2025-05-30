@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StafffController.dart';
 import '../../widgets/CustomeTextField.dart';
@@ -20,7 +22,7 @@ class _AddStaffTabState extends State<AddStaffTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
  dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  FirebaseAuthUser authControlelr = FirebaseAuthUser();
+  late FirebaseAuthUser authControlelr ;
   late final TextEditingController addresscontrl ;
   late final TextEditingController firstNameController ;
   late final TextEditingController lastNameController ;
@@ -31,6 +33,7 @@ class _AddStaffTabState extends State<AddStaffTab> {
 @override
   void initState() {
     super.initState();
+    authControlelr =Get.find<FirebaseAuthUser>();
  controller = Get.find<StaffController>();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
@@ -42,7 +45,7 @@ class _AddStaffTabState extends State<AddStaffTab> {
   }
 
 Future<void> profileFuntion() async {
-  final pickedImage = await controller. addPhoto(context);
+  final pickedImage = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller. addPhoto(context));
   if (pickedImage != null&&mounted) {
     setState(() {
       updatePhotoUrl = pickedImage;
@@ -171,25 +174,24 @@ Future<void> profileFuntion() async {
      {
      if(!context.mounted)return;
       CustomDialogs().showLoadingDialogInSec(context, 10);
-        final user = await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context);
+     final user = await ExceptionDialog().handleExceptionDialog(context, ()async=> await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context));
      String userId = user!.id;
      // ignore: use_build_context_synchronously
-     final url = await controller.photoStorage(context,image: updatePhotoUrl,userId: userId);
-     String name = '${firstNameController.text} ${lastNameController.text}';
+     final url = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));   String name = '${firstNameController.text} ${lastNameController.text}';
   if(!context.mounted)return;
-  await  controller.registerStaffs(
+  await ExceptionDialog().handleExceptionDialog(context, ()async=> await  controller.registerStaffs(
      userId: userId,
        context: context,
      staffAddress: addresscontrl.text,
     staffEmail: emailController.text,
     staffName: name.toUpperCase(),
     staffPhoneNumber: officialMobileController.text,
-    staffProfile: url,
+    staffProfile: url!,
     staffrole: "Staff",
 
-     );
+     ));
       if(!context.mounted)return;
-     await controller.updateNumberOfStaffs(context,true);
+     await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateNumberOfStaffs(context,true));
       
       // ignore: use_build_context_synchronously
       customPopNavigation(context, '/manage-working-staff');

@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/pageControllers/FessController.dart';
 import '../../../widget/CustomeColors.dart';
@@ -33,11 +35,11 @@ class _SectionWiseFeesUpdationState extends State<SectionWiseFeesUpdation> {
       summary[className] = {};
 
       for (String section in ['A', 'B', 'C', 'D']) {
-        final result = await controller.getFeesSummary(context,
+        final result =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.getFeesSummary(context,
           sectedClass: className,
           section: section,
-        );
-        summary[className]![section] = result;
+        ));
+        summary[className]![section] = result!;
       }
     }
 

@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../controller/classControllers/pageControllers/FessController.dart';
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../contant/pdfApi/PdfFees/PdfSingleScript.dart';
@@ -34,10 +36,10 @@ void initState() {
   super.initState();
   controller = Get.find<FeesController>();
    searchNameController = TextEditingController();
-  _scrollController.addListener(() {
+  _scrollController.addListener(() async{
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controller.fetchTransactionHistry(context);
+  await ExceptionDialog().handleExceptionDialog(context,()async=>  controller.fetchTransactionHistry(context));
   }
 });
 
@@ -58,13 +60,13 @@ void initState() {
   }
 
 void initializeList() async {
-  List<String> monthVal = await controller.fetchUniqueMonthValuesAll(context);
+  List<String>? monthVal =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.fetchUniqueMonthValuesAll(context));
   // ignore: use_build_context_synchronously
-  List<String> dateVal = await controller.fetchUniqueDateValuesAll(context);
+  List<String>? dateVal =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.fetchUniqueDateValuesAll(context));
 
   setState(() {
-    month = monthVal.map((e) => e.toString()).toSet().toList();
-    date = dateVal.map((e) => e.toString()).toSet().toList();
+    month = monthVal!.map((e) => e.toString()).toSet().toList();
+    date = dateVal!.map((e) => e.toString()).toSet().toList();
 
     if (month.contains(controller.gettodaymonth())) {
       selectedMonth = controller.gettodaymonth();

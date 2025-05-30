@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/pageControllers/AttendanceController.dart';
 import 'package:flutter/material.dart';
@@ -19,15 +21,16 @@ class ClassPage extends StatefulWidget {
 
 class _ClassPageState extends State<ClassPage> {
   late AttendanceController controler ;
-  late Future<Map<String, Map<String, String>>> futureAttendanceData;
+  late Future<Map<String, Map<String, String>>?> futureAttendanceData;
 
 @override
   void initState() {
     super.initState();
    controler = Get.find<AttendanceController>();
-    futureAttendanceData = controler.getSectionWiseTotalPresentAndAbsent(context,stuClass: widget.classNumber);
+    futureAttendanceData =  ExceptionDialog().handleExceptionDialog(context, ()async =>  controler.getSectionWiseTotalPresentAndAbsent(context,stuClass: widget.classNumber));
    
   }
+ 
 @override
   void dispose() {
     super.dispose();

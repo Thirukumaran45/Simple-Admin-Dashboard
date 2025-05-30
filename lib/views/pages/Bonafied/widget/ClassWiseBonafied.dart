@@ -1,4 +1,6 @@
 
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/constant.dart';
 import '../../../../controller/classControllers/peoplesControlelr/StudentListBonafiedControlelr.dart';
 import '../../../../contant/CustomNavigation.dart';
@@ -33,10 +35,10 @@ void initState() {
    setState(() {
       filteredData = List.from(controler.studentData);
     });
-    _scrollController.addListener(() {
+    _scrollController.addListener(() async{
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controler.fetchStudentData(context);
+   await ExceptionDialog().handleExceptionDialog(context,()async=> controler.fetchStudentData(context));
   }
 });
 

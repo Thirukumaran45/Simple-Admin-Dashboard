@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/pageControllers/FessController.dart';
 import '../../../widget/CustomeButton.dart';
@@ -30,8 +32,7 @@ late Worker studentDataWorker;
   }
 
 void initializeData() async {
-  await controller.fetchStudentData(context,stuClass: widget.stuClass, stuSec: widget.section);
-  
+  await ExceptionDialog().handleExceptionDialog(context,()async=>await controller.fetchStudentData(context,stuClass: widget.stuClass, stuSec: widget.section));
   if (mounted) {
     setState(() {
       filteredStudents = List.from(controller.studentData);

@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StudentController.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -30,10 +32,10 @@ final ScrollController _scrollController = ScrollController();
 void initState() {
   super.initState();
    controler = Get.find<StudentController>();
-  _scrollController.addListener(() {
+  _scrollController.addListener(()async {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    controler.fetchStudentData(context);
+    await ExceptionDialog().handleExceptionDialog(context, ()async=> controler.fetchStudentData(context));
   }
 });
 
@@ -275,7 +277,8 @@ DataCell(
   bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
   if (val) {
                    if(!context.mounted)return;
-    await controler.deleteStudent(context,studentId: student['id']!, stuClass: student['class'], stuSec: student['section']);
+   await ExceptionDialog().handleExceptionDialog(context, ()async=>  await controler.deleteStudent(context,studentId: student['id']!, 
+    stuClass: student['class'], stuSec: student['section']));
    ever(controler.studentData, (_) {
     setState(() {
       filteredData = List.from(controler.studentData);

@@ -1,4 +1,6 @@
 import 'dart:developer' show log;
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../controller/classControllers/pageControllers/DashboardController.dart';
 import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
 import '../../../widget/CustomeColors.dart';
@@ -39,7 +41,7 @@ class _sideNavState extends State<SideNav> {
   } 
 
   Future<void> initializeFunction() async {
-   String? photoUrl = await controller.getSchoolPhotoUrl(context);
+   final photoUrl =await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.getSchoolPhotoUrl(context));
 
    if (!mounted) return; // ✅ Check before updating UI
    setState(() {

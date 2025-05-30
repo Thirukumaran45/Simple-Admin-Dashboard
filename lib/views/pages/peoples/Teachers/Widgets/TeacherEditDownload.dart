@@ -1,3 +1,5 @@
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
+
 import '../../../../../contant/ConstantVariable.dart' show dateofEmploymentfield;
 import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
@@ -40,9 +42,9 @@ class _StudentEditDownloadState extends State<TeacherEditDownload> {
    }
 
 Future<void> handlePhotoUpdate(String studentId) async {
-  String newPhotoUrl = await  controller.updateTeacherPhoto(studentId ,context);
+  String? newPhotoUrl =await ExceptionDialog().handleExceptionDialog(context, ()async=> await  controller.updateTeacherPhoto(studentId ,context));
   
-  if (newPhotoUrl.isNotEmpty) { 
+  if (newPhotoUrl!.isNotEmpty) { 
     setState(() {
       assetImage = newPhotoUrl; // Update UI with new photo URL
     });
@@ -50,13 +52,13 @@ Future<void> handlePhotoUpdate(String studentId) async {
 }
 
   Future<void>initializeFunction()async{
-  teacherDetails = await controller.teacherDataRead(context,uid: widget.uid);
+  teacherDetails = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.teacherDataRead(context,uid: widget.uid));
    if (teacherDetails == null) {
       return;
     }
 
     // ignore: use_build_context_synchronously
-    String? photoUrl = await controller.getTeacherPhotoUrl(context,teacherDetails!.id);
+    String? photoUrl =await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.getTeacherPhotoUrl(context,teacherDetails!.id));
     
     setState(() {
        assetImage = photoUrl ?? teacherDetails?.teacherProfile;
@@ -66,8 +68,8 @@ Future<void> handlePhotoUpdate(String studentId) async {
     phoneNumberController = TextEditingController(text:teacherDetails?.teacherPhoneNumber??'');
     emailController = TextEditingController(text: teacherDetails?.teacherEmail??'');
     homeAddressController = TextEditingController(text: teacherDetails?.teacherAddress??'');
-    subjectHandlingController = TextEditingController(text: teacherDetails?.teacherSubjectHandling);
-    emplymentDateController = TextEditingController(text: "12/1/2025");
+    subjectHandlingController = TextEditingController(text: teacherDetails?.teacherSubjectHandling??'');
+    emplymentDateController = TextEditingController(text: teacherDetails?.dateofemployment??'');
   
     });
   }
@@ -210,7 +212,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                                 if (isEdited) {
                        await CustomDialogs().showCustomDialog(context, "Teacher details Updated Succecfully");
                   // ignore: use_build_context_synchronously
-                  bool isUpdated = await controller.updateTeacherDetails(context,
+                  bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateTeacherDetails(context,
                     teacherAddress: homeAddressController.text.toString(),
                     teacherSubjectHandling: subjectHandlingController.text.toString(),
                      teacherEmail: emailController.text.toString(),
@@ -222,9 +224,9 @@ Future<void> handlePhotoUpdate(String studentId) async {
                    role: 'Teacher',
                    teacherPhoneNumber: phoneNumberController.text.toString(),
                    yearofexperience: experienceController.text.toString()
-                   );
+                   ));
                    if(!context.mounted)return;
-                   if(isUpdated) await customSnackbar(context: context, text: "Teacher Detials changed and updated succesfully");
+                   if(isUpdated!) await customSnackbar(context: context, text: "Teacher Detials changed and updated succesfully");
                    
                                   setState(() {
                                     isEdited = false;
