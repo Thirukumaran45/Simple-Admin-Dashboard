@@ -13,6 +13,7 @@ class BusUpdateMainScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset(
+                     placeholderBuilder: (context) => const CircularProgressIndicator(color: Colors.green,), 
               'assets/images/bus.svg', // Replace with your image path
               width: 350, // Adjust size as needed
               height: 350,

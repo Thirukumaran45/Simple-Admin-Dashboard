@@ -140,10 +140,11 @@ required officialval,
                 PieChart(
                   PieChartData(
                     sectionsSpace: 0,
-                    centerSpaceRadius: 70,
+                    centerSpaceRadius: 60,
                     
                     sections: [
                       PieChartSectionData(
+                        radius: 50,
                         value: teacherAvg,
                         color: Colors.redAccent,
                         title: "${teacherAvg.toStringAsFixed(1)}%",
@@ -154,6 +155,7 @@ required officialval,
                         ),
                       ),
                       PieChartSectionData(
+                        radius: 50,
                         value: studentAvg,
                         color: Colors.blueAccent,
                         title: "${studentAvg.toStringAsFixed(1)}%",
@@ -164,6 +166,7 @@ required officialval,
                         ),
                       ),
                       PieChartSectionData(
+                        radius: 50,
                         value: workerAvg,
                         color: Colors.orangeAccent,
                         title: "${workerAvg.toStringAsFixed(1)}%",
@@ -173,6 +176,7 @@ required officialval,
                           fontWeight: FontWeight.bold,
                         ),
                       ), PieChartSectionData(
+                        radius: 50,
                         value: officialAvg,
                         color: Colors.green,
                         title: "${officialAvg.toStringAsFixed(1)}%",

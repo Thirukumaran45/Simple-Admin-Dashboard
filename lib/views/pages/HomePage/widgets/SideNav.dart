@@ -127,6 +127,7 @@ Padding(
         width: 130,
         child: assetImage == null
             ? SvgPicture.asset(
+                     placeholderBuilder: (context) => const CircularProgressIndicator(color: Colors.green,), 
                 defaultSchoolPhoto,
                 width: double.infinity,
                 height: double.infinity,

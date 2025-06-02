@@ -1,4 +1,4 @@
-import 'dart:async';
+
 import 'dart:developer' show log;
 import 'SchoolWebSite/websiteMainScreen.dart';
 import 'SchoolWebSite/widgets/userAuthRedirect.dart';
@@ -18,11 +18,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 // import 'package:connectivity_plus/connectivity_plus.dart' show Connectivity, ConnectivityResult;
 
 
-void main()  {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
 
-  runZonedGuarded(() async{
+
     try {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
@@ -41,9 +41,7 @@ void main()  {
     } catch (e) {
       log("Error initializing Firebase: $e");
     }
-  },(error, stackTrace) {
-    log("Zone Error: $error");
-  });
+
    initializeGetController();
   runApp(const MyApp());
 }
@@ -121,7 +119,6 @@ class AuthGuard extends StatelessWidget {
         customNvigation(context, '/adminLogin');
       }
     });
-
     return FirebaseAuth.instance.currentUser == null ? const SizedBox() : child;
   }
 }

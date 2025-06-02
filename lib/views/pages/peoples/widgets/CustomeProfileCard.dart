@@ -33,6 +33,8 @@ Widget customProfileCard(bool needSpace, {required String title ,required String
   ),
   child: SvgPicture.asset(
     assetLink,
+     placeholderBuilder: (context) => const CircularProgressIndicator(color: Colors.green,), 
+
     fit: needSpace ? BoxFit.contain : BoxFit.cover,
   ),
 ),

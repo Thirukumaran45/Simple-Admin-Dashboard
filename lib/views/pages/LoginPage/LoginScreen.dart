@@ -72,7 +72,6 @@ class _BodyState extends State<Body> {
 
 @override
   void dispose() {
-    controller.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -126,6 +125,7 @@ class _BodyState extends State<Body> {
                   height: 10,
                 ),
                 SvgPicture.asset(
+                     placeholderBuilder: (context) => const CircularProgressIndicator(color: Colors.green,), 
                   'images/admin1.svg',
                   width: 300,
                 ),
@@ -134,6 +134,7 @@ class _BodyState extends State<Body> {
           ),
         ),
         SvgPicture.asset(
+                     placeholderBuilder: (context) => const CircularProgressIndicator(color: Colors.green,), 
           'images/admin2.svg',
           width: 300,
         ),

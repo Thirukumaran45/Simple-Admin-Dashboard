@@ -90,7 +90,9 @@ Widget build(BuildContext context) {
     child: assetImage == null
         ? const CircularProgressIndicator(color: Colors.green)
         : assetImage!.endsWith(".svg")
-            ? SvgPicture.asset(assetImage!) // for local assets
+            ? SvgPicture.asset(assetImage!,
+                     placeholderBuilder: (context) => const CircularProgressIndicator(color: Colors.green,), 
+            ) // for local assets
             : InteractiveViewer(
                 child: Image.network(assetImage!), // for network images
               ),

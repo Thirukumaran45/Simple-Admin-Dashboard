@@ -23,6 +23,8 @@ return Center(
               child: ClipOval(
                 child: SvgPicture.asset(
                   'assets/images/profile.svg', // your SVG asset path
+                     placeholderBuilder: (context) => const CircularProgressIndicator(color: Colors.green,), 
+
                   fit: BoxFit.cover,
                 ),
               ),
