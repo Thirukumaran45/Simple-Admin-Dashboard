@@ -16,7 +16,7 @@ class Teachercontroller extends GetxController{
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
  final RxList<Map<String, dynamic>> teacherData = <Map<String, dynamic>>[].obs;
-final int _limit = 18;
+final int _limit = 15;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
 var _context;
@@ -37,6 +37,7 @@ void fetchTeacherData(dynamic context,) async {
       query = query.startAfterDocument(_lastDocument!);
     }
     snapshot = await query.get();
+    if (snapshot.docs.isNotEmpty) {
      _lastDocument = snapshot.docs.last;
     teacherData.value = snapshot.docs.asMap().entries.map((entry) {
       int index = entry.key + 1; // Auto-generate serial number starting from 1
@@ -51,7 +52,8 @@ void fetchTeacherData(dynamic context,) async {
         'phone': doc[teacherPhoneNumberfield] ?? '',
       };
     }).toList().cast<Map<String, dynamic>>();
-  } catch (e) { 
+  }
+  }  catch (e) { 
     log('Error in fetching the data: $e');
     throw CloudDataReadException('Error in loading teachers details, please try again later !');
   }
@@ -111,7 +113,7 @@ Future<bool> updateTeacherDetails(dynamic context,{
       teacherIdFireld:userId,
       teacherrole:role
     });
-    fetchTeacherData(_context);
+    fetchTeacherData(context);
         update(); 
     log("teacher details updated successfully.");
     return true; // Return success
@@ -223,8 +225,6 @@ Future<void> registerTeacher({
       teacherIdFireld:userId,
       teacherrole:role
     });
-    
-      if(!context.mounted)return;
       fetchTeacherData(context);
      update();
   } catch (e) {

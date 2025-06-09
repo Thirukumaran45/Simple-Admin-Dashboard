@@ -192,9 +192,9 @@ void dispose() {        // Properly dispose of the GetX Worker
                             setState(() {
                               filteredData = List.from(controller.staffData);
                             });
-                          });
+                          }); 
                           }
-                        
+                         
                           },
                           child: const Row(
                             children: [Icon(Icons.delete_sharp, color: Colors.white), Text(' Delete',style: TextStyle(fontSize: 14),)],

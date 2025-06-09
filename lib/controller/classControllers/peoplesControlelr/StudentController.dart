@@ -16,7 +16,7 @@ class StudentController extends GetxController {
   late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
-final int _limit = 18;
+final int _limit = 15;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
 var _context;
@@ -37,6 +37,7 @@ var _context;
       query = query.startAfterDocument(_lastDocument!);
     }
   snapshot = await query.get();
+  if (snapshot.docs.isNotEmpty) {
      _lastDocument = snapshot.docs.last;
   studentData.value = snapshot.docs.map((doc) {
     return {
@@ -48,6 +49,7 @@ var _context;
       'parentMobile': doc[motherPhoneNoField] ?? '',
     };
   }).toList().cast<Map<String, dynamic>>(); 
+  }
   update();
 }   catch (e) {
   log('error in fetching the data $e');
@@ -239,8 +241,6 @@ Future<void> registerUser({
       studentAddress:stuAddress,
       totalAttendanceDays:''
     });
-
-    if(!context.mounted)return;
       fetchStudentData(context);
         update(); // Notify GetX listeners
 

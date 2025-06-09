@@ -18,7 +18,7 @@ class StaffController extends GetxController{
    late FirebaseCollectionVariable collectionControler;
 late dynamic snapshot;
  var _context;
-final int _limit = 18;
+final int _limit = 15;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
  final RxList<Map<String, dynamic>> staffData = <Map<String, dynamic>>[].obs;
@@ -331,7 +331,7 @@ Future<bool> deleteStaffs(dynamic context,{
     await announcementRef.delete();
   }
   
-   await updateNumberOfStaffs(_context,false);
+   await updateNumberOfStaffs(_context,false); 
     // Remove the deleted staff from the observable list
     staffData.removeWhere((staff) => staff['id'] == staffId);
         update(); // Notify GetX listeners

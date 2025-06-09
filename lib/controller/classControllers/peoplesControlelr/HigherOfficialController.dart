@@ -210,7 +210,6 @@ class Higherofficialcontroller extends GetxController {
         principalId: userId,
         principalRoleField: principalRole,
       });
-      if(!context.mounted)return;
       fetchMoreOfficials(context);
       update(); // Notify GetX listeners
     } catch (e) {

@@ -11,7 +11,7 @@ import 'package:get/get.dart' show Get, GetxController, Inst;
 class ExamUpdationController extends GetxController{
 
 late FirebaseCollectionVariable collectionController ;
-final int _limit = 18;
+final int _limit = 15;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
   @override

@@ -15,7 +15,7 @@ class FeesController extends GetxController {
  FirebaseCollectionVariable collectionVariable = Get.find<FirebaseCollectionVariable>();
 final RxList<Map<String, dynamic>> feesData = <Map<String, dynamic>>[].obs;
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
-final int _limit = 18;
+final int _limit = 15;
 DocumentSnapshot? _studentlastDocument;
 DocumentSnapshot? _histrylastDocument;
 bool _isFetchingMoreStudent = false;
@@ -202,49 +202,55 @@ Future<void> fetchTransactionHistry(dynamic context,) async {
 Future<List<String>> fetchUniqueMonthValuesAll(dynamic context,) async {
   // Use a Set to avoid duplicates.
 
-  Set<String> monthValues = {};
 
       try {
-        var snapshot = await collectionVariable.feesDocCollection.collection("completedTransaction")
+           var snapshot = await collectionVariable.feesDocCollection
             .get();
 
-        for (var doc in snapshot.docs) {
-          final data = doc.data() ;
-          if (data.containsKey('paymentMonth') && data['paymentMonth'] != null) {
-            monthValues.add(data['paymentMonth']);
-          }
-        }
+
+    if (snapshot.exists) {
+      // Explicitly cast data to a Map<String, dynamic>
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+
+      if (data != null && data.containsKey('payment_months')) {
+        List<dynamic> rawList = data['payment_months'];
+       update();
+        return List<String>.from(rawList);
+      }
+    }
       } catch (e) {
-        log('Error in fetching month values : $e');
-        throw CloudDataReadException("Error in getting the month details, please try again later !");
+        log('Error in fetching fee month values : $e');
+        throw CloudDataReadException("Error in getting payment fees month details, please try again later !");
       }
     
   update();
-  return monthValues.toList();
+  return [];
 }
   
 Future<List<String>> fetchUniqueDateValuesAll(dynamic context,) async {
-  Set<String> dateValues = {};
+  
       try {
-        var snapshot = await collectionVariable.feesDocCollection.collection("completedTransaction")
+        var snapshot = await collectionVariable.feesDocCollection
             .get();
 
-        for (var doc in snapshot.docs) {
-          final data = doc.data() ;
-          if (data.containsKey('paymentDate') && data['paymentDate'] != null) {
-          
-            String paymentDate = data['paymentDate'];
-            String onlyDate = paymentDate.split(' ')[0];
-            dateValues.add(onlyDate);
-          }
-        }
+
+    if (snapshot.exists) {
+      // Explicitly cast data to a Map<String, dynamic>
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+
+      if (data != null && data.containsKey('payment_dates')) {
+        List<dynamic> rawList = data['payment_dates'];
+       update();
+        return List<String>.from(rawList);
+      }
+    }
       } catch (e) {
-        log('Error in fetching date values : $e');
-        throw CloudDataReadException("Error in getting the month details, please try again later !");
+        log('Error in fetching fee payment date values : $e');
+        throw CloudDataReadException("Error in getting payment fee date details, please try again later !");
         
-  }  update();
-  log(dateValues.toString() );
-  return dateValues.toList();
+  }
+  return [];
+
 }
 
 Future<Map<String, String>> getFeesSummary(dynamic context,{

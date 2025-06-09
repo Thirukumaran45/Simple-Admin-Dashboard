@@ -44,7 +44,7 @@ class ExamScoreSection extends StatelessWidget {
               // 10th Grade Result Card
               Expanded(
                 child: Card(
-          color: Colors.orange.shade50,
+          color: Colors.grey.shade200,
 
                   shadowColor: Colors.orange,
                   elevation: 20,
@@ -105,7 +105,7 @@ class ExamScoreSection extends StatelessWidget {
               Expanded(
                 child: Card(
                   elevation: 20,
-               color: Colors.orange.shade50,
+               color: Colors.grey.shade200,
                   shadowColor: Colors.orange,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

@@ -1,6 +1,7 @@
 import 'dart:developer' show log;
 import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
 import 'package:admin_pannel/utils/AppException.dart' ;
+import 'package:firebase_storage/firebase_storage.dart' show FirebaseException;
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
@@ -48,7 +49,7 @@ Future<List<String>> getAttendanceDates() async {
     }
   }  catch (fe) {
     log("Error fetching attendance dates: $fe");
-    throw CloudDataReadException(" Fetching error, please try again later !"); 
+    throw CloudDataReadException(" Fetching error in attendance dates, please try again later !"); 
   }
  
   return [];
@@ -57,65 +58,100 @@ Future<List<String>> getAttendanceDates() async {
 
 Future<List<String>> fetchUniqueMonthValuesAll(dynamic context) async {
   
-final List<String> listDate = await getAttendanceDates();
-  Set<String> monthValues = {};
-  List<String> sections = ['A', 'B', 'C', 'D'];
+ try {
+    final overallDaysDoc = await collectionControler.attendanceCollection.get();
 
-for( String date in listDate){
-  for (int i = 1; i <= 12; i++) {
-    for (String sec in sections) {
-      try {
-        var snapshot = await collectionControler.attendanceCollection.collection(date)
+    if (overallDaysDoc.exists) {
+      // Explicitly cast data to a Map<String, dynamic>
+      Map<String, dynamic>? data = overallDaysDoc.data() as Map<String, dynamic>?;
 
-            .doc("${i.toString()}$sec")
-            .collection("presented_student")
-            .get();
-
-        for (var doc in snapshot.docs) {
-          final data = doc.data() ;
-          if (data.containsKey('month') && data['month'] != null) {
-            monthValues.add(data['month']);
-          }
-        }
+      if (data != null && data.containsKey('attendance_months')) {
+        List<dynamic> rawList = data['attendance_months'];
        update();
-      } catch (e) {
-        log('Error in fetching month values for class $i section $sec: $e');
-        throw CloudDataReadException('Error in getting attendacne month values');
+        // Convert dynamic list to List<String> safely
+        return List<String>.from(rawList);
       }
     }
+  }  catch (fe) {
+    log("Error fetching attendance months: $fe");
+    throw CloudDataReadException(" Fetching error in attendance months, please try again later !"); 
   }
+ 
+  return [];
 }
 
-  return monthValues.toList();
-}
-
-Future<void> updateAttendance(dynamic context,{required String stuClass, required String sec, required String status}) async {
+Future<void> updateAttendance(dynamic context,{ required String id,required String stuClass,  required String date,required String sec, required String status}) async {
   try {
-  final String date = gettoadayDate();
-  
-  final snapshot = await collectionControler.attendanceCollection
+    
+  final String section = sec.toUpperCase();
+  final col = collectionControler.attendanceCollection
       .collection(date)
-      .doc("$stuClass$sec")
-      .collection("presented_student")
+      .doc("$stuClass$section");
+
+     final snapshot =await col .collection("presented_student").doc(id)
       .get();
+
+    await snapshot.reference.update({'status': status});
   
-  for (var doc in snapshot.docs) {
-    final String id = doc.data()["studentId"]; // Extract studentId for each document
+    final studentDoc =   collectionControler.studentLoginCollection.doc(id);
+    final studentData = await studentDoc.get();
+    final data = studentData.data() as Map<String, dynamic>?;
+
+      int totalAttendanceDays = int.tryParse(
+        data?['totalAttendanceDays']?.toString() ?? '0') ?? 0;
+
+ if (status == 'Present') {
+      totalAttendanceDays += 1;
+    
+}
+     final overallDaysDoc =  collectionControler.attendanceCollection;
+     final snapdata = await  overallDaysDoc.get(); 
+    final daysData = snapdata.data() as Map<String, dynamic>?;
+    
+    int totalDays = daysData?['total number of Days'] ?? 1;
+
+    double attendancePercentage = (totalAttendanceDays / totalDays) * 100;
+    int attendancePercentageInt = attendancePercentage.toInt();
   
-    // Update attendance status in the attendance collection
-    await doc.reference.update({'attendanceStatus': status});
   
-    // Update the student's document in studentLoginCollection
-    await collectionControler.studentLoginCollection.doc(id).update({
-      "Today Attendance": status,
+    await studentDoc.update({
+      'Today Attendance': status,
+      'Attendance Percentage': attendancePercentageInt.toString(),
     });
-  }
+// Step 1: Get current values
+final collection = await col.get();
+final collectiondata = collection.data() as Map<String, dynamic>;
+
+int presentCount = collectiondata['number of Student present'] ?? 0;
+int absentCount = collectiondata['number of Student absent'] ?? 0;
+
+if(status =="Present")
+{
+  presentCount+=1;
+  absentCount-=1;
+
+}
+else
+{
+  absentCount+=1;
+  presentCount-=1;
+
+}
+
+  // Step 3: Update the values
+  await col.update({
+    'number of Student present': presentCount,
+    'number of Student absent': absentCount,
+  });
+
+  
   if(!context.mounted)return;
    await   customSnackbar(context: context, text: "Attendance status as been changed !!!");
 
+
        update();
 
-}  catch (e) {
+} on FirebaseException catch (e) {
   log('error in updating the attendance $e');
   throw CloudDataReadException("Updating the attendance is failed, please try again later !");
 }
@@ -170,9 +206,12 @@ Future<List<Map<String, dynamic>>> fetchPagedStudents(dynamic context,{
     // ADD your filters here:
     if (dateFilter.isNotEmpty) {
       query = query.where('date', isEqualTo: dateFilter);
+          log(dateFilter);
     }
+
     if (monthFilter.isNotEmpty) {
       query = query.where('month', isEqualTo: monthFilter);
+          log(monthFilter);
     }
 
     query = query.limit(_pageSize);
@@ -231,12 +270,12 @@ final String date = gettoadayDate();
   
       if (docSnapshot.exists) {
         final data = docSnapshot.data(); // Explicitly cast to a Map
-        final String presentStr = data?["number of Student present"] ?? '0';
-        final String absentStr = data?["number of Student absent"] ?? '0';
+        final int presentStr =  data?["number of Student present"] ?? 0;
+        final int absentStr = data?["number of Student absent"] ?? 0;
         final String status = data?["class attendance status"] ?? 'Not Taken';
   
-        totalPresent += int.tryParse(presentStr) ?? 0;
-        totalAbsent += int.tryParse(absentStr) ?? 0;
+        totalPresent += presentStr;
+        totalAbsent += absentStr;
         sectionStatus[sec] = status; // Store status for each section
       } else {
         sectionStatus[sec] = 'Not Taken'; // Default if document doesn't exist
@@ -255,7 +294,7 @@ final String date = gettoadayDate();
        update();
   return classWiseAttendance;
 } catch (e) {
-  log(e.toString());
+  log("error $e");
   throw CloudDataReadException('Could not get the total number of present and absent, please try again later !');
 }
 }
@@ -274,13 +313,13 @@ final String date = gettoadayDate();
   
      if (docSnapshot.exists) {
        final data = docSnapshot.data(); // Explicitly cast to a Map
-      final String  presentStr = data?["number of Student present"] ?? '0';
-       final String  absentStr = data?["number of Student absent"] ?? '0';
+      final int  presentStr = data?["number of Student present"] ?? 0;
+       final int  absentStr = data?["number of Student absent"] ?? 0;
        final String  status = data?["class attendance status"] ?? 'Not Taken';
   
      sectionWiseAttendance[sec]={
-     "numberOfPresent": presentStr,
-     "numberOfAbsent": absentStr,
+     "numberOfPresent": presentStr.toString(),
+     "numberOfAbsent": absentStr.toString(),
      "status":status
      };
   
@@ -297,6 +336,8 @@ final String date = gettoadayDate();
   
    return sectionWiseAttendance;
 }  catch (e) {
+  log("error $e");
+
 throw CloudDataReadException('Could not get the total number of present and absent, please try again later !');
 
 }

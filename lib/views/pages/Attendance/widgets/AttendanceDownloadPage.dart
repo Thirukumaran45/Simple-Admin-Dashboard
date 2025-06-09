@@ -339,10 +339,11 @@ _buildDropdown(
                                   width: 100,
                                   child: ElevatedButton(
                                     onPressed: () async{
+                                    
                                       saveAttendance(index);
                                      await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.updateAttendance(context,stuClass: widget.classNUmber
                                       , sec: widget.section, status: 
-                                      filteredData[index]['attendanceStatus']));
+                                      filteredData[index]['attendanceStatus'], date: selectedDate!, id:filteredData[index]['id'] ));
                                     },
                                     style: ElevatedButton.styleFrom(backgroundColor:const Color.fromARGB(255, 38, 153, 42)),
                                     child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.white)),

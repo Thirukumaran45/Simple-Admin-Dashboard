@@ -12,7 +12,7 @@ class StudentlistBonafiedController extends GetxController {
 late FirebaseCollectionVariable collectionControler;
   late dynamic snapshot;
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
-final int _limit = 18;
+final int _limit = 15;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
 var _context;
@@ -34,6 +34,7 @@ var _context;
     }
 
   snapshot = await query.get();
+  if (snapshot.docs.isNotEmpty) {
   _lastDocument = snapshot.docs.last;
   studentData.value = snapshot.docs.map((doc) {
     return {
@@ -46,6 +47,7 @@ var _context;
       'feeStatus':doc[feesStatusField]??''
     };
   }).toList().cast<Map<String, dynamic>>(); 
+  }
 }   catch (e) {
   log('error in fetching the data $e');
     throw CloudDataReadException("Error in loading student details, please try again later !");

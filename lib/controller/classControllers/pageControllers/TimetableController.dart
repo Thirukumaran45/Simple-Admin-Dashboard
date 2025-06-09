@@ -1,11 +1,6 @@
 
-
 import 'dart:developer' show log;
-
-import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
 import 'package:admin_pannel/utils/AppException.dart';
-
-
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show SetOptions,DocumentSnapshot;
 import 'package:get/get.dart' ;
@@ -72,9 +67,9 @@ Future<void> saveTimetableToFirestore(dynamic context,{
         "startTime": startTime,
         "endTime": endTime,
       }, SetOptions(merge: true)); 
+      
       update();
-        if(!context.mounted)return;
-   await   customSnackbar(context: context, text: "Time table have been changed !");
+    
 }  catch (e) {
   log("erorr in add and update funtion $e");
         throw CloudDataWriteException("Error in updating class timetable, please try again later !");
