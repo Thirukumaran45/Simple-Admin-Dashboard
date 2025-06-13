@@ -27,6 +27,7 @@ class _ClassInchargerDetailsState extends State<ClassInchargerDetails> {
   final List<ValueNotifier<bool>> isClassEditing = List.generate(12, (_) => ValueNotifier(false));
 
  late Teachercontroller controller ;
+ bool isLoading = true;
 
   @override
   void initState() {
@@ -38,11 +39,26 @@ class _ClassInchargerDetailsState extends State<ClassInchargerDetails> {
     initfuntion();
   }
 
-void initfuntion()async{
-   await ExceptionDialog().handleExceptionDialog(context, ()async=> controller.fetchAllClassInchargeDetails(context,nameControllers, phoneNumberControllers,
-    emailControllers)
+void initfuntion() async {
+  setState(() {
+    isLoading = true;
+  });
+
+  await ExceptionDialog().handleExceptionDialog(
+    context,
+    () async => await controller.fetchAllClassInchargeDetails(
+      context,
+      nameControllers,
+      phoneNumberControllers,
+      emailControllers,
+    ),
   );
+
+  setState(() {
+    isLoading = false;
+  });
 }
+
 
   @override
   void dispose() {
@@ -66,6 +82,23 @@ void initfuntion()async{
 
   @override
   Widget build(BuildContext context) {
+         if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Almost there please wait a second ... ", style: TextStyle(color: Colors.black,fontSize: 18),),
+              const SizedBox(width: 30,),
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(primaryGreenColors),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(

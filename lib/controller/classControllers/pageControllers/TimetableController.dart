@@ -22,24 +22,31 @@ final List<String> periods = ["Period 1", "Period 2", "Period 3", "Period 4", "P
     fetchTeachers(_context);
   }
 
-Future<void> fetchTeachers(dynamic context,) async {
+Future<void> fetchTeachers(dynamic context) async {
   try {
-  final docs = await collectionControler.teacherLoginCollection.get();
-  teachers.clear(); 
-  
-  for (var doc in docs.docs) {
-    final Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?; 
-    if (data != null && data.containsKey('name')) {
-      teachers.add(data['name'] as String);
-    }
-  }
-  update(); 
-}  catch (e) {
-  log("error in fetching the teacher details: $e");
-        throw CloudDataReadException("Error in getting teacher details, please try again later !");
+    final docs = await collectionControler.teacherLoginCollection.get();
+    teachers.clear();
 
+    for (var doc in docs.docs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final name = data['name'];
+
+      if (name is String) {
+        teachers.add(name);
+      } else {
+        log('Skipped non-string teacher name: $name');
+      }
+    }
+
+    update();
+  } catch (e) {
+    log("error in fetching the teacher details: $e");
+    throw CloudDataReadException(
+      "Error in getting teacher details, please try again later!",
+    );
+  }
 }
-}
+
 
 
 Future<void> saveTimetableToFirestore(dynamic context,{
@@ -52,13 +59,13 @@ Future<void> saveTimetableToFirestore(dynamic context,{
   required String? day,
   required String? period,
 }) async {
-  String classSection = "$stuClaa$stuSec";
 
 
-        
     try {
-  await collectionControler.timetableCollection
-      .doc(classSection)
+  final coll =    collectionControler.timetableCollection
+      .doc('$stuClaa$stuSec');
+   await coll.set({'init': true}, SetOptions(merge: true));
+  await coll
       .collection(day!)
       .doc(period)
       .set({
