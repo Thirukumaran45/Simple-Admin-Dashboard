@@ -2,7 +2,7 @@
 import 'dart:developer' show log;
 import 'SchoolWebSite/websiteMainScreen.dart';
 import 'SchoolWebSite/widgets/userAuthRedirect.dart';
-import 'controller/InitializeController.dart' show disposeAllControllers,initializeGetController;
+import 'controller/InitializeController.dart' show initializeGetController;
 import 'contant/CustomNavigation.dart';
 import 'views/pages/HomePage/widgets/Dashboard.dart';
 import 'package:beamer/beamer.dart';
@@ -11,9 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart' show setPathUrlStrategy;
 import 'views/pages/LoginPage/LoginScreen.dart';
-import 'package:web/web.dart' as web;
-import 'dart:js_interop';
-import 'package:flutter/foundation.dart' show kIsWeb; // Add this import at the top
 import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 // import 'package:connectivity_plus/connectivity_plus.dart' show Connectivity, ConnectivityResult;
 
@@ -21,7 +18,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
-
 
     try {
       await Firebase.initializeApp(
@@ -60,19 +56,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
-    if (kIsWeb) {
-      web.window.addEventListener(
-        'beforeunload',
-        (web.Event _) {
-          disposeAllControllers();
-        }.toJS,
-      );
-    }
   }
-
-
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(

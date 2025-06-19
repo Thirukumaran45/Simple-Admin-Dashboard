@@ -17,37 +17,20 @@ import 'package:get/get.dart' show Get,Inst;
 import '../services/FireBaseServices/CollectionVariable.dart';
 
 void initializeGetController() {
-    Get.lazyPut(()=>DashboardController()); 
-    Get.lazyPut(()=>SchooldetailsController());
-    Get.lazyPut(()=>StudentController()); 
-    Get.lazyPut(()=>Teachercontroller());
-    Get.lazyPut(()=>Higherofficialcontroller());
-    Get.lazyPut(()=>StaffController());
-    Get.lazyPut(()=>FeesController());
-    Get.lazyPut(()=>AttendanceController());
-    Get.lazyPut(()=>StudentlistBonafiedController());
-    Get.lazyPut(()=>FirebaseCollectionVariable());
-    Get.lazyPut(()=>TimetableController());
-    Get.lazyPut(()=>ExamUpdationController());
-    Get.lazyPut(()=>SchoolResetYearController());
-    Get.lazyPut(()=>FirebaseAuthUser());
-    Get.lazyPut(()=>PushNotificationControlelr());
+    Get.lazyPut(()=>DashboardController(),fenix: true); 
+    Get.lazyPut(()=>SchooldetailsController(),fenix: true);
+    Get.lazyPut(()=>StudentController(),fenix: true); 
+    Get.lazyPut(()=>Teachercontroller(),fenix: true);
+    Get.lazyPut(()=>Higherofficialcontroller(),fenix: true);
+    Get.lazyPut(()=>StaffController(),fenix: true);
+    Get.lazyPut(()=>FeesController(),fenix: true);
+    Get.lazyPut(()=>AttendanceController(),fenix: true);
+    Get.lazyPut(()=>StudentlistBonafiedController(),fenix: true);
+    Get.lazyPut(()=>FirebaseCollectionVariable(),fenix: true);
+    Get.lazyPut(()=>TimetableController(),fenix: true);
+    Get.lazyPut(()=>ExamUpdationController(),fenix: true);
+    Get.lazyPut(()=>SchoolResetYearController(),fenix: true);
+    Get.lazyPut(()=>FirebaseAuthUser(),fenix: true);
+    Get.lazyPut(()=>PushNotificationControlelr(),fenix: true);
 }
 
-void disposeAllControllers() {
-  Get.delete<DashboardController>();
-  Get.delete<SchooldetailsController>();
-  Get.delete<StudentController>();
-  Get.delete<Teachercontroller>();
-  Get.delete<Higherofficialcontroller>();
-  Get.delete<StaffController>();
-  Get.delete<FeesController>();
-  Get.delete<AttendanceController>();
-  Get.delete<StudentlistBonafiedController>();
-  Get.delete<FirebaseCollectionVariable>();
-  Get.delete<TimetableController>();
-  Get.delete<ExamUpdationController>();
-  Get.delete<SchoolResetYearController>();
-  Get.delete<FirebaseAuthUser>();
-  Get.delete<PushNotificationControlelr>();
-}
