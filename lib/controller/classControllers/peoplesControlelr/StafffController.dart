@@ -108,6 +108,8 @@ required String  staffrole,
       staffAddressfield: staffAddress,
       staffProfilefield :staffAddress,
       stafflId :userId,
+      "isInRemainderChat":false,
+         "isSchoolChat":false,
       staffroleField :staffrole
     });
        fetchStaffData(_context);
@@ -213,6 +215,8 @@ required String  staffrole,
       staffAddressfield: staffAddress,
       staffProfilefield :staffAddress,
       stafflId :userId,
+      "isInRemainderChat":false,
+         "isSchoolChat":false,
       staffroleField :staffrole
     });
          fetchStaffData(_context);

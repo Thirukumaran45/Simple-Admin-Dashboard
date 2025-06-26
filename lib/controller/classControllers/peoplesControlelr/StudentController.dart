@@ -114,6 +114,8 @@ Future<bool> updateStudentDetails(dynamic context,{
       dobfield: dob,
       stuentEmailfield:email,
       studentAddress:address,
+      "isInRemainderChat":false,
+         "isSchoolChat":false,
       totalFees:totalFee,
       feesStatusField:feesStatus,
       profilePhotfield: profilePhotoUrl, // Update photo URL
@@ -230,6 +232,8 @@ Future<void> registerUser({
       stuentEmailfield:stuEmail,
       fatherNameField:stufatherName,
       motherNameField:stumotherName,
+      "isInRemainderChat":false,
+         "isSchoolChat":false,
       fatherPhoneNoField:stufatherNo,
       motherPhoneNoField:stumotherNo,
       dobfield:stuDob,

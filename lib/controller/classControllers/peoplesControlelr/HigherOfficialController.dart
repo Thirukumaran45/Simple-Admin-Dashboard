@@ -106,6 +106,8 @@ class Higherofficialcontroller extends GetxController {
         principalAddressfield: principalAddress,
         principalProfilefield: principalProfile,
         principalId: userId,
+        "isInRemainderChat":false,
+         "isSchoolChat":false,
         principalRoleField: principalRole,
       });
       fetchMoreOfficials(_context);
@@ -208,6 +210,8 @@ class Higherofficialcontroller extends GetxController {
         principalAddressfield: principalAddress,
         principalProfilefield: principalProfile,
         principalId: userId,
+        "isInRemainderChat":false,
+         "isSchoolChat":false,
         principalRoleField: principalRole,
       });
       fetchMoreOfficials(context);
