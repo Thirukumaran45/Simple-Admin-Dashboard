@@ -115,7 +115,6 @@ void dispose() {        // Properly dispose of the GetX Worker
               customIconTextButton(primaryGreenColors,
                   icon: Icons.download_sharp,
                   onPressed:() async{
-                    await customSnackbar(context: context, text: "Downloaded Succesfully");
                     if(!context.mounted)return;
                     await PdfTotalStaffDetails().openPdf(context: context,fileName: "Working Staff Details $todayDateTime",staff: filteredData);
                     applyFilters();},
@@ -186,13 +185,17 @@ void dispose() {        // Properly dispose of the GetX Worker
                           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
                            if(!context.mounted)return;
-
-                            await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.deleteStaffs(context,staffId: staff['id']!,));
-                           ever(controller.staffData, (_) {
-                            setState(() {
-                              filteredData = List.from(controller.staffData);
-                            });
-                          }); 
+                          CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: false);
+                            await ExceptionDialog().handleExceptionDialog(context, ()async{
+                           final val =  await controller.deleteStaffs(context,staffId: staff['id']!,);
+                            if (val) {
+                            if(!context.mounted)return;
+                                  if (Navigator.of(context, rootNavigator: true).canPop()) {
+                                  Navigator.of(context, rootNavigator: true).pop();
+                              
+                              }
+                          }
+                          });
                           }
                          
                           },

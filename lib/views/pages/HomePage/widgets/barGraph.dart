@@ -224,8 +224,6 @@ required officialval,
 
 
 Widget buildLineChart({required void Function() onPressed}) {
-
-
   return _buildChartContainer(
     icon: Icons.campaign,
     title: "Alert unpaymnet fees",

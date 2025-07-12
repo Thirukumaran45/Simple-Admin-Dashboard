@@ -1,5 +1,4 @@
 import 'dart:developer' show log;
-import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
 import 'package:admin_pannel/utils/AppException.dart' ;
 import 'package:firebase_storage/firebase_storage.dart' show FirebaseException;
 
@@ -48,7 +47,6 @@ Future<List<String>> getAttendanceDates() async {
       }
     }
   }  catch (fe) {
-    log("Error fetching attendance dates: $fe");
     throw CloudDataReadException(" Fetching error in attendance dates, please try again later !"); 
   }
  
@@ -73,7 +71,6 @@ Future<List<String>> fetchUniqueMonthValuesAll(dynamic context) async {
       }
     }
   }  catch (fe) {
-    log("Error fetching attendance months: $fe");
     throw CloudDataReadException(" Fetching error in attendance months, please try again later !"); 
   }
  
@@ -144,9 +141,7 @@ else
     'number of Student absent': absentCount,
   });
 
-  
-  if(!context.mounted)return;
-   await   customSnackbar(context: context, text: "Attendance status as been changed !!!");
+
 
 
        update();
@@ -175,7 +170,6 @@ Future<String> getTeacherName(dynamic context,{required String stuClass, require
     } 
     
   } catch (e) {
-    log("Error fetching teacher name: $e");
     throw CloudDataReadException("No teacher are found !");
   }
   
@@ -238,7 +232,6 @@ Future<List<Map<String, dynamic>>> fetchPagedStudents(dynamic context,{
     }).toList();
     
   } catch (e) {
-    log('Error paginating students: $e');
     throw CloudDataDeleteException("Error in fetching the student details");
   } finally {
     _isFetchingMoreStudents = false;
@@ -294,7 +287,6 @@ final String date = gettoadayDate();
        update();
   return classWiseAttendance;
 } catch (e) {
-  log("error $e");
   throw CloudDataReadException('Could not get the total number of present and absent, please try again later !');
 }
 }
@@ -336,8 +328,6 @@ final String date = gettoadayDate();
   
    return sectionWiseAttendance;
 }  catch (e) {
-  log("error $e");
-
 throw CloudDataReadException('Could not get the total number of present and absent, please try again later !');
 
 }

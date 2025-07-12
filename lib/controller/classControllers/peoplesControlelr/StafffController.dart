@@ -1,4 +1,5 @@
 import 'dart:developer'show log;
+import 'package:admin_pannel/services/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/utils/AppException.dart';
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
@@ -19,6 +20,7 @@ class StaffController extends GetxController{
 late dynamic snapshot;
  var _context;
 final int _limit = 15;
+  late FirebaseAuthUser authControlelr ;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
  final RxList<Map<String, dynamic>> staffData = <Map<String, dynamic>>[].obs;
@@ -27,6 +29,8 @@ bool _isFetchingMore = false;
   @override
   void onInit() {
     super.onInit();
+    
+    authControlelr =Get.find<FirebaseAuthUser>();
     collectionControler = Get.find<FirebaseCollectionVariable>();
     fetchStaffData(_context);
   }
@@ -48,7 +52,8 @@ void fetchStaffData(dynamic context,) async {
 
       final newEntries = snapshot.docs.asMap().entries.map((entry) {
         int index = staffData.length + entry.key + 1;
-        var doc = entry.value;
+        var docSnapshot = entry.value;
+        var doc = docSnapshot.data() as Map<String, dynamic>? ?? {};
           return {
         'sNo': index.toString(),
         'name': doc[staffNamefield] ?? '',
@@ -63,7 +68,6 @@ void fetchStaffData(dynamic context,) async {
       update();
     }
   } catch (e) {
-    log('Error while fetching more officials: $e');
     throw CloudDataReadException("Error in loading staff details, please try again later !");
   } finally {
     _isFetchingMore = false;
@@ -84,7 +88,6 @@ Future<Stafffdetailsmodel?> staffDataRead(dynamic context,{required String uid})
     
     return Stafffdetailsmodel.fromSnapshot(castedDoc);
   }  catch (e) {
-    log('Error fetching staff data: $e');
     throw CloudDataReadException("Error in fetching staff details, please try again later !");
 
   }
@@ -118,7 +121,6 @@ required String  staffrole,
     log("Staffs details updated successfully.");
     return true; // Return success
   } catch (e) {
-    log("Error updating Staffs details: $e");
     throw CloudDataUpdateException("Error in updating staff details, please try again later !");
   }
 }
@@ -169,7 +171,6 @@ Future<String> updateStaffsPhoto(dynamic context,String staffId,) async {
             log("No file selected.");
         }
     } catch (e) {
-        log("Error updating Staffs photo: $e");   
          throw CloudDataUpdateException("Error in updating staff photo, please try again later !");
 
 
@@ -188,8 +189,6 @@ Future<String?> getStaffsPhotoUrl(dynamic context,String staffsId) async {
 
     return doc;
   } catch (e) {
-    log(
-      'error in getting the downloads url $e'); 
     throw CloudDataReadException("Error in fetching staff photo, please try again later !");
 
   }
@@ -200,20 +199,24 @@ required String  staffName ,
 required String  staffEmail ,
 required String  staffPhoneNumber,
 required String  staffAddress,
-required String  staffProfile ,
-required String  userId ,
+required password,updatePhotoUrl,
 required String  staffrole,
   required dynamic context,
 }) async {
   try {
   
+   final user = await authControlelr.createUser(email: staffEmail,
+   password: password, context: context);
+  String userId = user!.id;
+  // ignore: use_build_context_synchronously
+  final url =  await photoStorage(context,image: updatePhotoUrl,userId: userId); 
   
     await collectionControler.staffLoginCollection.doc(userId).set({
       staffNamefield:staffName,
       staffEmailfield:staffEmail,
       staffPhoneNumberfield :staffPhoneNumber,
       staffAddressfield: staffAddress,
-      staffProfilefield :staffAddress,
+      staffProfilefield :url,
       stafflId :userId,
       "isInRemainderChat":false,
          "isSchoolChat":false,
@@ -223,7 +226,6 @@ required String  staffrole,
         update(); // Notify GetX listeners
 
   } catch (e) {
-    log(e.toString());
     throw CloudDataWriteException("Error in adding staff details, please try again later !");
  
   }
@@ -246,7 +248,6 @@ Future<dynamic> addPhoto(dynamic context,) async {
         update(); // Notify GetX listeners
 
   } catch (e) {
-    log(e.toString());
     throw CloudDataWriteException("Error in adding staff , please try again later !");
 
   }
@@ -335,15 +336,13 @@ Future<bool> deleteStaffs(dynamic context,{
     await announcementRef.delete();
   }
   
-   await updateNumberOfStaffs(_context,false); 
+   await updateNumberOfStaffs(_context,false);  
     // Remove the deleted staff from the observable list
     staffData.removeWhere((staff) => staff['id'] == staffId);
         update(); // Notify GetX listeners
   
-  log("deleted the Staffs data");
   return true;
 }  catch (e) {
-  log("error in deleting :$e");
     throw CloudDataDeleteException("Error in deleting staff details, please try again later !");
 
 }

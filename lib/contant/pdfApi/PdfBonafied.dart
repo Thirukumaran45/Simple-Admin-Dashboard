@@ -10,8 +10,9 @@ class PdfApi {
   SchooldetailsController controller = Get.find<SchooldetailsController>();
 
    Future<Uint8List> generateParagraph(
-    bool val,{
+   {
     required String dob,
+    required String? reason,
     required String fileName,
     required String studentName,
     required String studentClass,
@@ -60,7 +61,7 @@ class PdfApi {
                   ),
                   pw.SizedBox(height: 20),
                   pw.Paragraph(
-                    text: '''This is to certify that $studentName, son/daughter of $parentName, is a bonafide student of $schoolName, in Tamil Nadu. He/She is ${val ? 'currently studying in' : 'successfully completed'} Class $studentClass, for the academic year $academicYear. As per our school records, his/her date of birth is $dob. During his/her tenure at our School, he/she has maintained good academic and disciplinary records. He/She is pursuing the curriculum as per the guidelines of the Government. This certificate is issued as proof of his/her enrollment and academic record. We extend our best wishes to $studentName for his/her future endeavors.''',
+                    text: '''This is to certify that $studentName, son/daughter of $parentName, is a bonafide student of $schoolName, in Tamil Nadu. He/She is purshuing $studentClass, for the academic year $academicYear as per our school records, his/her date of birth is $dob. During his/her tenure at our School, he/she has maintained good academic and disciplinary records. He/She is pursuing the curriculum as per the guidelines of the Government. This certificate is issued as proof of his/her enrollment and academic record.${reason!=null? "\n\nThis Bonafied only for $reason and not for other purpose.":""} We extend our best wishes to $studentName for his/her future endeavors.''',
                     style: pw.TextStyle(font: font2, fontSize: 12.5, lineSpacing: 8, letterSpacing: 0.5),
                   ),
                 ],
@@ -90,7 +91,7 @@ class PdfApi {
   }
 
    Future<void> openPdf({
-    required String academicType,
+    required String? reason,
     required String dob,
     required String fileName,
     required String studentName,
@@ -99,10 +100,9 @@ class PdfApi {
     required String academicYear,
     required String parentName,
   }) async {
-    bool isCurrentAcademic = academicType == "Current Academic" ? true : false;
     final pdfData = await generateParagraph(context: context,
-      isCurrentAcademic,
       fileName: fileName,
+      reason:reason,
       studentName: studentName,
       studentClass: studentClass,
       academicYear: academicYear,

@@ -253,6 +253,8 @@ void dispose() {
                             ),
                           ),
                          onPressed: () async {
+                           
+                             
   if (_isEdited) {
     // Calculate the total scored marks
     int scoredMark = 0;
@@ -281,15 +283,20 @@ for (int i = 1; i <= subjects.length; i++) {
     resultMark['scored_mark'] = scoredMark.toString();
     // Show dialog and update the result
     
-    await notificationControlelr.examFeesUpdationPushNotification(context,id: widget.id);
-    if(!context.mounted)return;
-    await CustomDialogs().showCustomDialog(context, "Student Exam Result Published ");
-     if(!context.mounted)return;
+    CustomDialogs().showLoadingDialogInSec(context,10,"Please wait a moment ...", onlyText: true);
    await ExceptionDialog().handleExceptionDialog(context,()async=> await controller.updateResult(context,
       studentId: widget.id,
       examType: widget.examName,
       resultMark: resultMark,
     ));
+       await ExceptionDialog().handleExceptionDialog(context,()async=> 
+         await notificationControlelr.examFeesUpdationPushNotification(context,id: widget.id));
+     
+    await CustomDialogs().showCustomDialog(context,"✅ Exam result published succesfully.");
+    if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}
     setState(() {
       _isEdited = false;
     });

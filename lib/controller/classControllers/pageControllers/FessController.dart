@@ -1,5 +1,4 @@
-import 'dart:developer' show log;
-import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
+
 import 'package:admin_pannel/utils/AppException.dart';
 
 
@@ -68,7 +67,6 @@ var _context ;
     }
 
 }   catch (e) {
-  log('error in fetching the data $e');
   throw CloudDataReadException("Error in getting student details, please try again later !");
 }finally {
     _isFetchingMoreStudent = false;
@@ -112,7 +110,6 @@ Future<List<Map<String, String>>> fetchAllBankDetails(dynamic context,) async {
   update();
     return result;
   } catch (e) {
-    log('Error fetching all bank details: $e');
     throw CloudDataReadException("Error in fetching bank details, please try again later !");
     
   }
@@ -139,10 +136,8 @@ Future<void> addAndUpdateBankDetailsToFirestore(dynamic context,
       } , SetOptions(merge: true) );
      }
        if(!context.mounted)return;
-   await   customSnackbar(context: context, text: "Updated the bank details succesfully");
     update(); 
   } catch (e) {
-    log("Error updating bank details: $e");
     throw CloudDataWriteException("Error in updating the bank details, please try again later !");
   }
 }
@@ -190,7 +185,6 @@ Future<void> fetchTransactionHistry(dynamic context,) async {
     dateFormat.parse(b['paymentDate']!).compareTo(dateFormat.parse(a['paymentDate']!)));
     feesData.value = tempList;
 }  catch (e) {
-  log("error in fetching transaction histry:$e");
   throw CloudDataReadException("Error in fetching transaction histry, please try again later !");
 }finally {
     _isFetchingMoreHisrty = false;
@@ -219,7 +213,6 @@ Future<List<String>> fetchUniqueMonthValuesAll(dynamic context,) async {
       }
     }
       } catch (e) {
-        log('Error in fetching fee month values : $e');
         throw CloudDataReadException("Error in getting payment fees month details, please try again later !");
       }
     
@@ -245,7 +238,6 @@ Future<List<String>> fetchUniqueDateValuesAll(dynamic context,) async {
       }
     }
       } catch (e) {
-        log('Error in fetching fee payment date values : $e');
         throw CloudDataReadException("Error in getting payment fee date details, please try again later !");
         
   }
@@ -304,8 +296,6 @@ Future<void> addAndUpdateStudentFeesDetails(dynamic context,{
   await collectionVariable.studentLoginCollection
       .doc(id)
       .set(feeMap, SetOptions(merge: true));
-        if(!context.mounted)return;
-   await   customSnackbar(context: context, text: "Updated student fees details !");
 }  catch (e) {
         throw CloudDataWriteException("Error in updating the fees details, please try again later !");
   

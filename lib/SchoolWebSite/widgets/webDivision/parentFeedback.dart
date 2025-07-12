@@ -56,27 +56,32 @@ class _ParentFeedbackSectionState extends State<ParentFeedbackSection> {
     });
   }
 
-  void _startAutoScroll() {
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
-      if (!mounted) return;
+void _startAutoScroll() {
+  _timer?.cancel();
+  _timer = Timer.periodic(const Duration(milliseconds: 20), (_) {
+    if (!mounted) return;
 
-      // 1) If there's no active ScrollPosition yet, bail out immediately:
-      if (_scrollController.positions.isEmpty) return;
+    // Extra safety checks
+    if (!_scrollController.hasClients || !_scrollController.position.hasContentDimensions) return;
 
-      // 2) Now it's safe to grab the first (and only) position:
-      final position = _scrollController.positions.first;
-      final maxScroll = position.maxScrollExtent;
-      final currentScroll = position.pixels;
-      final newScroll = currentScroll + 1;
+    final position = _scrollController.position;
 
-      if (newScroll >= maxScroll) {
-        _scrollController.jumpTo(0);
-      } else {
-        _scrollController.jumpTo(newScroll);
-      }
-    });
-  }
+    // Only scroll if there's something to scroll
+    if (position.maxScrollExtent == 0) return;
+
+    final currentScroll = position.pixels;
+    final maxScroll = position.maxScrollExtent;
+    final newScroll = currentScroll + 1;
+
+    if (newScroll >= maxScroll) {
+      _scrollController.jumpTo(0);
+    } else {
+      _scrollController.jumpTo(newScroll);
+    }
+  });
+}
+
+
 
   @override
   void dispose() {

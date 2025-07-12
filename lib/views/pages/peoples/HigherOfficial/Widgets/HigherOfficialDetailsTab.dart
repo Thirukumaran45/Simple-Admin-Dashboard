@@ -51,6 +51,7 @@ final ScrollController _scrollController = ScrollController();
 }
   });
   }
+  
 
   void applyFilters() {
     setState(() {
@@ -111,7 +112,6 @@ void dispose() {        // Properly dispose of the GetX Worker
               customIconTextButton(primaryGreenColors,
                   icon: Icons.download_sharp,
                   onPressed:() async{
-                  await   customSnackbar(context: context, text: "Downloaded Succesfullly");
                     if(!context.mounted)return;
 
                    await  PdfTotalOfficialDetails().openPdf(context: context,fileName: "Higher Official Details $todayDateTime",officials:filteredData );
@@ -205,17 +205,26 @@ void dispose() {        // Properly dispose of the GetX Worker
                                   BorderRadius.circular(20), // Rounded corners
                             ),
                           ),
-                          onPressed: ()async {           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
-                          if (val) {
-                           if(!context.mounted)return;
-                            await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.deleteOfficials(context,officialId: teacher['id']!,));
-                           ever(controller.officialData, (_) {
-                            setState(() {
-                              filteredData = List.from(controller.officialData);
-                            });
-                          });
-                          }
-                          },
+                          onPressed: () async {
+  bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
+  if (val) {
+    if (!context.mounted) return;
+    CustomDialogs().showLoadingDialogInSec(context, 30, "Please wait a moment ...", onlyText: false);
+
+    await ExceptionDialog().handleExceptionDialog(context, () async{
+  final val =   await controller.deleteOfficials(context, officialId: teacher['id']!,);
+  if(val){
+   if (!context.mounted) return;
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    } 
+  }
+    });
+    
+ 
+  }
+},
+
                           child: const Row(
                             children: [ Icon(Icons.delete_sharp , color: Colors.white,),
                                Text(' Delete',style: TextStyle(fontSize: 14),),

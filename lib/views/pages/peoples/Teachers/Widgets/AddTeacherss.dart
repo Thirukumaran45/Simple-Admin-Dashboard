@@ -1,7 +1,7 @@
 
-import 'package:admin_pannel/utils/ExceptionDialod.dart';
+// ignore_for_file: use_build_context_synchronously
 
-import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
 import '../../widgets/CustomeTextField.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -14,7 +14,7 @@ import 'package:intl/intl.dart';
 
 class AddTeacherTab extends StatefulWidget {
   const AddTeacherTab({super.key});
- 
+  
   @override
   State<AddTeacherTab> createState() => _AddTeacherTabState();
 }
@@ -23,7 +23,6 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  late FirebaseAuthUser authControlelr ;
   late final TextEditingController addresscontrl ;
   late final TextEditingController _empDateController ;
   late final TextEditingController firstNameController ;
@@ -38,7 +37,6 @@ class _AddTeacherTabState extends State<AddTeacherTab> {
   @override
   void initState() {
     super.initState();
-    authControlelr = Get.find<FirebaseAuthUser>();
     controller = Get.find<Teachercontroller>();
    addresscontrl = TextEditingController();
    _empDateController = TextEditingController();
@@ -244,51 +242,45 @@ Future<void> profileFuntion() async {
                             if (_formKey.currentState?.validate() ?? false) {
                     
         
-     if(updatePhotoUrl!=null)
+  if(updatePhotoUrl!=null)
+  {
+    bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the teacher ?');
+     if(val)
      {
-       bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the teacher ?');
-   if(val)
-   {
-            if(!context.mounted)return;
-
-     CustomDialogs().showLoadingDialogInSec(context, 10);
-
-       final user =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await authControlelr.createUser(email: emailController.text,
-       password: passwordController.text, context: context));
-     String userId = user!.id;
-     // ignore: use_build_context_synchronously
-     final url = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));
+         if(!context.mounted)return;
+  
+  CustomDialogs().showLoadingDialogInSec(context, 10,"Creating teacher profile, please wait a moment !");
+  
      String name = '${firstNameController.text} ${lastNameController.text}';
-                   if(!context.mounted)return;
-         await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerTeacher(
-     userId: userId,
-       context: context,
-      collegedegree: graduateDegreeController.text,
-      dateofemployment: _empDateController.text,
-      role: 'Teacher',
-      teacherAddress: addresscontrl.text,
-      teacherEmail: emailController.text,
-      teacherName: name.toUpperCase(),
-      teacherPhoneNumber: teacherMobileController.text,
-      teacherProfile: url!,
-      teacherSubjectHandling: "",
-      yearofexperience: yearOfExperienceController.text
-     ));
-                   if(!context.mounted)return;
-      await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfTeacher(context,true));
-    
-      // ignore: use_build_context_synchronously
-      customPopNavigation(context, '/manage-teacher');
-
-   }
-    else
-     {
-
-  if(!context.mounted) return;
-  await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person !");
+                if(!context.mounted)return;
+      await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerTeacher(
+   password: passwordController.text,
+   updatePhotoUrl: updatePhotoUrl,
+    context: context,
+   collegedegree: graduateDegreeController.text,
+   dateofemployment: _empDateController.text,
+   role: 'Teacher',
+   teacherAddress: addresscontrl.text,
+   teacherEmail: emailController.text,
+   teacherName: name.toUpperCase(),
+   teacherPhoneNumber: teacherMobileController.text,
+   teacherSubjectHandling: "",
+   yearofexperience: yearOfExperienceController.text
+  ));
+                if(!context.mounted)return;
+   await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfTeacher(context,true));
+   customPopNavigation(context, '/manage-teacher');
+  
      }
+      else
+  {
+  
+    if(!context.mounted) return;
+    await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person ❓ ");
+  }
+  
+  }
 
-     }
 
                             }
                           },

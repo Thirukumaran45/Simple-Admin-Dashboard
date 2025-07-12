@@ -1,7 +1,5 @@
 
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
-
-import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StafffController.dart';
 import '../../widgets/CustomeTextField.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -22,7 +20,6 @@ class _AddStaffTabState extends State<AddStaffTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
  dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  late FirebaseAuthUser authControlelr ;
   late final TextEditingController addresscontrl ;
   late final TextEditingController firstNameController ;
   late final TextEditingController lastNameController ;
@@ -33,7 +30,6 @@ class _AddStaffTabState extends State<AddStaffTab> {
 @override
   void initState() {
     super.initState();
-    authControlelr =Get.find<FirebaseAuthUser>();
  controller = Get.find<StaffController>();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
@@ -167,42 +163,43 @@ Future<void> profileFuntion() async {
                              
  
        
-     if(updatePhotoUrl!=null)
-     {
-       bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
-     if(val)
-     {
-     if(!context.mounted)return;
-      CustomDialogs().showLoadingDialogInSec(context, 10);
-     final user = await ExceptionDialog().handleExceptionDialog(context, ()async=> await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context));
-     String userId = user!.id;
-     // ignore: use_build_context_synchronously
-     final url = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));   String name = '${firstNameController.text} ${lastNameController.text}';
+  if(updatePhotoUrl!=null)
+  {
+    bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
+  if(val)
+  {
   if(!context.mounted)return;
-  await ExceptionDialog().handleExceptionDialog(context, ()async=> await  controller.registerStaffs(
-     userId: userId,
-       context: context,
-     staffAddress: addresscontrl.text,
-    staffEmail: emailController.text,
-    staffName: name.toUpperCase(),
-    staffPhoneNumber: officialMobileController.text,
-    staffProfile: url!,
-    staffrole: "Staff",
+   CustomDialogs().showLoadingDialogInSec(context, 10,"Creating staff profile, please wait a moment !");
+   String name = '${firstNameController.text} ${lastNameController.text}';
 
-     ));
-      if(!context.mounted)return;
-     await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateNumberOfStaffs(context,true));
-      
-      // ignore: use_build_context_synchronously
-      customPopNavigation(context, '/manage-working-staff');
-     }
-     }
-     else 
-     {
+   if(!context.mounted)return;
+    await ExceptionDialog().handleExceptionDialog(context, ()async=> await  controller.registerStaffs(
 
-  if(!context.mounted) return;
-  await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person !");
-     }
+    context: context,
+  staffAddress: addresscontrl.text,
+      staffEmail: emailController.text,
+      staffName: name.toUpperCase(),
+      staffPhoneNumber: officialMobileController.text,
+      password: passwordController.text,
+      updatePhotoUrl: updatePhotoUrl,
+      staffrole: "Staff",
+  
+  ));
+   if(!context.mounted)return;
+  await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateNumberOfStaffs(context,true));
+   
+   // ignore: use_build_context_synchronously
+   customPopNavigation(context, '/manage-working-staff');
+  }
+  }
+  else 
+  {
+  
+    if(!context.mounted) return;
+    await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person ❓ ");
+  }
+
+
 
 
                             }

@@ -1,6 +1,3 @@
-import 'dart:developer' show log;
-
-import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
 import 'package:admin_pannel/utils/AppException.dart';
 
 
@@ -55,7 +52,6 @@ Future<List<Map<String, dynamic>>> getFilteredStudents(dynamic context,{
 
     return studentList;
   } catch (e) {
-    log("error in fetching students in exam result updation: $e");
     throw CloudDataReadException('Error in getting students for result updation, please try again later !');
   } finally {
     _isFetchingMore = false;
@@ -95,7 +91,6 @@ Future<Map<String, dynamic>> getTotalAndIndividualSubjectMark(dynamic context,{
     'outoff_mark': data['outoff_mark'] ?? '0',
   };
 }  catch (e) {
-  log('Error in getting total and individual subject mark $e');
   throw CloudDataReadException('Error in getting total and individual subject mark, please try again later !');
 }
 }
@@ -126,10 +121,7 @@ Future<void> addUpdateTotalAndIndividualSubject(dynamic context,{
       'outoff_mark': outOffMark ?? '0',
     }, SetOptions(merge: true));
   }
-  if(!context.mounted)return;
-                  await   customSnackbar(context: context, text: "Subject mark and Total mark as been updated succesfullly");
-}  catch (e) {
-  log("error in add and updating the total and individual subject marks $e");
+  }  catch (e) {
   throw CloudDataWriteException("Error in updating the total and individual subject marks, please try again later !");
 }
 }
@@ -158,11 +150,8 @@ Future<void>updateResult(dynamic context,{
   await examDoc.set(
     result,SetOptions(merge: true)
   );    
-  if(!context.mounted)return;
-  await   customSnackbar(context: context, text: "Result Updated Succesfullly");
 
 }  catch (e) {
-  log('Error in updating the exam result, please try again later !');
   throw CloudDataUpdateException('Error in updating the exam result, please try again later !');
 }
 
@@ -217,7 +206,6 @@ final List<String> subjects = [
   
   return result;
 }  catch (e) {
-  log('Errro in getting exam result $e');
   throw CloudDataReadException('Error in getting exam result, please try again later !');
 }
 }

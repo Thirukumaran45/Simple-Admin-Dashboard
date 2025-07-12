@@ -1,7 +1,6 @@
 import 'dart:async' show Timer;
 import 'dart:convert' show jsonEncode;
 import 'dart:developer' show log;
-import 'package:admin_pannel/contant/constant.dart' show customSnackbar;
 import 'package:admin_pannel/utils/AppException.dart' show CloudDataWriteException, PushNotificationException;
 
 import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
@@ -22,7 +21,7 @@ late FirebaseCollectionVariable collectionVariable ;
     super.onInit();
     collectionVariable = Get.find<FirebaseCollectionVariable>();
   }
-  Future<void> startCooldown(dynamic context) async{
+  void startCooldown(dynamic context) {
     try {
   if (isCooldown.value) return; // prevent restarting if already on cooldown
   
@@ -79,7 +78,6 @@ late FirebaseCollectionVariable collectionVariable ;
    final accessServerKey = client.credentials.accessToken.data;
    return accessServerKey;
 }  catch (e) {
-  log('error in getting acces toekn $e');
   throw PushNotificationException("Erron in getting server key, please try again later !");
 }
   }
@@ -129,7 +127,6 @@ Map<String, dynamic> payload = {
 
     return response.statusCode == 200;
   } catch (e) {
-    log("error in pushing notification $e");
     throw PushNotificationException('Error in push notification , please try again later !');
   }
 }
@@ -154,8 +151,6 @@ Future<void> feeUpdationPushNotificationToAll(dynamic context) async {
       }
     }
   }
-   if(!context.mounted)return;
-   await   customSnackbar(context: context, text: "Fee's update notification as succesfully sent !!!");
 }  catch (e) {
     throw PushNotificationException('Error in fees push notification to all, please try again later !');
   
@@ -178,8 +173,6 @@ Future<void> feeUpdationPushNotificationToSpecific(dynamic context,{required Str
           token: token,
         );
       }
-         if(!context.mounted)return;
-   await   customSnackbar(context: context, text: "Fee's update notification as succesfully sent !!!");
 }  catch (e) {
       throw PushNotificationException('Error in fees push notification to student, please try again later !');
 
@@ -201,8 +194,7 @@ Future<void> examFeesUpdationPushNotification(dynamic context,{required String i
         body: 'Congrates ! Your Hard Work Has Paid Off Check Your Results',
         token: token,
       );
-    }   if(!context.mounted)return;
-   await   customSnackbar(context: context, text: "Exam results are published succesfully !!!");
+    } 
 }  catch (e) {
       throw PushNotificationException('Error in exam update push notification to student, please try again later !');
   

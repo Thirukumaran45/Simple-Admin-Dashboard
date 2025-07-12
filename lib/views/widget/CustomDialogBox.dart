@@ -4,29 +4,39 @@ import 'package:flutter/material.dart';
 @immutable
 class CustomDialogs{
 
-void showLoadingDialogInSec(BuildContext context, int seconds) {
-  showDialog(
+Future<void> showLoadingDialogInSec(BuildContext context,
+ int seconds, String text, {bool onlyText = false})async {
+ await showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      // Capture the context inside the builder
       Future.delayed(Duration(seconds: seconds), () {
-        if(!context.mounted)return;
+        if (!context.mounted) return;
         if (Navigator.of(context).canPop()) {
           Navigator.of(context).pop();
         }
       });
 
-      return  const  AlertDialog(
+      return AlertDialog(
         backgroundColor: Colors.white,
         content: Padding(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children:  [
-              CircularProgressIndicator(color: Colors.green),
-              SizedBox(width: 16),
-              Text("On progress, please wait a moment...",style: TextStyle(color: Colors.black,fontSize: 16),),
+            children: [
+              if (onlyText)
+                const Icon(Icons.hourglass_top, color: Colors.green,size: 25,) // ✅ icon when only text
+              else
+                const CircularProgressIndicator(color: Colors.green),
+
+              const SizedBox(width: 16),
+
+              Flexible(
+                child: Text(
+                  text,
+                  style: const TextStyle(color: Colors.black, fontSize: 16),
+                ),
+              ),
             ],
           ),
         ),
@@ -42,7 +52,7 @@ Future<void> showCustomDialog(BuildContext context, String text) async {
       return Dialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0), // Circular Border Radius
+          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(2),
@@ -54,49 +64,27 @@ Future<void> showCustomDialog(BuildContext context, String text) async {
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: FutureBuilder(
-                      future: Future.delayed(const Duration(seconds: 2)), 
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState != ConnectionState.done) {
-                             return const Row(
-                            mainAxisSize: MainAxisSize.min, // Ensures minimal space usage
-                            mainAxisAlignment: MainAxisAlignment.center, // Center alignment
-                            children: [
-                              Text("Please wait a moment... ",
-                          style:  TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-                              ),
-                              SizedBox(width: 8), // Space between text and loader
-                              SizedBox(
-                                height: 16,
-                                width: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2,color: Colors.green,),
-                              ),
-                            ],
-                          );// Show loader instead of text
-                        }
-                        return Column(
-                          children: [
-                            Text(
+                    child: Column(
+                      children: [
+                        Text(
                           text,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-                        ) ,const SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: primaryGreenColors,
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: primaryGreenColors,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Ok"),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    child: const Text("Ok"),
                   ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                 
                   const SizedBox(height: 10),
                 ],
               ),
@@ -105,7 +93,7 @@ Future<void> showCustomDialog(BuildContext context, String text) async {
                 child: IconButton(
                   icon: const Icon(Icons.close, color: Colors.red),
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop();
                   },
                 ),
               ),
@@ -117,6 +105,7 @@ Future<void> showCustomDialog(BuildContext context, String text) async {
   );
 }
 
+
 Future<bool> showCustomConfirmDialog({
   required BuildContext context,
   required String text,
@@ -127,7 +116,7 @@ Future<bool> showCustomConfirmDialog({
       return Dialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0), // Circular Border Radius
+          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(2),
@@ -139,63 +128,39 @@ Future<bool> showCustomConfirmDialog({
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: FutureBuilder(
-                      future: Future.delayed(const Duration(seconds: 3)), // 3-second delay
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState != ConnectionState.done) {
-                          return const Row(
-                            mainAxisSize: MainAxisSize.min, // Ensures minimal space usage
-                            mainAxisAlignment: MainAxisAlignment.center, // Center alignment
+                    child: SizedBox(
+                      width: 300,  // ← kept as you had it
+                      child: Column(
+                        children: [
+                          Text(
+                            text,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text(
-                                "Please wait a moment... ",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.red,
+                                ),
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text("Cancel"),
                               ),
-                              SizedBox(width: 8), // Space between text and loader
-                              SizedBox(
-                                height: 16,
-                                width: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2,color: Colors.green,),
-                              ),
-                            ],
-                          ); // Show loader instead of text
-                        }
-                        return SizedBox(
-                          width: 300,
-                          child: Column(
-                            children: [
-                              Text(
-                                text,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: Colors.red,
-                                    ),
-                                    onPressed: ()=>Navigator.of(context).pop(false),
-                                    child: const Text("Cancel"),
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: primaryGreenColors,
-                                    ),
-                                    onPressed: ()=>Navigator.of(context).pop(true),
-                          
-                                    child: const Text("Ok"),
-                                  ),
-                                ],
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: primaryGreenColors,
+                                ),
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: const Text("Ok"),
                               ),
                             ],
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -205,8 +170,7 @@ Future<bool> showCustomConfirmDialog({
                 right: 0,
                 child: IconButton(
                   icon: const Icon(Icons.close, color: Colors.red),
-                  onPressed: ()=>Navigator.of(context).pop(false),
-
+                  onPressed: () => Navigator.of(context).pop(false),
                 ),
               ),
             ],
@@ -214,49 +178,8 @@ Future<bool> showCustomConfirmDialog({
         ),
       );
     },
-  )
-.then((value) => value ?? false);
+  ).then((value) => value ?? false);
 }
 
-Future<void> showCustomErrorDialog(
-    BuildContext context,
-    String message, {
-    String title = "Error",
-  }) {
-  return showDialog(
-    context: context,
-    builder: (ctx) => Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          // Title row
-          Row(children: [
-            const Icon(Icons.error_outline, color: Colors.red),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(title,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-            ),
-            IconButton(
-              icon: const Icon(Icons.close, color: Colors.red),
-              onPressed: () => Navigator.of(ctx).pop(),
-            )
-          ]),
-          const SizedBox(height: 8),
-          Text(message, textAlign: TextAlign.center),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: primaryGreenColors),
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text("OK"),
-          )
-        ]),
-      ),
-    ),
-  );
-}
 
 }

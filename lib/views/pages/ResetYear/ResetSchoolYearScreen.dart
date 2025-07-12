@@ -25,7 +25,7 @@ late SchoolResetYearController controller;
     controller = Get.find<SchoolResetYearController>();
   }
 
-Future<void> deleteAllData(BuildContext context,String stuClass) async {
+Future<bool> deleteAllData(BuildContext context,String stuClass) async {
 
 await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteAttendanceDataByClass(context,stuClass));
 await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteRemainderChatDataByClass(context,stuClass: stuClass));
@@ -35,7 +35,7 @@ await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller
 await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteAssignmentByTeacherClass(context,stuClass: stuClass));
 await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteTimeTableDataByClass(context,stuClass: stuClass));
 await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.deleteSchoolChatData(context,));
-
+return true;
 }
 
 @override
@@ -93,10 +93,16 @@ await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller
                           onPressed: ()async{
                            final bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Are you sure about to delete and reset ?");
                             if(!context.mounted)return;
-                          if(val)CustomDialogs().showLoadingDialogInSec(context,15);
-                            await deleteAllData(context,'${index + 1}');
-                        
-
+                          if(val)
+                          {
+                            CustomDialogs().showLoadingDialogInSec(context,15,"Reset is on progress, please wait a moment...");
+                          final val =   await deleteAllData(context,'${index + 1}');
+                          
+                            if (val) {
+  Navigator.of(context).pop();
+}
+                           
+                          }
                           }, child: const Row(
                           children: [
                             Icon(Icons.restart_alt,color: Colors.white,size: 20,),

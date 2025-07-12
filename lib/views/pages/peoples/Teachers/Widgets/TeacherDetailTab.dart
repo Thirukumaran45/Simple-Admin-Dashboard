@@ -14,7 +14,7 @@ import 'package:get/get.dart' show Get,Inst,ever;
 
 class TeacherDetailsTab extends StatefulWidget {
   const TeacherDetailsTab({super.key});
-
+ 
   @override 
   State<TeacherDetailsTab> createState() => _TeacherDetailsTabState();
 }
@@ -23,7 +23,6 @@ class _TeacherDetailsTabState extends State<TeacherDetailsTab> {
   String name = '';
   String phoneNumber = '';
   String emailAddress = '';
-
    final ScrollController _scrollController = ScrollController();
    late Teachercontroller controller;
   List<Map<String, dynamic>> filteredData = [];
@@ -50,6 +49,7 @@ class _TeacherDetailsTabState extends State<TeacherDetailsTab> {
 }
   });
   }
+
 
   void applyFilters() {
     setState(() {
@@ -113,7 +113,6 @@ void dispose() {
                   icon: Icons.download_sharp,
                   onPressed: ()async{
                     applyFilters();
-                   await  customSnackbar(context: context, text: "Donloaded Succesfully");
                    if(!context.mounted)return;
                    await  PdfTotalTeacherDetails().openPdf(context: context,fileName: "Teacher Details - $todayDateTime",teacher: filteredData);
                     
@@ -205,13 +204,20 @@ void dispose() {
                             // Implement view more functionality
                            bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
-                   if(!context.mounted)return;
-                           await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.deleteTeacher(context,teacherId: teacher['id']!,));
-                           ever(controller.teacherData, (_) {
-                            setState(() {
-                              filteredData = List.from(controller.teacherData);
+                            if(!context.mounted)return;
+                             CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: false);
+                       
+                           await ExceptionDialog().handleExceptionDialog(context, ()async{
+                            final val = await controller.deleteTeacher(context,teacherId: teacher['id']!,);
+                            if (val) {
+                              if(!context.mounted)return;
+                              if (Navigator.of(context, rootNavigator: true).canPop()) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                          }
+}
                             });
-                          });
+                         
+                        
                           }
                           },
                           child: const Row(

@@ -1,6 +1,4 @@
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
-
-import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StudentController.dart';
 import '../../../../../contant/CustomNavigation.dart';
 import '../../../../../contant/pdfApi/PdfStudent/PdfTotalStudent.dart';
@@ -16,7 +14,7 @@ class StudentDetailsTab extends StatefulWidget {
  
   @override
   State<StudentDetailsTab> createState() => _StudentDetailsTabState();
-}
+} 
 
 class _StudentDetailsTabState extends State<StudentDetailsTab> {
   String? selectedClass = "All";
@@ -35,7 +33,7 @@ void initState() {
   _scrollController.addListener(()async {
   if (_scrollController.position.pixels ==
       _scrollController.position.maxScrollExtent) {
-    await ExceptionDialog().handleExceptionDialog(context, ()async=> controler.fetchStudentData(context));
+    await ExceptionDialog().handleExceptionDialog(context, ()async=>  controler.fetchStudentData(context));
   }
 });
 
@@ -181,7 +179,6 @@ void dispose() {        // Properly dispose of the GetX Worker
                   icon: Icons.download_sharp,
                   onPressed: ()async{
                     applyFilters();
-                  await   customSnackbar(context: context, text: "Donloaded Succesfully");
                     
                    await  PdfTotalStudentDetails.openPdf(fileName:"Total Student Details - (${DateTime.now()})", students: filteredData);
                     
@@ -236,7 +233,7 @@ void dispose() {        // Properly dispose of the GetX Worker
                           width: MediaQuery.sizeOf(context).width*0.06,
                         
                           child: Text(student['rollNumber']!, style: const TextStyle(color: Colors.black),overflow: TextOverflow.ellipsis,))),
-                        DataCell(SizedBox(
+                        DataCell(SizedBox( 
                           width: MediaQuery.sizeOf(context).width*0.14,
                           child: Text(student['name']!,style: const TextStyle(color: Colors.black),
                               overflow: TextOverflow.ellipsis,),
@@ -276,14 +273,22 @@ DataCell(
    onPressed: () async {
   bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
   if (val) {
-                   if(!context.mounted)return;
-   await ExceptionDialog().handleExceptionDialog(context, ()async=>  await controler.deleteStudent(context,studentId: student['id']!, 
-    stuClass: student['class'], stuSec: student['section']));
-   ever(controler.studentData, (_) {
-    setState(() {
-      filteredData = List.from(controler.studentData);
+    if(!context.mounted)return;
+    CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: false);
+   await ExceptionDialog().handleExceptionDialog(context, ()async{
+    final val = await controler.deleteStudent(context,studentId: student['id']!, 
+    stuClass: student['class'], stuSec: student['section']);
+    
+    if(val){
+       if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}
+    }
+
     });
-  });
+   
+
   }
 },
     child: const Row(

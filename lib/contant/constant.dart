@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/widgets.dart' as pw;
 
@@ -13,9 +12,3 @@ Future<pw.Font> fontBold() async {
     return pw.Font.ttf(fontData);
   }
 
-Future<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>> customSnackbar({required BuildContext context,required String text })async{
-     
-           return  ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(content: Text(text
-                                  )));
-}

@@ -91,7 +91,7 @@ void fetchStudentFees() async {
     });
   }
 
-void saveFees() async {
+void saveFees() async {               
   await ExceptionDialog().handleExceptionDialog(context,()async=>await controller.addAndUpdateStudentFeesDetails(context,
     id: widget.id,
     allocateddAmount: allocatedFeeController.text,
@@ -118,7 +118,6 @@ void saveFees() async {
     allocatedFeeController.dispose();
     
     filteredData.clear();
-    notificationControlelr.dispose();
     super.dispose();
   }
 
@@ -156,13 +155,16 @@ void saveFees() async {
                             '/fees-updation/sectionWiseFeesUpdation/studentFeesList?classNumber=${widget.stuClass}&sectionName=${widget.stuSec}'),
                         Row(
                           children: [
-                            Text(
-                              widget.stuName,
-                              style: const TextStyle(
-                                letterSpacing: 1,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                            SizedBox(
+                              width: 120,
+                              child: Text(
+                                widget.stuName, overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  letterSpacing: 1,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                             Padding(
@@ -217,7 +219,9 @@ void saveFees() async {
                           
                          await notificationControlelr.feeUpdationPushNotificationToSpecific(context,id: widget.id);
                           if(!context.mounted)return;
-                         isSaveButtonVisible? await CustomDialogs().showCustomDialog(context, "Student Fees details Updated Succecfully"):null;
+                          
+                            isSaveButtonVisible? await  CustomDialogs().showLoadingDialogInSec(context, 3, "Please wait a moment ...",onlyText: false):null; 
+                         isSaveButtonVisible? await CustomDialogs().showCustomDialog(context, "✅ Student Fees details Updated Succecfully"):null;
                             saveFees();
                           },
                          style: ElevatedButton.styleFrom(

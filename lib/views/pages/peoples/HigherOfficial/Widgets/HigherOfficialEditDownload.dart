@@ -1,7 +1,5 @@
 
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
-
-import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import '../../../../../modules/higherOfficialModels.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -198,9 +196,10 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             child: ElevatedButton(
                               onPressed: () async{
                                 if (isEdited) {
-                              await CustomDialogs().showCustomDialog(context, "Higher Official details Updated Succecfully");
-                                // ignore: use_build_context_synchronously
-                                bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateOfficialDetails(context,
+                                   CustomDialogs().showLoadingDialogInSec(context,10,"Please wait a moment ...", onlyText: false);
+  
+                                 // ignore: use_build_context_synchronously
+                           await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateOfficialDetails(context,
                     principalAddress: homeAddressController.text.toString(),
                      principalEmail: emailController.text.toString(),
                      principalName: firstNameController.text.toUpperCase(),
@@ -209,8 +208,11 @@ Future<void> handlePhotoUpdate(String studentId) async {
                    principalRole: role.text,
                    principalPhoneNumber: phoneNumberController.text.toString(),
                    ));
-                  if(!context.mounted)return;
-                   if(isUpdated!) await customSnackbar(context: context, text: "Higher Official  Detials changed and updated succesfully");
+                   if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}  await CustomDialogs().showCustomDialog(context, "✅ Higher official details Updated Succecfully");
+      
                    
                                   setState(() {
                                     isEdited = false;
@@ -232,7 +234,6 @@ Future<void> handlePhotoUpdate(String studentId) async {
                           SizedBox(height: 50,
                             child: ElevatedButton(
                               onPressed: ()async {
-                                 await  customSnackbar(context: context, text: "Downloaded Succesfully");
                                  if(!context.mounted)return;
 
                                    await PdfOfficialsDetails().openPdf(context: context,fileName: firstNameController.text, nameController: firstNameController,

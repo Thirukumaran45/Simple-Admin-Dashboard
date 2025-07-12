@@ -1,5 +1,6 @@
 import 'package:admin_pannel/controller/classControllers/schoolDetailsController/pushNotificationController.dart';
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 
 import 'widgets/barGraph.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +74,13 @@ class _HomepageState extends State<Homepage> {
             Row(
               children: [
                 Expanded(
-                    flex: 1, child: buildLineChart(onPressed: () async{
+                    flex: 1, child: buildLineChart( onPressed: () async{
+                      CustomDialogs().showLoadingDialogInSec(context, 5, "Please wait a moment ...",onlyText: true);
                     await ExceptionDialog().handleExceptionDialog(context, ()async=>  notificationControlelr.feeUpdationPushNotificationToAll(context));
+                       if (!context.mounted) return;
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
                     },)),
                 const SizedBox(width: 20),
                 Expanded(

@@ -1,6 +1,6 @@
-import 'package:admin_pannel/utils/ExceptionDialod.dart';
+// ignore_for_file: use_build_context_synchronously
 
-import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StudentController.dart';
 import '../../widgets/CustomeTextField.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -12,7 +12,7 @@ import 'package:intl/intl.dart';
 
 class AddStudentTab extends StatefulWidget {
   const AddStudentTab({super.key}); 
-
+ 
   @override
   State<AddStudentTab> createState() => _AddStudentTabState();
 }
@@ -22,7 +22,6 @@ class _AddStudentTabState extends State<AddStudentTab> {
   String? assetImage;
   dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  late FirebaseAuthUser authControlelr ;
   
   late final TextEditingController _dobController ;
   late final TextEditingController addresscontrl ;
@@ -43,7 +42,6 @@ late StudentController controller ;
 @override
   void initState() {
     controller = Get.find<StudentController>();
-    authControlelr = Get.find<FirebaseAuthUser>();
           _dobController = TextEditingController();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
@@ -272,51 +270,47 @@ Future<void> profileFuntion() async {
   if (_formKey.currentState?.validate() ?? false) {
        
  
-   if(updatePhotoUrl!=null)
-   {
-    bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the student');
-   if(val)
-   {
-    if(!context.mounted)return;
-     CustomDialogs().showLoadingDialogInSec(context, 10);
-
-     final user =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await authControlelr.createUser(email: emailController.text,
-     password: passwordController.text, context: context));
-   String userId = user!.id;
-   // ignore: use_build_context_synchronously
-   final url = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));
-   String name = '${firstNameController.text} ${lastNameController.text}';
-     if(!context.mounted)return;
-        await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerUser(
-   userId: userId,
-     context: context,
-     stuAddress: addresscontrl.text,
-     stuAdminNo: admissionNumberController.text,
-     stuClass: classNameController.text,
-     stuDob: _dobController.text,
-     stuEmail: emailController.text,
-     stuSection: sectionController.text.toUpperCase(),
-     studentName: name.toUpperCase() ,
-     stufatherName: fatherNameController.text,
-     stufatherNo: fatherMobileController.text,
-     stumotherName: motherNameController.text,
-     stumotherNo: motherMobileController.text,
-     sturollNo: rollNumberController.text, stupicUrl: url!
+  if(updatePhotoUrl!=null)
+  {
+   bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the student');
+  if(val)
+  {
+   if(!context.mounted)return;
+    CustomDialogs().showLoadingDialogInSec(context, 10,"Creating student profile, please wait a moment !");
   
-   ));
-                   if(!context.mounted)return;
-    await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfStudent(context,true));
-   
-    // ignore: use_build_context_synchronously
-    customPopNavigation(context, '/manage-student');
-   }
-   }
- else
-     {
+   String name = '${firstNameController.text} ${lastNameController.text}';
+    if(!context.mounted)return;
+       await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerUser(
+    password: passwordController.text,
+    updatePhotoUrl: updatePhotoUrl,
+    context: context,
+    stuAddress: addresscontrl.text,
+    stuAdminNo: admissionNumberController.text,
+    stuClass: classNameController.text,
+    stuDob: _dobController.text,
+    stuEmail: emailController.text,
+    stuSection: sectionController.text.toUpperCase(),
+    studentName: name.toUpperCase() ,
+    stufatherName: fatherNameController.text,
+    stufatherNo: fatherMobileController.text,
+    stumotherName: motherNameController.text,
+    stumotherNo: motherMobileController.text,
+    sturollNo: rollNumberController.text,
+    
+  ));
+                  if(!context.mounted)return;
+   await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfStudent(context,true));
+  
+   customPopNavigation(context, '/manage-student');
+  }
+  }
+   else
+    {
+  
+    if(!context.mounted) return;
+    await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person ❓ ");
+    }
 
-  if(!context.mounted) return;
-  await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person !");
-     }
 
 
 

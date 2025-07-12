@@ -1,4 +1,5 @@
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
 import '../../../../../contant/CustomNavigation.dart';
 import '../../../../widget/CustomeColors.dart';
@@ -155,13 +156,24 @@ void initfuntion() async {
       String email = emailControllers[classIndex][i].text.trim();
 
       if (name.isNotEmpty && phoneNo.isNotEmpty && email.isNotEmpty) {
-        await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.addAndUpdateClassInchargers(context,
+         if(!context.mounted)return;
+        CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: true);
+                       
+        await ExceptionDialog().handleExceptionDialog(context, ()async{ 
+          final val = await controller.addAndUpdateClassInchargers(context,
           stuClass: stuClass,
           stuSec: stuSec,
           name: name,
           phoneNo: phoneNo,
           email: email,
-        ));
+        );
+        if (val) {
+          if(!context.mounted)return;
+        if (Navigator.of(context, rootNavigator: true).canPop()) {
+        Navigator.of(context, rootNavigator: true).pop();
+                          }
+          }
+        });
       }
     }
     

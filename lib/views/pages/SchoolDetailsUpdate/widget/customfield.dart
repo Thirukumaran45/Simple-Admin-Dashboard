@@ -1,6 +1,7 @@
 
 
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
@@ -53,11 +54,10 @@ class CustomfieldState extends State<Customfield> {
     }
   }
 
- Future<void> uploadImage() async {
+ Future<bool> uploadImage() async {
    final pickedImage =await ExceptionDialog().handleExceptionDialog(context, ()async=> await widget.controller.addPhoto(context,));
    if (pickedImage != null) {
-    if(!context.mounted)return;
-     // ignore: use_build_context_synchronously
+     CustomDialogs().showLoadingDialogInSec(context,30,"Uploading the image ...", onlyText: false);
      await ExceptionDialog().handleExceptionDialog(context, ()async=>await widget.controller.uploadImageGallery(context,image: pickedImage));
      if (mounted) {  
      setState(() {
@@ -65,6 +65,7 @@ class CustomfieldState extends State<Customfield> {
      });
      }
    }
+   return true;
 }
 
 
@@ -267,8 +268,13 @@ Widget schoolDetailsGallery(BuildContext context, SchooldetailsController contro
           customIconTextButton(
             Colors.blue,
             onPressed: () async {
-              // Use the GlobalKey to access the actual state
-              await customfieldKey.currentState?.uploadImage();
+             final val =  await customfieldKey.currentState?.uploadImage();
+              if(val!){
+       if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}
+    }
             },
             icon: Icons.upload,
             text: "Add Photo",

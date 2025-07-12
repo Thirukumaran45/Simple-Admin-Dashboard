@@ -1,7 +1,5 @@
 
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
-
-import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StafffController.dart';
 import '../../../../../modules/staffModels.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -193,9 +191,10 @@ void dispose() {
                         child: ElevatedButton(
                           onPressed: () async{
                             if (isEdited) {
-                     await CustomDialogs().showCustomDialog(context, "Staff details Updated Succecfully");
-       // ignore: use_build_context_synchronously
-       bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateStaffDetails(context,
+                               CustomDialogs().showLoadingDialogInSec(context,10,"Please wait a moment ...", onlyText: false);
+  
+                     // ignore: use_build_context_synchronously
+     await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateStaffDetails(context,
                     staffAddress: homeAddressController.text.toString(),
                      staffEmail: emailController.text.toString(),
                      staffName: firstNameController.text.toUpperCase(),
@@ -204,9 +203,12 @@ void dispose() {
                    staffrole: role.text,
                    staffPhoneNumber: phoneNumberController.text.toString(),
                    ));
-                   if(!context.mounted)return;
-                   if(isUpdated!) await customSnackbar(context: context, text: "Staff  Detials Changed, updated succesfully");
-                     setState(() {
+                    if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+} await CustomDialogs().showCustomDialog(context, "✅ Staff details Updated Succecfully");
+      
+                   setState(() {
                                 isEdited = false;
                               });   }
                           },
@@ -225,7 +227,6 @@ void dispose() {
                       SizedBox(height: 50,
                         child: ElevatedButton(
                           onPressed: ()async {
-                         await customSnackbar(context: context, text: "Downloaded Succesfully");
                    if(!context.mounted)return;
                          await PdfStaffDetails().openPdf(context: context,fileName: firstNameController.text, 
                          nameController: firstNameController, phoneNumberController: phoneNumberController, emailController: emailController,

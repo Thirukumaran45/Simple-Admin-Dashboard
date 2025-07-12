@@ -1,4 +1,5 @@
 import 'dart:developer' show log;
+import 'package:admin_pannel/services/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/utils/AppException.dart';
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../modules/higherOfficialModels.dart';
@@ -18,6 +19,7 @@ class Higherofficialcontroller extends GetxController {
       <Map<String, dynamic>>[].obs;
   late FirebaseCollectionVariable collectionControler;
   final int _limit = 15;
+  late FirebaseAuthUser authControlelr ;
   DocumentSnapshot? _lastDocument;
   bool _isFetchingMore = false;
  var _context;
@@ -25,9 +27,10 @@ class Higherofficialcontroller extends GetxController {
   void onInit() {
     super.onInit();
     collectionControler = Get.find<FirebaseCollectionVariable>();
+   authControlelr = Get.find<FirebaseAuthUser>();
     fetchMoreOfficials(_context);
   }
-
+ 
   void fetchMoreOfficials(dynamic context,) async {
     if (_isFetchingMore) return;
 
@@ -44,7 +47,8 @@ class Higherofficialcontroller extends GetxController {
 
         final newEntries = snapshot.docs.asMap().entries.map((entry) {
           int index = officialData.length + entry.key + 1;
-          var doc = entry.value;
+         var docSnapshot = entry.value;
+         var doc = docSnapshot.data() as Map<String, dynamic>? ?? {};
           return {
             'sNo': index.toString(),
             'name': doc[principalNamefield] ?? '',
@@ -59,7 +63,6 @@ class Higherofficialcontroller extends GetxController {
         update();
       }
     } catch (e) {
-      log('Error while fetching more officials: $e');
       throw CloudDataReadException(
           "Error in loading Higher Official details, please try again later !");
     } finally {
@@ -82,7 +85,6 @@ class Higherofficialcontroller extends GetxController {
 
       return Principaldetailmodel.fromSnapshot(castedDoc);
     } catch (e) {
-      log('Error fetching higher official data: $e');
       throw CloudDataReadException(
           "Error in getting Higher Official details, please try again later !");
     }
@@ -115,7 +117,6 @@ class Higherofficialcontroller extends GetxController {
       log("Officials details updated successfully.");
       return true; // Return success
     } catch (e) {
-      log("Error updating Officials details: $e");
       throw CloudDataWriteException(
           "Error in updating Higher Official details, please try again later !");
     }
@@ -168,7 +169,6 @@ class Higherofficialcontroller extends GetxController {
         log("No file selected.");
       }
     } catch (e) {
-      log("Error updating officials photo: $e");
       throw CloudDataUpdateException(
           "Error in updating Higher Official photo, please try again later !");
     }
@@ -186,7 +186,6 @@ class Higherofficialcontroller extends GetxController {
 
       return doc;
     } catch (e) {
-      log('error in getting the downloads url $e');
       throw CloudDataReadException(
           "Error in getting Higher Official photo, please try again later !");
     }
@@ -197,18 +196,22 @@ class Higherofficialcontroller extends GetxController {
     required String principalEmail,
     required String principalPhoneNumber,
     required String principalAddress,
-    required String principalProfile,
-    required String userId,
+    required password,updatePhotoUrl,
     required String principalRole,
     required dynamic context,
   }) async {
     try {
+       final user=  await authControlelr.createUser(email: principalEmail,
+       password: password, context: context);
+  String userId = user!.id;
+  final url =   await photoStorage(context,image: updatePhotoUrl,userId: userId);
+  
       await collectionControler.officialLoginCollection.doc(userId).set({
         principalNamefield: principalName,
         principalEmailfield: principalEmail,
         principalPhoneNumberfield: principalPhoneNumber,
         principalAddressfield: principalAddress,
-        principalProfilefield: principalProfile,
+        principalProfilefield: url,
         principalId: userId,
         "isInRemainderChat":false,
          "isSchoolChat":false,
@@ -217,7 +220,6 @@ class Higherofficialcontroller extends GetxController {
       fetchMoreOfficials(context);
       update(); // Notify GetX listeners
     } catch (e) {
-      log(e.toString());
       throw CloudDataWriteException(
           "Error in adding Higher Official details, please try again later !");
     }
@@ -240,7 +242,6 @@ class Higherofficialcontroller extends GetxController {
         }
       }
     } catch (e) {
-      log(e.toString());
     throw CloudDataWriteException("Error in adding Higher Official photo, please try again later !");
 
     }
@@ -342,15 +343,10 @@ class Higherofficialcontroller extends GetxController {
           }
         }
       }
-      await updateNumberOfOfficials(_context,false);
+      await updateNumberOfOfficials(_context,false); 
       officialData.removeWhere((staff) => staff['id'] == officialId);
-
-      update(); // Notify GetX listeners
-
-      log("deleted the officials data");
       return true;
     } catch (e) {
-      log("error in deleting :$e");
     throw CloudDataDeleteException("Error in deleting Higher Official details, please try again later !");
     }
   }

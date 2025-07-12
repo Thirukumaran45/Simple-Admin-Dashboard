@@ -1,4 +1,5 @@
 import 'dart:developer'show log;
+import 'package:admin_pannel/services/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/utils/AppException.dart';
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
@@ -17,12 +18,14 @@ class Teachercontroller extends GetxController{
   late dynamic snapshot;
  final RxList<Map<String, dynamic>> teacherData = <Map<String, dynamic>>[].obs;
 final int _limit = 15;
+  late FirebaseAuthUser authControlelr ;
 DocumentSnapshot? _lastDocument;
 bool _isFetchingMore = false;
 var _context;
   @override
   void onInit() {
     super.onInit();
+    authControlelr = Get.find<FirebaseAuthUser>();
     collectionControler = Get.find<FirebaseCollectionVariable>();
     fetchTeacherData(_context);
   }
@@ -41,7 +44,8 @@ void fetchTeacherData(dynamic context,) async {
      _lastDocument = snapshot.docs.last;
     teacherData.value = snapshot.docs.asMap().entries.map((entry) {
       int index = entry.key + 1; // Auto-generate serial number starting from 1
-      var doc = entry.value;
+     var docSnapshot = entry.value;
+     var doc = docSnapshot.data() as Map<String, dynamic>? ?? {};
 
       return {
         'sNo': index.toString(),
@@ -54,7 +58,6 @@ void fetchTeacherData(dynamic context,) async {
     }).toList().cast<Map<String, dynamic>>();
   }
   }  catch (e) { 
-    log('Error in fetching the data: $e');
     throw CloudDataReadException('Error in loading teachers details, please try again later !');
   }
   finally {
@@ -77,7 +80,6 @@ Future<Teacherdetailmodel?> teacherDataRead(dynamic context,{required String uid
      update(); // Notify GetX listeners
     return Teacherdetailmodel.fromSnapshot(castedDoc);
   }  catch (e) {
-    log('Error fetching teacher data: $e');
     throw CloudDataReadException('Error in getting teachers details, please try again later !');
 
      
@@ -120,7 +122,6 @@ Future<bool> updateTeacherDetails(dynamic context,{
     log("teacher details updated successfully.");
     return true; // Return success
   } catch (e) {
-    log("Error updating teacher details: $e");
     throw CloudDataUpdateException('Error in updating teachers details, please try again later !');
  
   }
@@ -175,7 +176,6 @@ Future<String> updateTeacherPhoto(String teacherId,dynamic context,) async {
         }
          update(); // Notify GetX listeners
     } catch (e) {
-        log("Error updating teacher Photo: $e");
            throw CloudDataUpdateException('Error in updating teachers photo, please try again later !');
 
     }
@@ -190,32 +190,33 @@ Future<String?> getTeacherPhotoUrl(dynamic context,String teacherId) async {
      update(); // Notify GetX listeners
     return doc;
   } catch (e) {
-    log(
-      'error in getting the downloads url $e'); 
            throw CloudDataReadException('Error in fetching teachers photo, please try again later !');
 
   }
 }
 
 Future<void> registerTeacher({
-  required String teacherProfile,
   required String teacherName,
   required String teacherEmail,
   required String teacherPhoneNumber,
   required String teacherAddress,
   required String dateofemployment,
   required String collegedegree,
+    required password,updatePhotoUrl,
   required String yearofexperience,
   required String teacherSubjectHandling,
-  required String userId,
   required String role,
   required dynamic context,
 }) async {
   try {
-  
-  
+     final user = await authControlelr.createUser(email: teacherEmail,
+    password: password, context: context);
+  String userId = user!.id;
+  final url =  await photoStorage(context,image: updatePhotoUrl,userId: userId);
+
+   
     await collectionControler.teacherLoginCollection.doc(userId).set({
-       teacherProfileField:teacherProfile,
+       teacherProfileField:url,
       teacherNameField: teacherName,
       teacherEmailfield:teacherEmail,
       teacherPhoneNumberfield:teacherPhoneNumber,
@@ -232,7 +233,6 @@ Future<void> registerTeacher({
       fetchTeacherData(context);
      update();
   } catch (e) {
-    log(e.toString());
            throw CloudDataWriteException('Error in adding teachers details, please try again later !');
   }
 }
@@ -255,7 +255,6 @@ Future<dynamic> addPhoto(dynamic context,) async {
     } 
      update(); // Notify GetX listeners
   } catch (e) {
-    log(e.toString());
            throw CloudDataWriteException('Error in adding teachers photo, please try again later !');
 
   }
@@ -288,7 +287,6 @@ Future<String> photoStorage(dynamic context,{required String userId, required dy
    update(); // Notify GetX listeners
   return downloadUrl;
 }  catch (e) {
-  log('error in photo storage $e');
           throw CloudDataWriteException('Error in updating teachers photo, please try again later !');
 
 }
@@ -414,14 +412,13 @@ Future<bool> deleteTeacher(dynamic context,{
   log("deleted the teacher data");
   return true;
 }  catch (e) {
-  log("error inn deleting :$e");
         throw CloudDataDeleteException('Error in deleting teachers details, please try again later !');
 
 }
 
 }
 
-Future<void>addAndUpdateClassInchargers(dynamic context,{required String stuClass,
+Future<bool>addAndUpdateClassInchargers(dynamic context,{required String stuClass,
  required String stuSec, required String name,
  required String phoneNo,
  required String email
@@ -446,8 +443,8 @@ try {
   });
   }
    update(); 
+   return true;
 }  catch (e) {
-  log('error in class incharger updation$e');
         throw CloudDataWriteException('Error in updating class inchargers details, please try again later !');
 
 }
@@ -483,7 +480,6 @@ Future<void> fetchAllClassInchargeDetails(dynamic context,
 
       }
     } catch (e) {
-      log('Error fetching class incharge details: $e');
         throw CloudDataReadException('Error in fetching class incharger details, please try again later !');
 
     }

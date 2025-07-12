@@ -21,7 +21,6 @@ var _context;
 
   void initializeList() async {
     collectionNames = await getAttendanceDates(_context);
-    log(collectionNames.toString());
     update(); 
   }
 
@@ -43,7 +42,6 @@ Future<void> deleteStorageDirectory(dynamic context,String directoryPath) async 
     }
 
   } catch (e) {
-    log(' Error deleting storage directory: $e');
         throw CloudDataDeleteException('Error in deleting storage directory, please try again later !');
     
   }
@@ -69,7 +67,6 @@ Future<List<String>> getAttendanceDates(dynamic context,) async {
       }
     }
   } catch (e) {
-    log("Error fetching attendance dates: $e");
         throw CloudDataReadException('Error in getting attendance dates, please try again later !');
 
   }
@@ -125,7 +122,6 @@ Future<void> deleteAttendanceDataByClass(dynamic context,String className) async
     }
 
   } catch (e) {
-    log("Error deleting attendance data: $e");
         throw CloudDataDeleteException('Error in deleting attendace for class\'s, please try again later !');
 
   }
@@ -180,7 +176,6 @@ Future<void> deleteAttendanceDataByClassSection(dynamic context, String classNam
 
 
   } catch (e) {
-    log("Error deleting attendance data: $e");
         throw CloudDataDeleteException('Error in deleting attendance for class and section, please try again later !');
 
   }
@@ -216,7 +211,6 @@ Future<void> deleteRemainderChatDataByClassSection(dynamic context,{
     log(' Storage files deleted successfully!');
 
   } catch (e) {
-    log('Error deleting remainder chat data: $e');
         throw CloudDataDeleteException('Error in deleting remainder histry for class and section, please try again later !');
 
   }
@@ -248,7 +242,6 @@ Future<void> deleteRemainderChatDataByClass(dynamic context,{
     log(' Storage files deleted successfully!');
 
   } catch (e) {
-    log('Error deleting remainder chat data: $e');
         throw CloudDataDeleteException('Error in deleting remainder histry for class\'s, please try again later !');
 
   }
@@ -278,7 +271,6 @@ Future<void> deleteRemainderChatDataByClass(dynamic context,{
     log(' Storage files deleted successfully!');
 
   } catch (e) {
-    log('Error deleting schoolChat chat data: $e');
         throw CloudDataDeleteException('Error in deleting school chat histry, please try again later !');
 
   }
@@ -308,7 +300,6 @@ Future<void> deleteExamDataByClass(dynamic context,{required String stuClass}) a
   }
     update(); 
 }  catch (e) {
-  log(e.toString());
         throw CloudDataDeleteException('Error in deleting exam result for class\'s, please try again later !');
 
 }
@@ -336,7 +327,6 @@ Future<void> deleteExamDataByClassSection(dynamic context,{required String stuCl
   }
     update(); 
 }  catch (e) {
-   log(e.toString());
         throw CloudDataDeleteException('Error in deleting exam result for class and section, please try again later !');
 
 }
@@ -371,7 +361,6 @@ Future<void> deleteAssignmentByClassSection(dynamic context,{required String stu
   
     update(); 
 }  catch (e) {
-   log(e.toString());
         throw CloudDataDeleteException('Error in deleting assignments for class and section, please try again later !');
 
 }
@@ -403,7 +392,6 @@ Future<void> deleteAssignmentByClass(dynamic context,{required String stuClass, 
   }
     update(); 
 }  catch (e) {
-   log(e.toString());
         throw CloudDataDeleteException('Error in deleting assignments for class\'s, please try again later !');
 
 }
@@ -435,7 +423,6 @@ Future<void> deleteLeaveHistrytByClassSection(dynamic context,{required String s
   }
     update(); 
 }  catch (e) {
-   log(e.toString());
         throw CloudDataDeleteException('Error in deleting leave histry for class and section, please try again later !');
 
 }
@@ -462,7 +449,6 @@ Future<void> deleteLeaveHistryByClass(dynamic context,{required String stuClass,
   }
     update(); 
 }  catch (e) {
-  log(e.toString());
   throw CloudDataDeleteException('Error in deleting leave histry for class\'s, please try again later !');
 
 }
@@ -509,7 +495,6 @@ Future<void> deleteAssignmentByTeacherClassSection(dynamic context,{required Str
     log("Assignments deleted successfully for class $stuClass.");
 
   } catch (e) {
-    log("Error deleting assignments: $e");
         throw CloudDataDeleteException('Error in deleting updated student assignments by class and section, please try again later !');
 
   }
@@ -554,7 +539,6 @@ Future<void> deleteAssignmentByTeacherClass(dynamic context,{required String stu
     log("Assignments deleted successfully for class $stuClass.");
 
   } catch (e) {
-    log("Error deleting assignments: $e");
         throw CloudDataDeleteException('Error in deleting assignments for class\'s, please try again later !');
 
   }
@@ -594,7 +578,6 @@ Future<void> deleteAssignmentByTeacherClass(dynamic context,{required String stu
   update(); 
 }  catch (e) {
   
-   log(e.toString());
 throw CloudDataDeleteException('Error in deleting time table for class\'s, please try again later !');
 
 }
@@ -628,7 +611,6 @@ throw CloudDataDeleteException('Error in deleting time table for class\'s, pleas
   update(); 
 }  catch (e) {
   
-   log(e.toString());
         throw CloudDataDeleteException('Error in deleting time table for class and section, please try again later !');
 
 }
@@ -651,7 +633,7 @@ Future<void> deleteFeesTransactionByClassSection(dynamic context,{required Strin
   }
     update(); 
 }  catch (e) {
-   log(e.toString());
+  
         throw CloudDataDeleteException('Error in deleting fee transaction histry for class and section, please try again later !');
 
 }

@@ -1,5 +1,6 @@
 
-import 'dart:developer' show log;
+import 'dart:developer';
+
 import 'package:admin_pannel/utils/AppException.dart';
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show SetOptions,DocumentSnapshot;
@@ -33,14 +34,13 @@ Future<void> fetchTeachers(dynamic context) async {
 
       if (name is String) {
         teachers.add(name);
-      } else {
-        log('Skipped non-string teacher name: $name');
-      }
+      } 
     }
 
     update();
   } catch (e) {
-    log("error in fetching the teacher details: $e");
+    
+  log(e.toString());
     throw CloudDataReadException(
       "Error in getting teacher details, please try again later!",
     );
@@ -49,7 +49,7 @@ Future<void> fetchTeachers(dynamic context) async {
 
 
 
-Future<void> saveTimetableToFirestore(dynamic context,{
+Future<bool> saveTimetableToFirestore(dynamic context,{
   required String stuClaa,
   required String stuSec,
   required String? subject,
@@ -76,9 +76,8 @@ Future<void> saveTimetableToFirestore(dynamic context,{
       }, SetOptions(merge: true)); 
       
       update();
-    
+    return true;
 }  catch (e) {
-  log("erorr in add and update funtion $e");
         throw CloudDataWriteException("Error in updating class timetable, please try again later !");
 
 }

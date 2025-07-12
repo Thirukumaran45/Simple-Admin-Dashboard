@@ -17,7 +17,7 @@ class Bonafied extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // Center horizontally
               children: [
-                customProfileCard(false,title: "Student Bonafied", assetLink: "assets/images/certi_2.svg", onpresee: ()=>  customNvigation(context, '/bonafied/studentBonafied')),
+                customProfileCard(false,title: "Generate Bonafied", assetLink: "assets/images/certi_2.svg", onpresee: ()=>  customNvigation(context, '/bonafied/studentBonafied')),
                const SizedBox(width: 50), // Space between the cards
                 customProfileCard(false,title: "ClassWise Bonafied", assetLink: "assets/images/certi_1.svg", onpresee: ()=>customNvigation(context, '/bonafied/classWiseBonafied'))
               ],

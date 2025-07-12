@@ -228,18 +228,18 @@ class _BodyState extends State<Body> {
                     // Proceed if no errors
                     if (emailError == null && passwordError == null) {
                       final result = await ExceptionDialog().handleExceptionDialog(
-    context,
-    () async => await controller.signinUser(
-      email: emailController.text,
-      password: passwordController.text,
-      context: context,
-    ),
-  );
+                      context,
+                      () async => await controller.signinUser(
+                        email: emailController.text,
+                        password: passwordController.text,
+                        context: context,
+                      ),
+                    );
 
-  // If result is not null, sign-in was successful, navigate to home
-  if (result != null) {
-    customNvigation(context, '/home');
-  }}
+                    // If result is not null, sign-in was successful, navigate to home
+                    if (result != null) {
+                      customNvigation(context, '/home');
+                    }}
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,

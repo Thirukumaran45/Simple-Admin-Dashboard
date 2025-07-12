@@ -2,8 +2,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
-
-import '../../../../contant/constant.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import '../../../../controller/classControllers/pageControllers/AttendanceController.dart';
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../contant/pdfApi/PdfAttendance.dart';
@@ -248,7 +247,6 @@ _buildDropdown(
   text: "Search",
 ),
  customIconTextButton(primaryGreenColors, icon: Icons.download_sharp, onPressed:()async{
-                  await customSnackbar(context: context, text: "Donloaded Succesfully");
                     if(!context.mounted)return;
                 await PdfAttendance().openPdf(absentCount: 30,date: selectedDate!,presentCount: 50,section: widget.section,
                 studentClass: widget.classNUmber,students:filteredData,teacherName: teacherName,context: context,  );
@@ -339,11 +337,13 @@ _buildDropdown(
                                   width: 100,
                                   child: ElevatedButton(
                                     onPressed: () async{
-                                    
+                                     CustomDialogs().showLoadingDialogInSec(context, 3, "Please wait a moment ...",onlyText: false);
+                    
                                       saveAttendance(index);
                                      await ExceptionDialog().handleExceptionDialog(context, ()async => await controler.updateAttendance(context,stuClass: widget.classNUmber
                                       , sec: widget.section, status: 
                                       filteredData[index]['attendanceStatus'], date: selectedDate!, id:filteredData[index]['id'] ));
+                                    
                                     },
                                     style: ElevatedButton.styleFrom(backgroundColor:const Color.fromARGB(255, 38, 153, 42)),
                                     child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.white)),

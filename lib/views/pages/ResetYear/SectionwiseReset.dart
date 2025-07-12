@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
 
 import '../../../contant/CustomNavigation.dart';
@@ -139,18 +141,24 @@ Map<int, Future<void> Function()> getDeletionFunctionsMap({
       context: context,
       text: "Are you sure about to delete and reset ?");
   if (!context.mounted) return;
-  if (val) CustomDialogs().showLoadingDialogInSec(context, 7);
-
+  if (val) {
+    CustomDialogs().showLoadingDialogInSec(context, 10,"Reset is on progress please wait a moment...");
+ 
   int historyIndex = historyItems.indexOf(item);
   var deletionFunctions = getDeletionFunctionsMap(
     stuClass: widget.stuClass,
     section: String.fromCharCode(65 + index),
   );
-
   // Call the respective function if exists
   if (deletionFunctions.containsKey(historyIndex)) {
     await deletionFunctions[historyIndex]!();
   }
+   if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}
+  await  CustomDialogs().showCustomDialog(context,"✅ Succesfully the data as been deleted");
+  }
+
 },
 
                               child: const Text('Reset Histry'),

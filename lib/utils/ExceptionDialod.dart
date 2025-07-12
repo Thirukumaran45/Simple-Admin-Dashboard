@@ -15,10 +15,10 @@ try{
 }
 on AppException catch(e)   
 {
-  await CustomDialogs().showCustomDialog(context,e.message);
+  await CustomDialogs().showCustomDialog(context,"❌ ${e.message}");
 }
 catch(e){
-  await  CustomDialogs().showCustomDialog(context, "An unexpected error occured, please try again later !");
+  await  CustomDialogs().showCustomDialog(context, "❌ An unexpected error occured, please try again later !");
 }
 return null;
 }

@@ -111,7 +111,9 @@ void loadAllBankData() async {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: ()async{
-                    isChanged? await CustomDialogs().showCustomDialog(context, "Bank Transaction details Updated Succecfully"):null;
+                   isChanged?  await  CustomDialogs().showLoadingDialogInSec(context, 3, "Please wait a moment ...",onlyText: false):null;
+                
+                    isChanged? await CustomDialogs().showCustomDialog(context, "✅ Bank Transaction details Updated Succecfully"):null;
                     saveChanges();
                   },
                  style: ElevatedButton.styleFrom(

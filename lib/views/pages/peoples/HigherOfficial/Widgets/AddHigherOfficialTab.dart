@@ -1,7 +1,7 @@
 
-import 'package:admin_pannel/utils/ExceptionDialod.dart';
+// ignore_for_file: use_build_context_synchronously
 
-import '../../../../../services/FireBaseServices/FirebaseAuth.dart';
+import 'package:admin_pannel/utils/ExceptionDialod.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/HigherOfficialController.dart';
 import '../../widgets/CustomeTextField.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -21,7 +21,6 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   dynamic updatePhotoUrl;
   final bool _isPasswordObscured = true;
-  late FirebaseAuthUser authControlelr ;
   late final TextEditingController addresscontrl ;
   late final TextEditingController firstNameController ;
   late final TextEditingController lastNameController ;
@@ -32,7 +31,6 @@ class _AddHigherOfficialTabState extends State<AddHigherOfficialTab> {
 @override
   void initState() {
     super.initState();
-   authControlelr = Get.find<FirebaseAuthUser>();
    controller = Get.find<Higherofficialcontroller>();
    addresscontrl = TextEditingController();
    firstNameController = TextEditingController();
@@ -60,7 +58,6 @@ Future<void> profileFuntion() async {
    officialMobileController .dispose();
    emailController .dispose();
    passwordController.dispose();
-   authControlelr.dispose();
     super.dispose();
   }
 
@@ -166,40 +163,38 @@ Future<void> profileFuntion() async {
                                 if (_formKey.currentState?.validate() ?? false) {
                                  
        
-     if(updatePhotoUrl!=null)
-     {
-       bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
-     if(val)
-     {
-  if(!context.mounted)return;
-     CustomDialogs().showLoadingDialogInSec(context, 10);
-      final user = await ExceptionDialog().handleExceptionDialog(context, ()async=>await authControlelr.createUser(email: emailController.text,password: passwordController.text, context: context));
-     String userId = user!.id;
-     // ignore: use_build_context_synchronously
-     final url =  await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.photoStorage(context,image: updatePhotoUrl,userId: userId));
-     String name = '${firstNameController.text} ${lastNameController.text}';
-  if(!context.mounted)return;
-   await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerOfficials(
-     userId: userId,
-       context: context,
-     principalAddress: addresscontrl.text,
-     principalEmail: emailController.text,
-     principalName: name.toUpperCase(),
-     principalPhoneNumber: officialMobileController.text,
-     principalProfile: url!,
-     principalRole: "Higher Official",
+  if(updatePhotoUrl!=null)
+  {
+    bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: 'Are you sure about to add the person ?');
+  if(val)
+  {
+                      if(!context.mounted)return;
+  CustomDialogs().showLoadingDialogInSec(context, 10,"Creating higher official, please wait a moment  !");
+   String name = '${firstNameController.text} ${lastNameController.text}';
+                      if(!context.mounted)return;
+                      await ExceptionDialog().handleExceptionDialog(context, ()async=>await  controller.registerOfficials(
+ password: passwordController.text,
+    context: context,
+    updatePhotoUrl:updatePhotoUrl, 
+  principalAddress: addresscontrl.text,
+  principalEmail: emailController.text,
+  principalName: name.toUpperCase(),
+  principalPhoneNumber: officialMobileController.text,
 
-     ));
-     if(!context.mounted)return;
-      await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfOfficials(context,true));     // ignore: use_build_context_synchronously
-      customPopNavigation(context, '/manage-higher-official');
-     }
-     } else
-     {
+  principalRole: "Higher Official",
+  
+  ));
+  if(!context.mounted)return;
+    await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateNumberOfOfficials(context,true));    
+    customPopNavigation(context, '/manage-higher-official');
+  }
+  } else
+  {
+  
+                      if(!context.mounted) return;
+                      await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person ❓ ");
+  }
 
-  if(!context.mounted) return;
-  await CustomDialogs().showCustomDialog(context, "Please pick profile photo for the person !");
-     }
 
 
 

@@ -1,7 +1,6 @@
 
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
 
-import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/StudentController.dart';
 import '../../../../../modules/studentModels.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -237,11 +236,12 @@ Future<void> initializeFunction() async {
                             child: ElevatedButton(
                               onPressed: ()async {
                                 if (isEdited) {
-                     await CustomDialogs().showCustomDialog(context, "Student details Updated Succecfully");
+                                   CustomDialogs().showLoadingDialogInSec(context,10,"Please wait a moment ...", onlyText: false);
+  
                     String name = studentNameController.text.toUpperCase();
                    if(!context.mounted)return;
                      
-                  bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateStudentDetails(
+                 await ExceptionDialog().handleExceptionDialog(context, ()async=> await controller.updateStudentDetails(
                     context,
                     address: homeAddressController.text.toString(),
                     dob: dobController.text.toString(),
@@ -259,10 +259,15 @@ Future<void> initializeFunction() async {
                      uid: widget.uid, 
                      rollNo: rollNumberController.text.toString(),
                    ));
-                   if(isUpdated!) await customSnackbar(context: context, text: "Student Detials changed and updated succesfully");
-                                  setState(() {
+                    if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}
+                     await CustomDialogs().showCustomDialog(context, "✅ Student details Updated Succecfully");
+                                 setState(() {
                                     isEdited = false;
                                   });
+                                  
                                     }
                               },
                               style: ElevatedButton.styleFrom(
@@ -280,7 +285,6 @@ Future<void> initializeFunction() async {
                           SizedBox(height: 50,
                             child: ElevatedButton(
                               onPressed: ()async {
-                              await   customSnackbar(context: context, text: "Donloaded Succesfully");
                                if(!context.mounted)return;
                                await  PdfStudentDetails().openPdf(context: context,fileName: studentNameController.text, nameController: studentNameController, 
                                classController: studentClassController, sectionController: sectionController, 

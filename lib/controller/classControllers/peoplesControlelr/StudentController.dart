@@ -1,4 +1,5 @@
 import 'dart:developer'show log;
+import 'package:admin_pannel/services/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/utils/AppException.dart';
 
 import '../../../services/FireBaseServices/CollectionVariable.dart';
@@ -18,11 +19,14 @@ class StudentController extends GetxController {
   final RxList<Map<String, dynamic>> studentData = <Map<String, dynamic>>[].obs;
 final int _limit = 15;
 DocumentSnapshot? _lastDocument;
+  late FirebaseAuthUser authControlelr ;
 bool _isFetchingMore = false;
 var _context;
+
   @override
   void onInit() {
     super.onInit();
+    authControlelr = Get.find<FirebaseAuthUser>();
     collectionControler = Get.find<FirebaseCollectionVariable>();
     fetchStudentData(_context);
   }
@@ -40,19 +44,20 @@ var _context;
   if (snapshot.docs.isNotEmpty) {
      _lastDocument = snapshot.docs.last;
   studentData.value = snapshot.docs.map((doc) {
-    return {
-      'rollNumber': doc[rollNofield] ?? '',
-      'name': doc[studentNamefield] ?? '',
-      'id': doc[studentIdField] ?? '',
-      'class': doc[classField] ?? '',
-      'section': doc[sectionFild] ?? '',
-      'parentMobile': doc[motherPhoneNoField] ?? '',
-    };
-  }).toList().cast<Map<String, dynamic>>(); 
+  final data = doc.data() as Map<String, dynamic>? ?? {};
+  return {
+    'rollNumber': data[rollNofield] ?? '',
+    'name': data[studentNamefield] ?? '',
+    'id': data[studentIdField] ?? '',
+    'class': data[classField] ?? '',
+    'section': data[sectionFild] ?? '',
+    'parentMobile': data[motherPhoneNoField] ?? '',
+  };
+}).toList().cast<Map<String, dynamic>>();
+  
   }
   update();
 }   catch (e) {
-  log('error in fetching the data $e');
     throw CloudDataReadException("Error in loading student details, please try again later !");
 
 }finally {
@@ -75,7 +80,6 @@ Future<StudentdetailsModel?> studentDataRead(dynamic context,{required String ui
     return StudentdetailsModel.fromSnapshot(castedDoc);
     
   }  catch (e) {
-    log('Error fetching student data: $e');
         throw CloudDataReadException("Error in getting student details, please try again later !");
 
   }
@@ -126,7 +130,6 @@ Future<bool> updateStudentDetails(dynamic context,{
     log("Student details updated successfully.");
     return true; // Return success
   } catch (e) {
-    log("Error updating student details: $e");
         throw CloudDataUpdateException("Error in updating student details, please try again later !");
 
   }
@@ -180,7 +183,6 @@ Future<String> updateStudentPhoto(dynamic context,String studentId,) async {
         update(); // Notify GetX listeners
         }
     } catch (e) {
-        log("Error updating student photo: $e");
     throw CloudDataUpdateException("Error in updating student photo, please try again later !");
 
     }
@@ -195,8 +197,6 @@ Future<String?> getStudentPhotoUrl(dynamic context,String studentId) async {
         update(); // Notify GetX listeners
     return doc;
   } catch (e) {
-    log(
-      'error in getting the downloads url $e'); 
         throw CloudDataReadException("Error in getting student photo, please try again later !");
 
   }
@@ -215,18 +215,21 @@ Future<void> registerUser({
   required String stuDob,
   required String stuAdminNo,
   required String stuAddress,
-  required dynamic stupicUrl,
-  required String userId,
+    required password,updatePhotoUrl,
   required dynamic context,
 }) async {
   try {
-  
+     final user =  await authControlelr.createUser(email: stuEmail,
+    password:password, context: context);
+  String userId = user!.id;
+  final url = await  photoStorage(context,image: updatePhotoUrl,userId: userId);
+ 
   
     await collectionControler.studentLoginCollection.doc(userId).set({
       studentNamefield: studentName,
       classField:stuClass,
       studentIdField:userId,
-      profilePhotfield:stupicUrl,
+      profilePhotfield:url,
       sectionFild:stuSection,
       rollNofield:sturollNo,
       stuentEmailfield:stuEmail,
@@ -249,7 +252,6 @@ Future<void> registerUser({
         update(); // Notify GetX listeners
 
   } catch (e) {
-    log(e.toString());
      throw CloudDataWriteException("Error in adding student details, please try again later !");
 
                                
@@ -274,7 +276,6 @@ Future<dynamic> addPhoto(dynamic context,) async {
         update(); // Notify GetX listeners
 
   } catch (e) {
-    log(e.toString());
     throw CloudDataWriteException("Error in adding student details, please try again later !");
 
   }
@@ -380,7 +381,6 @@ Future<bool> deleteStudent(dynamic context,{
   log("deleted the student data");
     return true;
   } catch (e) {
-    log("Error in delete: $e");
     throw CloudDataDeleteException("Error in deleting student details, please try again later !");
 
   }

@@ -1,7 +1,6 @@
 
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
-
-import '../../../../contant/constant.dart';
+import 'package:admin_pannel/views/widget/CustomDialogBox.dart';
 import '../../../../controller/classControllers/peoplesControlelr/StudentListBonafiedControlelr.dart';
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../contant/pdfApi/PdfBonafied.dart';
@@ -306,10 +305,23 @@ Container(
                             ),
                           ),
                           onPressed: () async{
-                          await customSnackbar(context: context, text: "Donloaded Succesfully");
                           if(!context.mounted)return;
-                         await PdfApi().openPdf(context: context,academicYear:'2024',fileName:student['name']!, studentName: student['name']!,parentName:'Raman.K', studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', academicType:selectedTypevalue! );
-                         
+                          CustomDialogs().showLoadingDialogInSec(
+                                  context,
+                                  30,
+                                  "Please wait a moment ...",
+                                  onlyText: false);
+                         await PdfApi().openPdf(context: context,academicYear:' ',
+                         fileName:student['name']!, studentName: student['name']!,
+                         parentName:student['parentName'], studentClass: '${student['class']!} - ${student['section']!}', dob: '04/12/2003', reason: null );
+                          if (!context.mounted) return;
+                              if (Navigator.of(context,
+                                      rootNavigator: true)
+                                  .canPop()) {
+                                Navigator.of(context,
+                                        rootNavigator: true)
+                                    .pop();
+                              }
                         
                           },
                           child: const Text('Download Bonafied', style: TextStyle(

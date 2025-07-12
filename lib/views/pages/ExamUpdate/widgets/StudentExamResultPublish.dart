@@ -1,5 +1,4 @@
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
-
 import '../../../../contant/CustomNavigation.dart';
 import '../../../../controller/classControllers/pageControllers/ExamUpdationController.dart';
 import '../../../widget/CustomeButton.dart';
@@ -179,13 +178,14 @@ void dispose() {
                           if (showTotalSaveButton)
                             ElevatedButton(
                               onPressed: ()async {
-                             await ExceptionDialog().handleExceptionDialog(context,()async=>   await controller.addUpdateTotalAndIndividualSubject(context,
+                               await ExceptionDialog().handleExceptionDialog(context,()async=>   await controller.addUpdateTotalAndIndividualSubject(context,
                                   className: widget.stuClass,
                                   examType: widget.examName,
                                   outOffMark: singleSubjectMarkController.text.toString(),
                                   section: widget.section,
                                   totalMark:totalSubjectMarkController.text.toString(), 
                                 ));
+                               
                                 setState(() {
                                   showTotalSaveButton = false;
                                 });

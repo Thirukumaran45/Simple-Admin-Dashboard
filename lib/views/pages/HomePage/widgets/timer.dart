@@ -5,8 +5,7 @@ import 'package:get/get.dart';
 
 class AutomatedButtonWithTimer extends StatelessWidget {
   final VoidCallback onPressed;
-
-  AutomatedButtonWithTimer({super.key, required this.onPressed});
+  AutomatedButtonWithTimer({super.key, required this.onPressed,});
 
   final PushNotificationControlelr controller = Get.find<PushNotificationControlelr>();
 
@@ -20,12 +19,17 @@ class AutomatedButtonWithTimer extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(bottom: 40),
           child: InkWell(
-            onTap: controller.isCooldown.value
-                ? null
-                : () async{
-                    onPressed();
-                  await ExceptionDialog().handleExceptionDialog(context,() async=>await  controller.startCooldown(context));
-                  },
+          onTap: controller.isCooldown.value
+    ? null
+    : () async {
+        controller.startCooldown(context);  
+        
+        await ExceptionDialog().handleExceptionDialog(
+          context,
+          () async => onPressed(),
+        );
+      },
+
             child: Container(
               height: 250,
               width: 250,

@@ -1,5 +1,4 @@
 // ignore_for_file: use_build_context_synchronousl, use_build_context_synchronously
-import 'dart:developer' show log;
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
 
 import '../../../controller/classControllers/schoolDetailsController/schooldetailsController.dart';
@@ -218,7 +217,7 @@ Future<bool> addAndUpdateDetails()async{
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                   onPressed: () async {
-  final isupdate = await ExceptionDialog().handleExceptionDialog(context, ()async=>await detailsController.addAndUpdateSchoolDetails(context,
+   await ExceptionDialog().handleExceptionDialog(context, ()async=>await detailsController.addAndUpdateSchoolDetails(context,
     schoolName: schoolNameController.text,
     chatbotApi: schoolChatBOtApi.text,
     studentPassKey: studentPassKeyController.text,
@@ -226,7 +225,6 @@ Future<bool> addAndUpdateDetails()async{
     higherOfficialPassKey: officialPassKeyController.text,
     staffPassKey: staffPassKeyController.text,
   ));
-  log(isupdate! ? "Updated the function" : "Not updating");
   setState(() {
     if (label == "School Name") {
       isEditingSchoolName = false;
@@ -333,8 +331,8 @@ Widget _buildPasskeyRow(List<String> passkeys) {
                 onPressed: () async {
 final isupdate = await addAndUpdateDetails(); 
 
-  isupdate?CustomDialogs().showCustomDialog(context, "School Details Updated Succesfully"):
-  CustomDialogs().showCustomDialog(context, "Something went wrong, please check the details !");
+  isupdate?CustomDialogs().showCustomDialog(context, "✅ School Details Updated Succesfully"):
+  CustomDialogs().showCustomDialog(context, "❌ Something went wrong, please check the details !");
   setState(() {
     if (label == "School Name") {
       isEditingSchoolName = false;

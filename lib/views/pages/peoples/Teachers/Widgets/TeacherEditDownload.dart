@@ -1,7 +1,6 @@
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
 
 import '../../../../../contant/ConstantVariable.dart' show dateofEmploymentfield;
-import '../../../../../contant/constant.dart';
 import '../../../../../controller/classControllers/peoplesControlelr/TeacherController.dart';
 import '../../../../../modules/teacherModels.dart';
 import '../../../../../contant/CustomNavigation.dart';
@@ -210,9 +209,11 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             child: ElevatedButton(
                               onPressed: () async{
                                 if (isEdited) {
-                       await CustomDialogs().showCustomDialog(context, "Teacher details Updated Succecfully");
+                                   CustomDialogs().showLoadingDialogInSec(context,10,"Please wait a moment ...", onlyText: false);
+  
+                     
                   // ignore: use_build_context_synchronously
-                  bool? isUpdated = await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateTeacherDetails(context,
+                await ExceptionDialog().handleExceptionDialog(context, ()async=>await controller.updateTeacherDetails(context,
                     teacherAddress: homeAddressController.text.toString(),
                     teacherSubjectHandling: subjectHandlingController.text.toString(),
                      teacherEmail: emailController.text.toString(),
@@ -226,8 +227,10 @@ Future<void> handlePhotoUpdate(String studentId) async {
                    yearofexperience: experienceController.text.toString()
                    ));
                    if(!context.mounted)return;
-                   if(isUpdated!) await customSnackbar(context: context, text: "Teacher Detials changed and updated succesfully");
-                   
+                   if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}     await CustomDialogs().showCustomDialog(context, "✅ Teacher details Updated Succecfully");
                                   setState(() {
                                     isEdited = false;
                                   });
@@ -249,7 +252,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
                           SizedBox(height: 50,
                             child: ElevatedButton(
                               onPressed: ()async {
-                            await     customSnackbar(context: context, text: "Donloaded Succesfully");
+                           
                    if(!context.mounted)return;
                                  await PdfTeacherDetails().openPdf(context: context,fileName:  firstNameController.text.toString(), nameController: firstNameController, 
                                  employmentDate: emplymentDateController, degreeController: degreeController,assetImage: assetImage,

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:admin_pannel/utils/ExceptionDialod.dart';
 
 import '../../../contant/CustomNavigation.dart';
@@ -6,7 +8,7 @@ import '../../widget/CustomDialogBox.dart';
 import '../../widget/CustomeColors.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:get/get.dart' show Get,Inst;
+import 'package:get/get.dart' show Get, Inst;
 
 class SectionWiseTimetable extends StatefulWidget {
   final String stuClass;
@@ -56,8 +58,10 @@ Future<void> loadTimetableFromFirestore() async {
         ));
 
         if (snapshot.exists) {
+          if (!mounted) return;
           var data = snapshot.data();
           if (data != null) {
+            if (!mounted) return;
             setState(() {
               timetable[day]![period]!.text = data["subject"] ?? "";
               selectedTeachers[day]![period] = data["teacher"] ?? "";
@@ -89,7 +93,7 @@ Future<void> loadTimetableFromFirestore() async {
     
     }
   }
- if (!mounted) return; // Check before updating state
+ if (!mounted) return; 
   setState(() {
     _isLoading = false;
   });
@@ -192,30 +196,35 @@ void dispose() {
               child: ElevatedButton(
               onPressed: () async{
       if (isChanged) {
-        CustomDialogs().showLoadingDialogInSec(context, 7);
-
-        // Print timetable details
-       for (var period in timetableContrl.periods) {
-  String? startTime = startTimes[period]?.format(context) ?? '';
-  String? endTime = endTimes[period]?.format(context) ?? '';
-
-  for (var day in days) {
-    String? subject = timetable[day]![period]?.text ?? '';
-    String teacher = selectedTeachers[day]![period] ?? '';
-
-   await ExceptionDialog().handleExceptionDialog(context, ()async=> await timetableContrl.saveTimetableToFirestore(context,
-      stuClaa: widget.stuClass,
-      stuSec: widget.stuSec,
-      subject: subject,
-      teacher: teacher,
-      startTime: startTime,  // ✅ Same for all days per period
-      endTime: endTime,      // ✅ Same for all days per period
-      day: day,
-      period: period,
-    ));
+        
+  CustomDialogs().showLoadingDialogInSec(context, 20,"Please wait a moment...");
+  for (var period in timetableContrl.periods) {
+    String? startTime = startTimes[period]?.format(context) ?? '';
+    String? endTime = endTimes[period]?.format(context) ?? '';
+  
+    for (var day in days) {
+      String? subject = timetable[day]![period]?.text ?? '';
+      String teacher = selectedTeachers[day]![period] ?? '';
+    
+     await ExceptionDialog().handleExceptionDialog(context, ()async{
+      await timetableContrl.saveTimetableToFirestore(context,
+        stuClaa: widget.stuClass,
+        stuSec: widget.stuSec,
+        subject: subject,
+        teacher: teacher,
+        startTime: startTime,  
+        endTime: endTime,      
+        day: day,
+        period: period,
+      );
+      });
+    }
   }
+   if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
 }
-
+   await CustomDialogs().showCustomDialog(context, "✅ Time table as been updated Succesfully.");
       }
       setState(() {
       isChanged = false;

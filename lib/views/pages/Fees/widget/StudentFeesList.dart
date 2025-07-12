@@ -110,16 +110,15 @@ void dispose() {
                       return DataRow(
                         cells: [
                           DataCell(SizedBox(
-                            width: MediaQuery.sizeOf(context).width*0.05,child: Text(student['roll']!, style: const TextStyle(color:  Colors.black ,)))),
+                            width: MediaQuery.sizeOf(context).width*0.05,child: Text(student['roll']!, style: const TextStyle(color:  Colors.black , overflow: TextOverflow.ellipsis)))),
                           DataCell(SizedBox(
-                            width: MediaQuery.sizeOf(context).width*0.09,child: Text(student['name']!, style: const TextStyle(color:  Colors.black )))),
+                            width: MediaQuery.sizeOf(context).width*0.09,child: Text(student['name']!, style: const TextStyle(color:  Colors.black , overflow: TextOverflow.ellipsis)))),
                           DataCell(Text("₹${student['pendingFees']!}", style: const TextStyle(fontSize: 16,color: Colors.red, fontWeight: FontWeight.bold))),
                           DataCell(Text("₹${student['totalFees']!}", style: const TextStyle(fontSize: 16,color: Colors.blue, fontWeight: FontWeight.bold))),
                           DataCell(Text("₹${student['paidFees']!}", style:  TextStyle(fontSize: 16,color: primaryGreenColors, fontWeight: FontWeight.bold))),
                           DataCell(
                             Container(
                               height: 38,
-                              width: 80,
                               decoration: BoxDecoration(
                                 color: isPaid ? primaryGreenColors : Colors.red,
                                 borderRadius: BorderRadius.circular(8),

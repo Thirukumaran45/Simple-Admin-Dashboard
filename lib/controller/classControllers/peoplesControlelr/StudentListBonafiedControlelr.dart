@@ -1,7 +1,4 @@
-import 'dart:developer' show log;
 import 'package:admin_pannel/utils/AppException.dart' show CloudDataReadException;
-
-
 import '../../../contant/ConstantVariable.dart';
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, Query;
@@ -37,19 +34,19 @@ var _context;
   if (snapshot.docs.isNotEmpty) {
   _lastDocument = snapshot.docs.last;
   studentData.value = snapshot.docs.map((doc) {
+    final data = doc.data() as Map<String, dynamic>? ?? {};
     return {
-      'rollNumber': doc[rollNofield] ?? '',
-      'name': doc[studentNamefield] ?? '',
-      'id': doc[studentIdField] ?? '',
-      'class': doc[classField] ?? '',
-      'section': doc[sectionFild] ?? '',
-      'parentMobile': doc[motherPhoneNoField] ?? '',
-      'feeStatus':doc[feesStatusField]??''
+      'rollNumber': data[rollNofield] ?? '',
+      'name': data[studentNamefield] ?? '',
+      'id': data[studentIdField] ?? '',
+      'class': data[classField] ?? '',
+      'section': data[sectionFild] ?? '',
+      'parentName': data[fatherNameField] ?? data[motherNameField] ?? '',
+      'feeStatus':data[feesStatusField]??''
     };
   }).toList().cast<Map<String, dynamic>>(); 
   }
 }   catch (e) {
-  log('error in fetching the data $e');
     throw CloudDataReadException("Error in loading student details, please try again later !");
 
 }
