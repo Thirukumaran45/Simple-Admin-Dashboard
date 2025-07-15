@@ -31,7 +31,7 @@ void main() async {
     measurementId: "G-GGQVTBJGYG"
         ),
       );
-     await dotenv.load(fileName: ".env");
+     
     
       log("Firebase initialized successfully");
     } catch (e) {
