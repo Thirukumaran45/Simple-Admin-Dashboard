@@ -1,9 +1,7 @@
 import 'dart:async' show Timer;
-import 'dart:convert' show jsonEncode;
-import 'dart:developer' show log;
+import 'dart:convert' show jsonDecode, jsonEncode;
 import 'package:admin_pannel/utils/AppException.dart' show CloudDataWriteException, PushNotificationException;
-
-import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
+import 'package:flutter/services.dart' show rootBundle;
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../contant/ConstantVariable.dart' show feesStatusField, fcmTokenId;
 import 'package:get/get.dart' show BoolExtension, Get, GetxController, Inst, RxT;
@@ -16,11 +14,20 @@ var isCooldown = false.obs;
 var remainingTime = const Duration(minutes: 5).obs;
 Timer? _timer;
 late FirebaseCollectionVariable collectionVariable ;
+late Map<String, dynamic> config;
 @override
   void onInit() {
     super.onInit();
+     initApiKey();
     collectionVariable = Get.find<FirebaseCollectionVariable>();
   }
+
+
+  void initApiKey()async{
+     final configString = await rootBundle.loadString('assets/config.json');
+     config = jsonDecode(configString);
+  }
+
   void startCooldown(dynamic context) {
     try {
   if (isCooldown.value) return; // prevent restarting if already on cooldown
@@ -49,36 +56,35 @@ late FirebaseCollectionVariable collectionVariable ;
 
 
 
-  static String baseUrlKey = dotenv.env['BASE_URL'] ?? '';
 
 
   Future<String> getServerKeyToekn(dynamic context)async{
    try {
  final serviceAccountJson = {
-  "type": dotenv.env['TYPE'],
-  "project_id": dotenv.env['PROJECT_ID'],
-  "private_key_id": dotenv.env['PRIVATE_KEY_ID'],
-  "private_key": dotenv.env['PRIVATE_KEY'],
-  "client_email": dotenv.env['CLIENT_EMAIL'],
-  "client_id": dotenv.env['CLIENT_ID'],
-  "auth_uri": dotenv.env['AUTH_URI'],
-  "token_uri": dotenv.env['TOKEN_URI'],
-  "auth_provider_x509_cert_url": dotenv.env['AUTH_PROVIDER_CERT_URL'],
-  "client_x509_cert_url": dotenv.env['CLIENT_CERT_URL'],
-  "universe_domain": dotenv.env['UNIVERSE_DOMAIN'],
+  "type":config['TYPE'],
+  "project_id":config['PROJECT_ID'],
+  "private_key_id":config['PRIVATE_KEY_ID'],
+  "private_key":config['PRIVATE_KEY'],
+  "client_email":config['CLIENT_EMAIL'],
+  "client_id":config['CLIENT_ID'],
+  "auth_uri":config['AUTH_URI'],
+  "token_uri":config['TOKEN_URI'],
+  "auth_provider_x509_cert_url":config['AUTH_PROVIDER_CERT_URL'],
+  "client_x509_cert_url":config['CLIENT_CERT_URL'],
+  "universe_domain":config['UNIVERSE_DOMAIN'],
 };
    
   final List<String> scopes = [
-     dotenv.env['GOOGLE_USER_INFO']!,
-     dotenv.env['FIRBASE_DATABASE']!,
-     dotenv.env['FIREBASE_MESSAGING']!
+    config['GOOGLE_USER_INFO']!,
+    config['FIREBASE_DATABASE']!,
+    config['FIREBASE_MESSAGING']!
    ]; 
   
    final client = await clientViaServiceAccount(ServiceAccountCredentials.fromJson(serviceAccountJson) , scopes);
    final accessServerKey = client.credentials.accessToken.data;
    return accessServerKey;
 }  catch (e) {
-  throw PushNotificationException("Erron in getting server key, please try again later !");
+  throw PushNotificationException(" Erron in getting server key, please try again later !");
 }
   }
 
@@ -109,7 +115,7 @@ Map<String, dynamic> payload = {
 
 
     final String serverKey = await getServerKeyToekn(context);
-    String baseUrl = baseUrlKey;
+     String baseUrl = config['BASE_URL'] ?? '';
 
     String dataNotifications = jsonEncode(payload);
 
@@ -122,12 +128,10 @@ Map<String, dynamic> payload = {
       body: dataNotifications,
     );
 
-    log("Response status: ${response.statusCode}");
-    log("Response body: ${response.body}");
 
     return response.statusCode == 200;
   } catch (e) {
-    throw PushNotificationException('Error in push notification , please try again later !');
+    throw PushNotificationException(' Error in push notification , please try again later !');
   }
 }
 
@@ -152,7 +156,7 @@ Future<void> feeUpdationPushNotificationToAll(dynamic context) async {
     }
   }
 }  catch (e) {
-    throw PushNotificationException('Error in fees push notification to all, please try again later !');
+    throw PushNotificationException(' Error in fees push notification to all, please try again later !');
   
 }
 }
@@ -174,7 +178,7 @@ Future<void> feeUpdationPushNotificationToSpecific(dynamic context,{required Str
         );
       }
 }  catch (e) {
-      throw PushNotificationException('Error in fees push notification to student, please try again later !');
+      throw PushNotificationException(' Error in fees push notification to student, please try again later !');
 
 }
 }
@@ -196,7 +200,7 @@ Future<void> examFeesUpdationPushNotification(dynamic context,{required String i
       );
     } 
 }  catch (e) {
-      throw PushNotificationException('Error in exam update push notification to student, please try again later !');
+      throw PushNotificationException(' Error in exam update push notification to student, please try again later !');
   
 }
    

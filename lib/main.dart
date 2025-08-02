@@ -1,5 +1,6 @@
 
 import 'dart:developer' show log;
+
 import 'SchoolWebSite/websiteMainScreen.dart';
 import 'SchoolWebSite/widgets/userAuthRedirect.dart';
 import 'controller/InitializeController.dart' show initializeGetController;
@@ -11,14 +12,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart' show setPathUrlStrategy;
 import 'views/pages/LoginPage/LoginScreen.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 // import 'package:connectivity_plus/connectivity_plus.dart' show Connectivity, ConnectivityResult;
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
-
+  
     try {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
@@ -31,13 +31,12 @@ void main() async {
     measurementId: "G-GGQVTBJGYG"
         ),
       );
-     await dotenv.load(fileName: ".env");
     
       log("Firebase initialized successfully");
     } catch (e) {
       log("Error initializing Firebase: $e");
     }
-
+  
    initializeGetController();
   runApp(const MyApp());
 }

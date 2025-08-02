@@ -291,6 +291,7 @@ Future<void> addAndUpdateStudentFeesDetails(dynamic context,{
     feeMap['fee${i + 1}'] = feeNameControllers[i].text;
     feeMap['fee${i + 1}_amount'] = feeAmountControllers[i].text;
     feeMap['isView']=true;
+    feeMap[feesStatusField] = "Pending";
   }
   
   await collectionVariable.studentLoginCollection

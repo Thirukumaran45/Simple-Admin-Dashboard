@@ -1,7 +1,6 @@
 import 'dart:developer'show log;
 import 'package:admin_pannel/services/FireBaseServices/FirebaseAuth.dart';
 import 'package:admin_pannel/utils/AppException.dart';
-
 import '../../../services/FireBaseServices/CollectionVariable.dart';
 import '../../../modules/studentModels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot, FieldValue, Query;
@@ -348,14 +347,42 @@ Future<bool> deleteStudent(dynamic context,{
   required String studentId,
   required String stuClass,
   required String stuSec,
-}) async {
+}) async { 
   try {
     // Check if student exists in Firestore before deleting
     final studentDoc = await collectionControler.studentLoginCollection.doc(studentId).get();
     if (studentDoc.exists) {
-      await collectionControler.studentLoginCollection.doc(studentId).delete();
+
+      final assignmentsCollection=  collectionControler.studentLoginCollection.doc(studentId)
+      .collection("assignments");
+
+    final assignmentsSnapshot = await assignmentsCollection.get();
+
+    for (var doc in assignmentsSnapshot.docs) {
+      await doc.reference.delete();
+    }
+    
+    
+    final examResult =  collectionControler.studentLoginCollection.doc(studentId)
+      .collection("exam_result");
+
+      final examResultSnapshot = await examResult.get();
+
+    for (var doc in examResultSnapshot.docs) {
+      await doc.reference.delete();
+    }
+    final leaveHistry =  collectionControler.studentLoginCollection.doc(studentId)
+      .collection("leave_histry");
+
+      final leaveHistrySnapshot = await leaveHistry.get();
+
+    for (var doc in leaveHistrySnapshot.docs) {
+      await doc.reference.delete();
+    }
+     await collectionControler.studentLoginCollection.doc(studentId).delete();
     }
 
+      
     // Check if student photo exists in Storage before deleting
     final studentPhotoRef = collectionControler.firebaseStorageRef.child("Student photo/$studentId");
     if ((await studentPhotoRef.listAll()).items.isNotEmpty) {

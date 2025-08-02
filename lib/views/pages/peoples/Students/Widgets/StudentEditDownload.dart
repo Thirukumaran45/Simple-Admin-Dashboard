@@ -286,12 +286,15 @@ Future<void> initializeFunction() async {
                             child: ElevatedButton(
                               onPressed: ()async {
                                if(!context.mounted)return;
+                                 CustomDialogs().showLoadingDialogInSec(context,20,"Please wait a moment ...", onlyText: false);
                                await  PdfStudentDetails().openPdf(context: context,fileName: studentNameController.text, nameController: studentNameController, 
                                classController: studentClassController, sectionController: sectionController, 
                                fatherNameController: fatherNameController, fatherPhoneController: fatherPhoneNumberController, motherNameController: motherNameController,
                                 motherPhoneController: motherPhoneNumberController, dateOfBirthController: dobController, emailController: emailController, homeAddressController: homeAddressController,
                                  totalFeesController: totalFeesController, pendingFeesController: pendingFeesController,assetImage: assetImage,);
-                                   },
+                                   if (Navigator.of(context, rootNavigator: true).canPop()) {
+                                Navigator.of(context, rootNavigator: true).pop();
+                            }   },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor:primaryGreenColors ,

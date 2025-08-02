@@ -212,17 +212,22 @@ void saveFees() async {
                               ),
                             ),
                         const SizedBox(width: 20,),
-                        
+                         isSaveButtonVisible?
                         ElevatedButton(
                           onPressed: ()
                         async  {
-                          
-                         await notificationControlelr.feeUpdationPushNotificationToSpecific(context,id: widget.id);
+                          CustomDialogs().showLoadingDialogInSec(context, 10, "Please wait a moment ...",onlyText: true); 
+                          saveFees(); 
+                           await ExceptionDialog().handleExceptionDialog(context,()async=>
+                            await notificationControlelr.feeUpdationPushNotificationToSpecific(context,id: widget.id)
+                           );
                           if(!context.mounted)return;
                           
-                            isSaveButtonVisible? await  CustomDialogs().showLoadingDialogInSec(context, 3, "Please wait a moment ...",onlyText: false):null; 
-                         isSaveButtonVisible? await CustomDialogs().showCustomDialog(context, "✅ Student Fees details Updated Succecfully"):null;
-                            saveFees();
+                              await CustomDialogs().showCustomDialog(context, "✅ Student Fees details Updated Succecfully");
+                             if(!context.mounted)return;
+     if (Navigator.of(context, rootNavigator: true).canPop()) {
+     Navigator.of(context, rootNavigator: true).pop();
+}
                           },
                          style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
@@ -248,7 +253,7 @@ void saveFees() async {
                       ),
                     ),
                           
-                        ),
+                        ): const SizedBox.shrink(),
                        
                      
                       ],

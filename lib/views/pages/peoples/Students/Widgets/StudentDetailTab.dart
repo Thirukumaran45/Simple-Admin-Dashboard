@@ -274,7 +274,7 @@ DataCell(
   bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
   if (val) {
     if(!context.mounted)return;
-    CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: false);
+    CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: true);
    await ExceptionDialog().handleExceptionDialog(context, ()async{
     final val = await controler.deleteStudent(context,studentId: student['id']!, 
     stuClass: student['class'], stuSec: student['section']);

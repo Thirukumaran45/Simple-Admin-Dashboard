@@ -279,7 +279,7 @@ for (int i = 1; i <= subjects.length; i++) {
   resultMark['sub${i}_mark'] = subjectMark.toString();
   resultMark['sub${i}_grade'] = grade;
 }
-
+ 
     resultMark['scored_mark'] = scoredMark.toString();
     // Show dialog and update the result
     

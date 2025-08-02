@@ -235,12 +235,15 @@ Future<void> handlePhotoUpdate(String studentId) async {
                             child: ElevatedButton(
                               onPressed: ()async {
                                  if(!context.mounted)return;
-
+                                    CustomDialogs().showLoadingDialogInSec(context,20,"Please wait a moment ...", onlyText: false);
+                     
                                    await PdfOfficialsDetails().openPdf(context: context,fileName: firstNameController.text, nameController: firstNameController,
                                   phoneNumberController: phoneNumberController, 
                                      emailController: emailController,
                                     homeAddressController: homeAddressController, roleController: role, assetImage: assetImage);
-                                },
+                                  if (Navigator.of(context, rootNavigator: true).canPop()) {
+                                Navigator.of(context, rootNavigator: true).pop();
+                            }},
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
                                 backgroundColor: primaryGreenColors,

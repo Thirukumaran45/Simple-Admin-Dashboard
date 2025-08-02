@@ -228,10 +228,13 @@ void dispose() {
                         child: ElevatedButton(
                           onPressed: ()async {
                    if(!context.mounted)return;
-                         await PdfStaffDetails().openPdf(context: context,fileName: firstNameController.text, 
+                          CustomDialogs().showLoadingDialogInSec(context,20,"Please wait a moment ...", onlyText: false);
+                     await PdfStaffDetails().openPdf(context: context,fileName: firstNameController.text, 
                          nameController: firstNameController, phoneNumberController: phoneNumberController, emailController: emailController,
                           homeAddressController: homeAddressController,assetImage: assetImage, role: role);
-                          },
+                           if (Navigator.of(context, rootNavigator: true).canPop()) {
+                                Navigator.of(context, rootNavigator: true).pop();
+                            }  },
                           style: ElevatedButton.styleFrom(
                          
                             foregroundColor: Colors.white,

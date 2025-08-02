@@ -30,7 +30,17 @@ class PdfTeacherDetails {
     
     // Get the watermark image URL from the controller
     String? watermarkImageUrl = await controller.getSchoolPhotoUrl(context);
-    final watermarkImage = watermarkImageUrl != null ? await networkImage(watermarkImageUrl) : null;
+    pw.ImageProvider? watermarkImage;
+if (watermarkImageUrl != null && watermarkImageUrl.isNotEmpty) {
+  try {
+    final response = await http.get(Uri.parse(watermarkImageUrl));
+    if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
+      watermarkImage = pw.MemoryImage(response.bodyBytes);
+    }
+  } catch (e) {
+    log("Failed to load watermark image: $e");
+  }
+}
 
     pdf.addPage(
       pw.Page(

@@ -185,7 +185,7 @@ void dispose() {        // Properly dispose of the GetX Worker
                           bool val = await CustomDialogs().showCustomConfirmDialog(context: context, text: "Sure about to delete?");
                           if (val) {
                            if(!context.mounted)return;
-                          CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: false);
+                          CustomDialogs().showLoadingDialogInSec(context,30,"Please wait a moment ...", onlyText: true);
                             await ExceptionDialog().handleExceptionDialog(context, ()async{
                            final val =  await controller.deleteStaffs(context,staffId: staff['id']!,);
                             if (val) {

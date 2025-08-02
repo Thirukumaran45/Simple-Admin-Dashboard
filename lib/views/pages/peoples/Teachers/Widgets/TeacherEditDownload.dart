@@ -127,7 +127,7 @@ Future<void> handlePhotoUpdate(String studentId) async {
             right: 0,
             child: customIconTextButton(Colors.red, onPressed: ()async{
             await handlePhotoUpdate(teacherDetails!.id);
-              
+                           
             }, icon: Icons.edit, text: "change")
           ),
                     ],
@@ -254,10 +254,14 @@ Future<void> handlePhotoUpdate(String studentId) async {
                               onPressed: ()async {
                            
                    if(!context.mounted)return;
+                      CustomDialogs().showLoadingDialogInSec(context,20,"Please wait a moment ...", onlyText: false);
                                  await PdfTeacherDetails().openPdf(context: context,fileName:  firstNameController.text.toString(), nameController: firstNameController, 
                                  employmentDate: emplymentDateController, degreeController: degreeController,assetImage: assetImage,
                                  phoneNumberController: phoneNumberController, dateOfBirthController: subjectHandlingController, 
                                  emailController: emailController, homeAddressController: homeAddressController, yearofExperience: experienceController, subjectHandling: subjectHandlingController);
+                               if (Navigator.of(context, rootNavigator: true).canPop()) {
+                                Navigator.of(context, rootNavigator: true).pop();
+                            }  
                                },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Colors.white,
